@@ -1,0 +1,11 @@
+{% extends 'base1.html' %}
+    
+
+{% block content %}  
+
+<form method = 'POST' action = ''> {% csrf_token %}
+    Plan Name :  <input id = 'box1' name = 'box1' type = "textbox"> <br/>
+    Scientist name : <input id = 'box2' name = 'box2' type = "textbox">
+    <input type = "submit">
+</form>
+{% endblock %}
