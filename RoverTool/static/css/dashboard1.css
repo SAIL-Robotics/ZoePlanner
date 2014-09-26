@@ -69,7 +69,6 @@ footer {
   }
 
 .row-offcanvas .content {
-    width: 75%; /* 9 columns */
     -webkit-transition: all .25s ease-out;
        -moz-transition: all .25s ease-out;
             transition: all .25s ease-out;

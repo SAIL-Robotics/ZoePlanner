@@ -1,17 +1,12 @@
 #map-canvas {
-    width: 1250px;
-    height: 900px;
+    position: fixed!important;
+    width: 97%;
+    height: 85%;
     background-color: #CCC;
       }
       .barlabel,.barinput,.barbutton {
         width:20%;
         display:inline;
-      }
-      .row {
-        width:100%;
-        margin:0px auto;
-        padding-right: 5%;
-        padding-left:5%;
       }
       #latLangBar{
         margin:0px auto;
