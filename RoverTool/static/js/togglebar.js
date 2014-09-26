@@ -1,34 +1,52 @@
-	$(document).ready(function () {
-		$("[name='my-checkbox']").bootstrapSwitch();
-	  $('[data-toggle=offcanvas]').click(function () {
-	    if ($('.sidebar-offcanvas').css('background-color') == 'rgb(255, 255, 255)') {
-	      $('.list-group-item').attr('tabindex', '-1');
-	    } else {
-	      $('.list-group-item').attr('tabindex', '');
-	    }
-	    $('.row-offcanvas').toggleClass('active');
-	    
-	  });
+$(document).ready(function () {
+	$("[name='my-checkbox']").bootstrapSwitch();
+	$("#save-button").hide();   	// hiding save button at start
+	$('.row-task-offcanvas').toggleClass('taskdisappear');
+  $('[data-toggle=offcanvas]').click(function () {
+    if ($('.sidebar-offcanvas').css('background-color') == 'rgb(255, 255, 255)') {
+      $('.plan-group-item').attr('tabindex', '-1');
+    } else {
+      $('.plan-group-item').attr('tabindex', '');
+    }
+    $('.row-plan-offcanvas').toggleClass('active');
+    $('.row-task-offcanvas').toggleClass('taskactive');
+    
+  });
 
-	 //  $("[name='my-checkbox']").on('switchChange.bootstrapSwitch', function(event, state) {
-		//   console.log(state); // true | false
-		//   alert(state);
-		// });
-
-	});
-
-	function createPlan() {
-	  $('#myModal').modal('toggle')
-	  document.getElementById('displayName').innerHTML = document.getElementById('planName').value;
-	  var element = document.createElement("input");
-	  element.setAttribute("type","button");
-	  element.setAttribute("value","Save Plan");
-	  element.setAttribute("onclick","savePlan();");
-	  element.style.marginLeft = "20px";
-	  element.style.marginTop = "20px";
-	  document.getElementById('displayName').appendChild(element);
+/* AJAX call and save the plan to DB*/
+  $("#save-button").click(function(){
+    if(taskpoints.length == 0)
+	{
+	  	toastr.options.positionClass ="toast-bottom-right";
+        toastr.error('No markers placed!','');
 	}
-
-	function savePlan(){
-	  alert(taskpoints);
+	else
+	{
+		alert($('#planName').val() + "   " + taskpoints);
 	}
+  });
+
+  /* data validation inside createplan modal and display saveplan button*/
+  $("#createPlan").click(function(){
+
+  	if($('#planName').val().trim().length === 0) {
+       $('#planNameError').html("<span class=\"label label-danger\">name cannot be empty!</span>");
+    }
+    else if($('#planName').val().length > 0 )
+    {
+    	$("#save-button").show();
+    	$('#myModal').modal('hide')
+
+        $('.plan-group-item').attr('tabindex', '-1');
+	    $('.row-plan-offcanvas').toggleClass('active');
+    }
+  });
+
+  /* reset the data inside create plan modal*/
+  $("#createPlanModal").click(function(){
+  	$('#planName').val('')
+  	$('#planDesc').val('')
+  	$('#planNameError').html('')
+  	$('#myModal').modal('show');
+  });
+});

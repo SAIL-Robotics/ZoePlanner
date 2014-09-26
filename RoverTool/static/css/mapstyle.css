@@ -12,3 +12,12 @@
         margin:0px auto;
         width: 50%;
       }
+      .taskactive {
+        right:0;
+      }
+      .taskright {
+        float:right!important;
+      }
+      .taskdisappear {
+        right:-400px;
+      }

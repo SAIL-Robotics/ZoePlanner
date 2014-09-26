@@ -40,97 +40,109 @@ function initialize() {
 
 function placeMarker(latitude,longitude) {
   
-    console.log("Map zoom "+mapZoom+" map.getZoom "+map.getZoom());
-    if(mapZoom == map.getZoom()){
-      console.log("placing marker"+latitude+" "+longitude);
-         var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(latitude,longitude),
-            map: map,
-            title: "Lat : "+latitude+" Long : "+longitude,
-            draggable:true
-        });
-         taskpoints.push(new google.maps.LatLng(latitude,longitude));
-            count++;
-            if(count>1 ) {
-              drawline();
-             }
+  console.log("Map zoom "+mapZoom+" map.getZoom "+map.getZoom());
+  if(mapZoom == map.getZoom()){
+    console.log("placing marker"+latitude+" "+longitude);
+       var marker = new google.maps.Marker({
+          position: new google.maps.LatLng(latitude,longitude),
+          map: map,
+          title: "Lat : "+latitude+" Long : "+longitude,
+          draggable:true
+      });
+       map.panTo(marker.getPosition());
+       taskpoints.push(new google.maps.LatLng(latitude,longitude));
+          count++;
+          if(count>1 ) {
+            drawline();
+           }
 
-    $("[name='my-checkbox']").on('switchChange.bootstrapSwitch', function(event, state) {
-      marker.setDraggable(!state);
+  $("[name='my-checkbox']").on('switchChange.bootstrapSwitch', function(event, state) {
+    marker.setDraggable(!state);
+  });
+
+   google.maps.event.addListener(marker,'click',function(event){
+    if(locked == false)
+      {
+          $('.row-task-offcanvas').toggleClass('taskdisappear');
+          $('.task-group-item').attr('tabindex', '');
+      }
+  });
+
+    google.maps.event.addListener(marker, 'rightclick', function(event) {
+        
+          //map.removeOverlay(marker);
+      if(locked == false)
+      {
+          bootbox.dialog({
+              message: "Do you want to delete the marker?",
+              title: "Alert box",
+              buttons: {
+                success: {
+                  label: "Yes",
+                  className: "btn-success",
+                  callback: function() {
+                    marker.setMap(null);
+                    console.log(taskpoints);
+                    var i=0;
+                    for(i=0;i<taskpoints.length;i++)
+                      {
+                        if(marker.position.lat()==taskpoints[i].lat()&&marker.position.lng()==taskpoints[i].lng())
+                        {
+                          
+                          for(j=i;j<taskpoints.length;j++)
+                          {
+                            taskpoints[j]=taskpoints[j+1];
+                          }
+                          taskpoints.pop();
+                          drawline();
+
+                          toastr.options.positionClass ="toast-bottom-right";
+                          toastr.success('Marker deleted!','');
+                        }
+                      }//for
+                  }
+                },
+                danger: {
+                  label: "No!",
+                  className: "btn-danger"
+                }
+              }
+            });
+      }
+    });//function for right click
+
+    google.maps.event.addListener(marker, 'dragstart', function(event) {
+      if(locked == false)
+      {
+          for(i=0;i<taskpoints.length;i++)
+            {
+              if(marker.position.lat()==taskpoints[i].lat()&&marker.position.lng()==taskpoints[i].lng())
+              {
+                markerchanged=i;
+                           
+              }
+            }//for    
+      }
+    });
+    google.maps.event.addListener(marker, 'drag', function(event) {
+      if(locked == false)
+      {
+          marker.title = "Lat : "+marker.position.lat()+" Long : "+marker.position.lng();
+          taskpoints[markerchanged]=(new google.maps.LatLng(marker.position.lat(),marker.position.lng()));
+          drawline();
+      }
+
+    });
+    google.maps.event.addListener(marker, 'dragend', function(event) {
+      if(locked == false)
+      {
+         marker.title = "Lat : "+marker.position.lat()+" Long : "+marker.position.lng();
+         taskpoints[markerchanged] = (new google.maps.LatLng(marker.position.lat(),marker.position.lng()));
+         drawline(); 
+      }                  
     });
 
-      google.maps.event.addListener(marker, 'rightclick', function(event) {
-          
-            //map.removeOverlay(marker);
-        if(locked == false)
-        {
-            bootbox.dialog({
-                message: "Do you want to delete the marker?",
-                title: "Alert box",
-                buttons: {
-                  success: {
-                    label: "Yes",
-                    className: "btn-success",
-                    callback: function() {
-                      marker.setMap(null);
-                      console.log(taskpoints);
-                      var i=0;
-                      for(i=0;i<taskpoints.length;i++)
-                        {
-                          if(marker.position.lat()==taskpoints[i].lat()&&marker.position.lng()==taskpoints[i].lng())
-                          {
-                            
-                            for(j=i;j<taskpoints.length;j++)
-                            {
-                              taskpoints[j]=taskpoints[j+1];
-                            }
-                            taskpoints.pop();
-                            drawline();
-                          }
-                        }//for
-                    }
-                  },
-                  danger: {
-                    label: "No!",
-                    className: "btn-danger"
-                  }
-                }
-              });
-        }
-      });//function for right click
-
-      google.maps.event.addListener(marker, 'dragstart', function(event) {
-        if(locked == false)
-        {
-            for(i=0;i<taskpoints.length;i++)
-              {
-                if(marker.position.lat()==taskpoints[i].lat()&&marker.position.lng()==taskpoints[i].lng())
-                {
-                  markerchanged=i;
-                             
-                }
-              }//for    
-        }
-      });
-      google.maps.event.addListener(marker, 'drag', function(event) {
-        if(locked == false)
-        {
-            marker.title = "Lat : "+marker.position.lat()+" Long : "+marker.position.lng();
-            taskpoints[markerchanged]=(new google.maps.LatLng(marker.position.lat(),marker.position.lng()));
-            drawline();
-        }
-
-      });
-      google.maps.event.addListener(marker, 'dragend', function(event) {
-        if(locked == false)
-        {
-           marker.title = "Lat : "+marker.position.lat()+" Long : "+marker.position.lng();
-           taskpoints[markerchanged] = (new google.maps.LatLng(marker.position.lat(),marker.position.lng()));
-           drawline(); 
-        }                  
-      });
-
-    }
+  }
 
  }//place marker
 
