@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Rover Commander</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/dashboard1.css" rel="stylesheet">
+    <link href="/static/css/mapstyle.css" rel="stylesheet">
+    <link href="/static/css/toastr.css" rel="stylesheet">
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/togglebar.js"></script>
+    <script src="/static/js/bootbox.js"></script>
+    <link href="/static/css/bootstrap-switch.css" rel="stylesheet">
+    <script src="/static/js/bootstrap-switch.js"></script>
+    <script src="/static/js/toastr.js"></script>
+    
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header"> 
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Rover Commander Tool</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav navbar-right">
+      <li><button class="btn btn-primary btn-large createPlan" data-target="#myModal" id="createPlanModal">
+        Create Plan
+      </button></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Help</a></li>
+      </ul>
+      <form class="navbar-form navbar-right">
+          <input type="text" class="form-control" placeholder="Latitude..." id = "latValue">
+          <input type="text" class="form-control" placeholder="Longitude..." id = "lngValue">
+          <button class="btn btn-large active" onclick="drawMarker();"></i> Locate</button>
+      </form>
+    </div><!--/.nav-collapse -->
+  </div>
+</div>
+  
+<div class="container-fluid">
+  <div class="col-xs-12 col-sm-12 content">
+      <div class="row row-plan-offcanvas row-offcanvas row-offcanvas-left">
+
+        <div class="col-xs-3 col-sm-1 sidebar-offcanvas" id="sidebar" role="navigation">
+
+          <div class="list-group">
+              <a href="#" class="list-group-item plan-group-item active">Plans</a>
+              <a href="#" class="list-group-item plan-group-item">Plan 1</a>
+              <a href="#" class="list-group-item plan-group-item">Plan 2</a>
+              <a href="#" class="list-group-item plan-group-item">Plan 3</a>
+              <a href="#" class="list-group-item plan-group-item">Plan 4</a>
+            </div>
+        </div><!--/span-->
+
+        <div class="col-xs-12 col-sm-9 content">
+                     <p class="pull-right">
+          <input type="checkbox" name="my-checkbox" id="my-checkbox" data-on-text="lock" data-off-text="unlock"></p>
+          <p class="pull-left"> 
+            <a id="toggleSidebar" href="#" class="toggles" data-toggle="offcanvas"><i class="glyphicon glyphicon-align-justify"></i></a>
+            <div id = "displayName">     
+              <button id="save-button" class="btn btn-primary btn-sm saveBtn" onclick=""> Save Plan</button>
+            </div>
+          </p>
+
+          <br/>
+              {% block content %}
+
+              {% endblock %}
+        </div>
+
+        <div class="col-xs-3 col-sm-3 row-task-offcanvas row-offcanvas-right taskright" id="sidebar2" role="navigation">
+
+            <div class="list-group">
+              <a href="#" class="list-group-item task-group-item active">Tasks</a>
+              <a class="list-group-item task-group-item"> <input type = "checkbox" id="1">Drill and Save</a>
+              <a class="list-group-item task-group-item"><input type = "checkbox"  id="2">Science Autonomy</a>
+              <a class="list-group-item task-group-item"><input type = "checkbox"  id="3">BUF</a>
+              
+             <!--  <a href="#" class="list-group-item task-group-item"> 3</a>
+              <a href="#" class="list-group-item task-group-item">Plan 4</a> -->
+            </div>
+          </div><!--/span--> <!-- sidebar -->
+
+                  </div><!--/span-->
+              
+      </div><!--/row-->
+
+</div><!-- /.container -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">New Plan</h4>
+      </div>
+      <div class="modal-body">
+       <input type="text" class="form-control" placeholder="Plan name..." id = "planName">
+       <p id="planNameError" class="err"></p>
+       <textarea rows = "5" cols = "10" class="form-control" placeholder="Description...(optional)" id = "planDesc"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id = "createPlan">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="/static/js/mapcontrol.js"></script>
+  </body>
+</html>

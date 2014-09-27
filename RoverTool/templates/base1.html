@@ -80,8 +80,12 @@
           <input type="checkbox" name="my-checkbox" id="my-checkbox" data-on-text="lock" data-off-text="unlock"></p>
           <p class="pull-left"> 
             <a id="toggleSidebar" href="#" class="toggles" data-toggle="offcanvas"><i class="glyphicon glyphicon-align-justify"></i></a>
-            <div id = "displayName">     
-              <button id="save-button" class="btn btn-primary btn-sm saveBtn" onclick=""> Save Plan</button>
+            <div id = "displayName">
+            <form action="#" method="post"> 
+            {% csrf_token %}      
+              <button id="save-button" class="btn btn-primary btn-sm saveBtn"> Save Plan</button>
+            </form>  
+            <span id="planNameDisplay"></span>
             </div>
           </p>
 
@@ -91,14 +95,97 @@
               {% endblock %}
         </div>
 
+        <!-- ////////////////////////////////////////////////TASK PANE/////////////////////////////////////////////////////// -->
+
         <div class="col-xs-3 col-sm-3 row-task-offcanvas row-offcanvas-right taskright" id="sidebar2" role="navigation">
 
-            <div class="list-group">
+            <div class="list-group scrollableList">
               <a href="#" class="list-group-item task-group-item active">Tasks</a>
-              <a class="list-group-item task-group-item"> <input type = "checkbox" id="1">Drill and Save</a>
-              <a class="list-group-item task-group-item"><input type = "checkbox"  id="2">Science Autonomy</a>
-              <a class="list-group-item task-group-item"><input type = "checkbox"  id="3">BUF</a>
               
+              <a class="list-group-item task-group-item"> 
+                <span class="input-group-addon"><b>Drill</b> 
+                  <div>
+                    <input type="radio" name="drillType" id="drillAndSave" />Drill And Save   
+                    <input type="radio" name="drillType" id="onlyDrill" />Only Drill
+
+                    <input type="button" class="btn" id="addDrill" value="+" class="btn btn-primary"/>
+                    <br/>
+                    <input type="checkbox" class="" id="drillImage" />Drill Image
+                    <br/><br/>
+                  </div>
+                  <br/>
+                  <div class="drillAndSaveOperation" id="drillAndSaveOperation">
+                      <input type="text" class="form-control taskText" placeholder="In Depth(cm)" id="drillAndSaveValue"/>
+                      <input type="button" value="Save" id="drillAndSaveButton" class="btn btn-success"/>
+                  </div>
+                  <div class="onlyDrillOperation" id="onlyDrillOperation">
+                      <input type="text" class="form-control taskText" placeholder="In Depth(cm)" id="onlyDrillValue" />
+                      <input type="button" value="OK" id="onlyDrillButton"  class="btn btn-success"/>
+                  </div>  
+                 </span> 
+              </a>
+
+              <a class="list-group-item task-group-item">
+                <span class="input-group-addon"><b>BUF</b>
+                  <div>
+                    <input type="text" class="form-control taskText" placeholder="LED Intensity" id="bufValue" />
+                  </div>
+                </span>
+               </a>
+
+              <a class="list-group-item task-group-item">
+                <span class="input-group-addon"><b>MMRS</b>
+                  <div>
+                     <input type="text" class="form-control taskText" placeholder="Exposure" id="mmrsExposureValue" /> <br/>
+                     <input type="text" class="form-control taskText" placeholder="Accumulation" id="mmrsAccumulationValue" /> <br/>
+                     <input type="text" class="form-control taskText" placeholder="Number of points" id="mmrsNumberValue" /> 
+                  </div> 
+                 </span> 
+              </a>
+              <a class="list-group-item task-group-item">
+                <span class="input-group-addon"><b>Science Image</b>
+                  <div>
+                    <input type="text" class="form-control taskText" placeholder="Pan" id="sciencePanValue" /><br/>
+                    <input type="text" class="form-control taskText" placeholder="Tilt" id="scienceTiltValue" />
+                  </div>
+                 </span> 
+              </a>
+
+              <a class="list-group-item task-group-item">
+                <span class="input-group-addon"><b>Image Panorama</b>
+                  <div>
+                    <input type="text" class="form-control halfTaskText" placeholder="Start Azimuth" id="imageStartAzimuthValue" />
+                    <input type="text" class="form-control halfTaskText" placeholder="End Azimuth" id="imageEndAzimuthValue" /><br/>
+                    <input type="text" class="form-control halfTaskText" placeholder="Start Elevation" id="imageStartElevationValue" />
+                    <input type="text" class="form-control halfTaskText" placeholder="End Elevation" id="imageEndElevationValue" />
+                  </div> 
+                </span>  
+              </a>
+
+              <a class="list-group-item task-group-item">
+                <span class="input-group-addon"><b>Spectra Panorama</b>
+                   <div>
+                    <input type="text" class="form-control halfTaskText" placeholder="Start Azimuth" id="spectraStartAzimuthValue" />
+                    <input type="text" class="form-control halfTaskText" placeholder="End Azimuth" id="spectraEndAzimuthValue" /><br/>
+                    <input type="text" class="form-control halfTaskText" placeholder="Start Elevation" id="spectraStartElevationValue" />
+                    <input type="text" class="form-control halfTaskText" placeholder="End Elevation" id="spectraEndElevationValue" /><br/>
+                    <input type="text" class="form-control halfTaskText" placeholder="Angular" id="spectraAngularValue" />
+                    <input type="checkbox" id="spectraAngularCamera" /> With Camera <br/> <br/>
+                    <input type="checkbox" id="spectraNavcamRecord" /> Navcam Record <br/> <br/>
+                    <input type="checkbox" id="spectraSmartTarget" /> Smart Target <br/> <br/>
+                  </div> 
+                 </span> 
+              </a>
+
+              <a class="list-group-item task-group-item">
+                <span class="input-group-addon">
+                  <div>
+                    <input type="checkbox" id"preciseMove" /> Precise Move
+                    <input type="text" class="form-control halfTaskText" placeholder="Distance" id="preciseMoveValue" />
+                  </div>
+                </span>
+              </a>  
+
              <!--  <a href="#" class="list-group-item task-group-item"> 3</a>
               <a href="#" class="list-group-item task-group-item">Plan 4</a> -->
             </div>
@@ -109,6 +196,10 @@
       </div><!--/row-->
 
 </div><!-- /.container -->
+
+
+        <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog">
     <div class="modal-content">

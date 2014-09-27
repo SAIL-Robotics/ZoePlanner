@@ -21,3 +21,19 @@
       .taskdisappear {
         right:-400px;
       }
+      .taskText {
+        width:150px!important;
+        display:inline!important;
+        margin-bottom: 5px;
+      }
+      .halfTaskText {
+        width:90px!important;
+        display: inline!important;
+        margin-bottom: 5px;
+      }
+      .scrollableList {
+        overflow: scroll;
+      }
+     .input-group-addon{
+        text-align: left!important;
+      }

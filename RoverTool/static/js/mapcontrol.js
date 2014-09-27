@@ -50,7 +50,12 @@ function placeMarker(latitude,longitude) {
           draggable:true
       });
        map.panTo(marker.getPosition());
-       taskpoints.push(new google.maps.LatLng(latitude,longitude));
+       console.log("getPos" +marker.getPosition());
+       var taskDetails = {};
+       taskDetails.lat = latitude;
+       taskDetails.lng = longitude;
+        //taskpoints.push(new google.maps.LatLng(latitude,longitude));
+       taskpoints.push(taskDetails);
           count++;
           if(count>1 ) {
             drawline();
@@ -74,19 +79,40 @@ function placeMarker(latitude,longitude) {
       if(locked == false)
       {
           bootbox.dialog({
-              message: "Do you want to delete the marker?",
+              message: "Do you want to duplicate or delete the marker?",
               title: "Alert box",
               buttons: {
                 success: {
-                  label: "Yes",
+                  label: "Duplicate",
                   className: "btn-success",
                   callback: function() {
+                  var location = new google.maps.LatLng(marker.position.lat() + 0.05,marker.position.lng() + 0.05);
+                  var marker = new google.maps.Marker({
+                  position: location,
+                  map: map,
+                  title: "Lat : "+marker.position.lat() + 0.05+" Long : "+marker.position.lng() + 0.05,
+                  draggable:true,
+                  animation:google.maps.Animation.DROP
+                  });
+                  alert("Duplicate");
+                  var taskDetails = {};
+                  taskDetails.lat = marker.position.lat() + 0.05;
+                  taskDetails.lng = marker.position.lng() + 0.05;
+                  taskpoints.push(taskDetails);
+                  drawline();
+                 
+                }
+                },
+                danger: {
+                  label: "Delete",
+                  className: "btn-danger",
+                  callback: function() {
                     marker.setMap(null);
-                    console.log(taskpoints);
+                    // console.log(taskpoints);
                     var i=0;
                     for(i=0;i<taskpoints.length;i++)
                       {
-                        if(marker.position.lat()==taskpoints[i].lat()&&marker.position.lng()==taskpoints[i].lng())
+                        if(marker.position.lat()==taskpoints[i].lat&&marker.position.lng()==taskpoints[i].lng)
                         {
                           
                           for(j=i;j<taskpoints.length;j++)
@@ -101,10 +127,6 @@ function placeMarker(latitude,longitude) {
                         }
                       }//for
                   }
-                },
-                danger: {
-                  label: "No!",
-                  className: "btn-danger"
                 }
               }
             });
@@ -112,17 +134,19 @@ function placeMarker(latitude,longitude) {
     });//function for right click
 
     google.maps.event.addListener(marker, 'dragstart', function(event) {
+      alert(marker.position.lat());
       if(locked == false)
       {
           for(i=0;i<taskpoints.length;i++)
             {
-              if(marker.position.lat()==taskpoints[i].lat()&&marker.position.lng()==taskpoints[i].lng())
+              if(marker.position.lat()==taskpoints[i].lat&&marker.position.lng()==taskpoints[i].lng)
               {
                 markerchanged=i;
-                           
+                alert(markerchanged);            
               }
             }//for    
       }
+
     });
     google.maps.event.addListener(marker, 'drag', function(event) {
       if(locked == false)
