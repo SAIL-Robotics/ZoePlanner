@@ -54,7 +54,7 @@
       <form class="navbar-form navbar-right">
           <input type="text" class="form-control" placeholder="Latitude..." id = "latValue">
           <input type="text" class="form-control" placeholder="Longitude..." id = "lngValue">
-          <button class="btn btn-large active" onclick="drawMarker();"></i> Locate</button>
+          <button class="btn btn-large active" onclick="drawMarker();"> Locate</button>
       </form>
     </div><!--/.nav-collapse -->
   </div>
@@ -66,14 +66,21 @@
 
         <div class="col-xs-3 col-sm-1 sidebar-offcanvas" id="sidebar" role="navigation">
 
-          <div class="list-group">
+<!--           <div class="list-group">
               <a href="#" class="list-group-item plan-group-item active">Plans</a>
               <a href="#" class="list-group-item plan-group-item">Plan 1</a>
-              <a href="#" class="list-group-item plan-group-item">Plan 2</a>
-              <a href="#" class="list-group-item plan-group-item">Plan 3</a>
-              <a href="#" class="list-group-item plan-group-item">Plan 4</a>
+            </div>-->
+        
+          <div class="list-group">
+            <span class="list-group-item active">
+             <center> Plans  </center>
+            </span>
+            <div id="planMenu">
+                <!-- <a href="#" class="list-group-item">Dapibus ac facilisis in <span class="badge">14</span> </a> -->
             </div>
-        </div><!--/span-->
+          </div>
+        </div>
+
 
         <div class="col-xs-12 col-sm-9 content">
                      <p class="pull-right">
@@ -97,108 +104,18 @@
 
         <!-- ////////////////////////////////////////////////TASK PANE/////////////////////////////////////////////////////// -->
 
-        <div class="col-xs-3 col-sm-3 row-task-offcanvas row-offcanvas-right taskright" id="sidebar2" role="navigation">
+                <div class="col-xs-3 col-sm-3 row-task-offcanvas row-offcanvas-right taskright" id="sidebar2" role="navigation">
+                        {% include 'taskPane.html' %}.
+                      </div><!--/span--> <!-- sidebar -->
 
-            <div class="list-group scrollableList">
-              <a href="#" class="list-group-item task-group-item active">Tasks</a>
-              
-              <a class="list-group-item task-group-item"> 
-                <span class="input-group-addon"><b>Drill</b> 
-                  <div>
-                    <input type="radio" name="drillType" id="drillAndSave" />Drill And Save   
-                    <input type="radio" name="drillType" id="onlyDrill" />Only Drill
+                     </div><!--/span-->
+                            
+                  </div><!--/row-->
 
-                    <input type="button" class="btn" id="addDrill" value="+" class="btn btn-primary"/>
-                    <br/>
-                    <input type="checkbox" class="" id="drillImage" />Drill Image
-                    <br/><br/>
-                  </div>
-                  <br/>
-                  <div class="drillAndSaveOperation" id="drillAndSaveOperation">
-                      <input type="text" class="form-control taskText" placeholder="In Depth(cm)" id="drillAndSaveValue"/>
-                      <input type="button" value="Save" id="drillAndSaveButton" class="btn btn-success"/>
-                  </div>
-                  <div class="onlyDrillOperation" id="onlyDrillOperation">
-                      <input type="text" class="form-control taskText" placeholder="In Depth(cm)" id="onlyDrillValue" />
-                      <input type="button" value="OK" id="onlyDrillButton"  class="btn btn-success"/>
-                  </div>  
-                 </span> 
-              </a>
-
-              <a class="list-group-item task-group-item">
-                <span class="input-group-addon"><b>BUF</b>
-                  <div>
-                    <input type="text" class="form-control taskText" placeholder="LED Intensity" id="bufValue" />
-                  </div>
-                </span>
-               </a>
-
-              <a class="list-group-item task-group-item">
-                <span class="input-group-addon"><b>MMRS</b>
-                  <div>
-                     <input type="text" class="form-control taskText" placeholder="Exposure" id="mmrsExposureValue" /> <br/>
-                     <input type="text" class="form-control taskText" placeholder="Accumulation" id="mmrsAccumulationValue" /> <br/>
-                     <input type="text" class="form-control taskText" placeholder="Number of points" id="mmrsNumberValue" /> 
-                  </div> 
-                 </span> 
-              </a>
-              <a class="list-group-item task-group-item">
-                <span class="input-group-addon"><b>Science Image</b>
-                  <div>
-                    <input type="text" class="form-control taskText" placeholder="Pan" id="sciencePanValue" /><br/>
-                    <input type="text" class="form-control taskText" placeholder="Tilt" id="scienceTiltValue" />
-                  </div>
-                 </span> 
-              </a>
-
-              <a class="list-group-item task-group-item">
-                <span class="input-group-addon"><b>Image Panorama</b>
-                  <div>
-                    <input type="text" class="form-control halfTaskText" placeholder="Start Azimuth" id="imageStartAzimuthValue" />
-                    <input type="text" class="form-control halfTaskText" placeholder="End Azimuth" id="imageEndAzimuthValue" /><br/>
-                    <input type="text" class="form-control halfTaskText" placeholder="Start Elevation" id="imageStartElevationValue" />
-                    <input type="text" class="form-control halfTaskText" placeholder="End Elevation" id="imageEndElevationValue" />
-                  </div> 
-                </span>  
-              </a>
-
-              <a class="list-group-item task-group-item">
-                <span class="input-group-addon"><b>Spectra Panorama</b>
-                   <div>
-                    <input type="text" class="form-control halfTaskText" placeholder="Start Azimuth" id="spectraStartAzimuthValue" />
-                    <input type="text" class="form-control halfTaskText" placeholder="End Azimuth" id="spectraEndAzimuthValue" /><br/>
-                    <input type="text" class="form-control halfTaskText" placeholder="Start Elevation" id="spectraStartElevationValue" />
-                    <input type="text" class="form-control halfTaskText" placeholder="End Elevation" id="spectraEndElevationValue" /><br/>
-                    <input type="text" class="form-control halfTaskText" placeholder="Angular" id="spectraAngularValue" />
-                    <input type="checkbox" id="spectraAngularCamera" /> With Camera <br/> <br/>
-                    <input type="checkbox" id="spectraNavcamRecord" /> Navcam Record <br/> <br/>
-                    <input type="checkbox" id="spectraSmartTarget" /> Smart Target <br/> <br/>
-                  </div> 
-                 </span> 
-              </a>
-
-              <a class="list-group-item task-group-item">
-                <span class="input-group-addon">
-                  <div>
-                    <input type="checkbox" id"preciseMove" /> Precise Move
-                    <input type="text" class="form-control halfTaskText" placeholder="Distance" id="preciseMoveValue" />
-                  </div>
-                </span>
-              </a>  
-
-             <!--  <a href="#" class="list-group-item task-group-item"> 3</a>
-              <a href="#" class="list-group-item task-group-item">Plan 4</a> -->
-            </div>
-          </div><!--/span--> <!-- sidebar -->
-
-                  </div><!--/span-->
-              
-      </div><!--/row-->
-
-</div><!-- /.container -->
+              </div><!-- /.container -->
 
 
-        <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+        <!-- //////////////////////////////////////////////////TASKPANE END////////////////////////////////////////////// -->
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog">
@@ -220,6 +137,17 @@
   </div>
 </div>
 
+        <!-- //////////////////////////////////////////////////Right Click start////////////////////////////////////////////// -->
+<div id="contextMenu" class="dropdown clearfix">
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+      <li><a tabindex="-1" href="#">Delete Plan</a></li>
+      <!-- <li><a tabindex="-1" href="#">Another action</a></li>
+      <li><a tabindex="-1" href="#">Something else here</a></li>
+      <li class="divider"></li>
+      <li><a tabindex="-1" href="#">Separated link</a></li> -->
+    </ul>
+  </div>
+        <!-- //////////////////////////////////////////////////Right Click  END////////////////////////////////////////////// -->
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->

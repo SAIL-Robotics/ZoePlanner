@@ -31,6 +31,12 @@ footer {
     margin:2%!important;
   }
 
+#contextMenu {
+  position: absolute;
+  display:none;
+}
+
+
 /*
  * Off Canvas
  * --------------------------------------------------
