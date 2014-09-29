@@ -36,6 +36,25 @@ footer {
   display:none;
 }
 
+span#planNameDisplay {
+padding-left: 15px;
+}
+
+#close {
+    float:right;
+    display:inline-block;
+    padding:2px 5px;
+    background:#3A47DB;
+    font-size:medium;
+}
+
+#close:hover {
+        float:right;
+        display:inline-block;
+        padding:2px 5px;
+        background:#428bca;
+    color:#fff;
+    }
 
 /*
  * Off Canvas

@@ -31,6 +31,7 @@ def DBOperation(request):
     
     markers = []
     plan_name = ''
+    plan_desc = ''
     task_points = []
     data = []
 
@@ -38,18 +39,30 @@ def DBOperation(request):
         if request.method == "POST":
             if request.POST['operation'] == 'save':
                 plan_name = request.POST['planName']
+                plan_desc = request.POST['planDesc']
                 markers = json.loads(request.POST.get('markers'))
-                saveToDB(plan_name, markers)
+                saveToDB(plan_name, plan_desc, markers)
                 data = get_plan_detail()                                    #update the let pane. getting plan names from 
             elif request.POST['operation'] == 'getMarkerInfo':
                 plan_name = request.POST['planName']
                 data = getMarker(plan_name)
+            elif request.POST['operation'] == 'validatePlanName':
+                plan_name = request.POST.get('planName')
+                data = validatePlanName(plan_name)
             elif request.POST['operation'] == 'deletePlan':
                 plan_name = request.POST['planName']
                 deletePlan(plan_name)
-                print "deleting -->"
                 data = get_plan_detail()
                 print data['planName']
+            elif request.POST['operation'] == 'duplicate':
+                plan_name = request.POST['planName']
+                new_plan_name = request.POST['newPlanName']
+                plan_desc = request.POST['planDesc']
+                duplicatePlan(plan_name, new_plan_name, plan_desc)
+                data = get_plan_detail()
+            elif request.POST['operation'] == 'getPlanInfo':
+                plan_name = request.POST['planName']
+                data = get_plan_info(plan_name)
 
         else:
             print 'why you do this!!'
@@ -57,15 +70,15 @@ def DBOperation(request):
     return HttpResponse(json.dumps(data), content_type = "application/json")
 
 
-def saveToDB(plan_name, markers):    
+def saveToDB(plan_name, plan_desc, markers):    
     connection = Connection()
-    
+
     now = datetime.datetime.now()
     time = now.strftime("%Y-%m-%d %H:%M:%S")
 
     db = connection[database_name]
     collection = db[collection_name]
-    plan = {"planName" : plan_name, "timeStamp" : time, "markers" : markers}
+    plan = {"planName" : plan_name, "planDescription" : plan_desc, "timeStamp" : time, "markers" : markers}
 
     collection.save(plan)
 
@@ -81,12 +94,48 @@ def getMarker(plan_name):
 
     return markersCursor['markers']
 
+def duplicatePlan(plan_name, new_plan_name, plan_desc):
+    connection = Connection()
+
+    now = datetime.datetime.now()
+    time = now.strftime("%Y-%m-%d %H:%M:%S")
+
+    db = connection[database_name]
+    collection = db[collection_name]
+    markersCursor = collection.find_one({'planName' : plan_name}, {'_id':0})
+    markersCursor['planName'] = new_plan_name
+    markersCursor['planDescription'] = plan_desc
+    markersCursor['timeStamp'] = time
+    collection.save(markersCursor)
+
 def deletePlan(plan_name):
     connection = Connection()
 
     db = connection[database_name]
     collection = db[collection_name]
     collection.remove({'planName' : plan_name});
+
+def validatePlanName(plan_name):
+    data = {}
+    connection = Connection()
+
+    db = connection[database_name]
+    collection = db[collection_name]
+
+    data['count'] = collection.find({"planName": plan_name}).count()
+
+    return data
+
+def get_plan_info(plan_name):
+    data = {}
+    connection = Connection()
+
+    db = connection[database_name]
+    collection = db[collection_name]
+
+    cursor = collection.find_one({"planName": plan_name},{"_id" : 0, "planDescription" : 1, "timeStamp" : 1})
+
+    return cursor
 
 # Create your views here.
 @csrf_exempt

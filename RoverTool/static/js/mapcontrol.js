@@ -201,7 +201,6 @@ function placeMarker(latitude,longitude,backEndJson) {
                   draggable:true,
                   animation:google.maps.Animation.DROP
                   });
-                  alert("Duplicate");
                   var taskDetails = {};
                   taskDetails.lat = marker.position.lat() + 0.05;
                   taskDetails.lng = marker.position.lng() + 0.05;
@@ -241,7 +240,6 @@ function placeMarker(latitude,longitude,backEndJson) {
     });//function for right click
 
     google.maps.event.addListener(marker, 'dragstart', function(event) {
-      alert(marker.position.lat());
       if(locked == false)
       {
           for(i=0;i<taskpoints.length;i++)
@@ -249,7 +247,6 @@ function placeMarker(latitude,longitude,backEndJson) {
               if(marker.position.lat()==taskpoints[i].lat&&marker.position.lng()==taskpoints[i].lng)
               {
                 markerchanged=i;
-                alert(markerchanged);            
               }
             }//for    
       }
@@ -325,6 +322,16 @@ function viewMarkers(markerJSON){
   var i =0;
   //locked = true;
   //location.reload();
+  clearMap();
+  for(i=0;i<markerJSON.length;i++){
+    placeMarker(markerJSON[i].lat,markerJSON[i].lng,markerJSON);
+    eee = markerJSON;
+    fillValue(markerJSON[i]);
+  }
+}//function to call placemarker for viewing plan
+
+function clearMap()
+{
 
   lines = [];
   taskpoints = [];
@@ -352,12 +359,6 @@ function viewMarkers(markerJSON){
            setTimeout("placeMarker("+latitude+","+longitude+","+null+")", 600);
          }    
   });
-
-  for(i=0;i<markerJSON.length;i++){
-    placeMarker(markerJSON[i].lat,markerJSON[i].lng,markerJSON);
-    eee = markerJSON;
-    fillValue(markerJSON[i]);
-  }
-}//function to call placemarker for viewing plan
+}
 
  google.maps.event.addDomListener(window, 'load', initialize);
