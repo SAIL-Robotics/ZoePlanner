@@ -33,6 +33,7 @@
       }
       .scrollableList {
         overflow: scroll;
+        max-height: 500px;
       }
      .input-group-addon{
         text-align: left!important;

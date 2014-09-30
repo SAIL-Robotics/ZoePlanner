@@ -59,17 +59,27 @@ function saveTaskDetails () {
 
 function clearTaskTextFields() {
   //also to clear radios drillAndSave, onlyDrill, 
-  //also to clear checkboxes drillImage, spectraAngularCamera, spectraNavcamRecord, spectraSmartTarget 
+  //also to clear checkboxes drillImage, spectraAngularCamera, spectraNavcamRecord, spectraSmartTarget , preciseMove 
   //also to iterate drillAndSaveValue, onlyDrillValue
-  var taskTextFieldIds = ["drillAndSaveValue","onlyDrillValue", "bufValue", 
+  $("[name='drillType']").removeAttr("checked");
+  
+  $("#drillImage").removeAttr("checked");
+  $("#spectraAngularCamera").removeAttr("checked");
+  $("#spectraNavcamRecord").removeAttr("checked");
+  $("#spectraSmartTarget").removeAttr("checked");
+  $("#preciseMove").removeAttr("checked");
+
+
+  var taskTextFieldIds = ["bufValue", 
   "mmrsExposureValue","mmrsAccumulationValue","mmrsNumberValue","sciencePanValue", "scienceTiltValue","imageStartAzimuthValue",
   "imageEndAzimuthValue","imageStartElevationValue","imageEndElevationValue","spectraStartAzimuthValue",
-  "spectraEndAzimuthValue","spectraStartElevationValue","spectraEndElevationValue"];
+  "spectraEndAzimuthValue","spectraStartElevationValue","spectraEndElevationValue", "spectraAngularValue", "preciseMoveValue"];
 
   for(iterator in taskTextFieldIds) {
     document.getElementById(taskTextFieldIds[iterator]).value = "";
   }
 }
+
 
 function fillTaskPane(marker) {
   //TODO - clear all the text fields
@@ -107,10 +117,12 @@ function fillTaskDetails(latitudeValue,longitudeValue) {
 
   console.log("Fill task Details");
 
-  var taskTextFieldIds = ["drillAndSaveValue","onlyDrillValue", "bufValue", 
+  var taskCheckBoxIds = ["drillImage", "spectraAngularCamera", "spectraNavcamRecord", "spectraSmartTarget" , "preciseMove" ];
+
+  var taskTextFieldIds = ["bufValue", 
   "mmrsExposureValue","mmrsAccumulationValue","mmrsNumberValue","sciencePanValue", "scienceTiltValue","imageStartAzimuthValue",
   "imageEndAzimuthValue","imageStartElevationValue","imageEndElevationValue","spectraStartAzimuthValue",
-  "spectraEndAzimuthValue","spectraStartElevationValue","spectraEndElevationValue"];
+  "spectraEndAzimuthValue","spectraStartElevationValue","spectraEndElevationValue", "spectraAngularValue", "preciseMoveValue"];
 
   for(taskDetailsIterator in taskpoints) {
         console.log("lat "+taskpoints[taskDetailsIterator].lat+ " inp "+latitudeValue);
@@ -144,8 +156,8 @@ function placeMarker(latitude,longitude,backEndJson) {
           title: "Lat : "+latitude+" Long : "+longitude,
           draggable:true
       });
-       map.panTo(marker.getPosition());
-       console.log("getPos" +marker.getPosition());
+      // map.panTo(marker.getPosition());
+       //console.log("getPos" +marker.getPosition());
        var taskDetails = {};
 
 
@@ -318,16 +330,21 @@ function drawMarker() {
 
   var eee;
 
-function viewMarkers(markerJSON){
+function viewMarkers(markerJSON, planName){
   var i =0;
   //locked = true;
   //location.reload();
   clearMap();
+
   for(i=0;i<markerJSON.length;i++){
     placeMarker(markerJSON[i].lat,markerJSON[i].lng,markerJSON);
     eee = markerJSON;
     fillValue(markerJSON[i]);
   }
+
+  locked = true;  
+  $("[name='my-checkbox']").bootstrapSwitch('state', true); //applying bootstrapswitch CSS to checkbox
+  $('#planNameDisplay').text(planName);
 }//function to call placemarker for viewing plan
 
 function clearMap()
@@ -336,6 +353,9 @@ function clearMap()
   lines = [];
   taskpoints = [];
 
+  locked = false;  
+  $("[name='my-checkbox']").bootstrapSwitch('state', false);
+  $('#planNameDisplay').text('');       //clearing plan name
     var mapOptions = {
     zoom: mapZoomConstant,
     center: new google.maps.LatLng(-23.3695439,-69.8597406),
@@ -359,6 +379,7 @@ function clearMap()
            setTimeout("placeMarker("+latitude+","+longitude+","+null+")", 600);
          }    
   });
+    console.log("clear map )&&&&&&&&&&&&&&&&&&&&&&&77")
 }
 
  google.maps.event.addDomListener(window, 'load', initialize);

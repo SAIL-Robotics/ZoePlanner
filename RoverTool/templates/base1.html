@@ -16,13 +16,14 @@
     <link href="/static/css/dashboard1.css" rel="stylesheet">
     <link href="/static/css/mapstyle.css" rel="stylesheet">
     <link href="/static/css/toastr.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-switch.css" rel="stylesheet">
 
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/togglebar.js"></script>
     <script src="/static/js/bootbox.js"></script>
-    <link href="/static/css/bootstrap-switch.css" rel="stylesheet">
     <script src="/static/js/bootstrap-switch.js"></script>
     <script src="/static/js/toastr.js"></script>
+    <script src="/static/js/taskControl.js"></script>
     
   </head>
 
@@ -46,11 +47,11 @@
         <li><a href="#about">About</a></li>
         <li><a href="#contact">Help</a></li>
       </ul>
-      <form class="navbar-form navbar-right">
+      <span class="navbar-form navbar-right">
           <input type="text" class="form-control" placeholder="Latitude..." id = "latValue">
           <input type="text" class="form-control" placeholder="Longitude..." id = "lngValue">
           <button class="btn btn-large active" onclick="drawMarker();"> Locate</button>
-      </form>
+      </span>
     </div><!--/.nav-collapse -->
   </div>
 </div>

@@ -38,6 +38,10 @@ footer {
 
 span#planNameDisplay {
 padding-left: 15px;
+color: #428bca;
+background-color: #fff ;
+font-size: large;
+font-weight: bold;
 }
 
 #close {

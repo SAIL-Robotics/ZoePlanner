@@ -92,7 +92,7 @@ document.getElementById('close').onclick = function(){
                pName = $('#contextMenu').attr("name")
                response.planDescription==null ? desc = "" : desc = response.planDescription
 
-               dataContent = "<div style=width:500px><b>Description:</b>"+desc + "<br/><b>Created Time : </b> " + response.timeStamp+"</div>"
+               dataContent = "<div style='width:500px; word-wrap:break-word'><b>Description:</b>"+desc + "<br/><b>Created Time : </b> " + response.timeStamp+"</div>"
               
               $('.'+pName).attr("data-toggle", "popover")
 
@@ -242,7 +242,7 @@ document.getElementById('close').onclick = function(){
               },
        success: function(response){
            console.log(response);
-           viewMarkers(response);
+           viewMarkers(response,event.currentTarget.firstChild.data);
        }
     });
 
