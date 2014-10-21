@@ -49,15 +49,15 @@
 			         type:"POST",
 			         url:"/jsonData/",
 			         data: {
-			                'planName': 'lol',  //plan name
+			                'planName': 'arjun',  //plan name
+                      'newPlanName': 'arjun123',
 			                },
 			         success: function(response){
-			             $("#planMenu1").empty()
-
-					  	for(i = 0; i < response.planName.length; i++)
+                    console.log(response)
+					  	/*for(i = 0; i < response.planName.length; i++)
 					  	{
 					  		$("#planMenu1").append('<a href="#" class="list-group-item abcd">' + response.planName[i] + '<span class="badge">'+ response.totalMarkers[i] +'</span> </a>'); 	
-					  	}
+					  	}*/
 			         }
 			      });	
 		      });

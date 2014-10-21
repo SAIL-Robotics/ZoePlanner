@@ -68,6 +68,12 @@ document.getElementById('close').onclick = function(){
       });
     }
 
+    if(e.currentTarget.firstChild.data == "Rename Plan"){
+      $('#planRename').val('')
+      $('#planNameErr').html('')
+      $('#myRenameModal').modal('show');
+    }
+
     if(e.currentTarget.firstChild.data == "Duplicate Plan"){
       
       $("#createPlan").attr("name","duplicate");
@@ -103,6 +109,22 @@ document.getElementById('close').onclick = function(){
               })
 
                 $('.'+pName).popover('show')
+         }
+      });
+    }
+
+    if(e.currentTarget.firstChild.data == "Download as KML"){
+
+      $.ajax({
+         type:"POST",
+         url:"/DBOperation/",
+         data: {
+                'planName': $('#contextMenu').attr("name"),
+                'operation': 'downloadAsKML',
+                },
+         success: function(response){
+                var blob = new Blob([response], {type: "text/plain;charset=utf-8"});
+                saveAs(blob, $('#contextMenu').attr("name")+".kml");  // (content, filename) download as a KML file
          }
       });
     }
@@ -228,6 +250,50 @@ document.getElementById('close').onclick = function(){
     $('#planNameError').html('')
     $('#myModal').modal('show');
   });
+
+
+$("#renamePlan").click(function(){
+
+    if($('#planRename').val().trim().length === 0) {
+       $('#planNameErr').html("<span class=\"label label-danger\">Plan name cannot be empty!</span>");
+    }
+    else if($('#planRename').val().length > 0 )
+    {
+      $.ajax({                              //ajax call for validating if planname already exist
+       type:"POST",
+       url:"/DBOperation/",
+       data: {
+              'planName': $('#planRename').val().trim(),   
+              'operation': 'validatePlanName',
+              },
+       success: function(response){
+          if(response.count == 0)
+          {
+                $.ajax({
+               type:"POST",
+               url:"/DBOperation/",
+               data: {
+                      'planName': $('#contextMenu').attr("name"),
+                      'newName' : $('#newName').val(),  
+                      'operation': 'renamePlan',
+                      },
+               success: function(response){
+                  toastr.options.positionClass ="toast-top-full-width";
+                  toastr.success('Rename Successfull!','');
+                  populatePlan(response)
+               }
+              });          
+            $('#myRenameModal').modal('hide')
+            $('#planNameDisplay').text($('#planRename').val());
+          } 
+          else{
+            $('#planNameError').html("<span class=\"label label-danger\">There exists a plan by the same name. </span>");
+          }
+       }
+      });
+    }
+  });
+
 
   $('#planMenu').on('click', '.abcd', function (event) {
    var target = event.target || event.srcElement;

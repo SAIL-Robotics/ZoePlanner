@@ -5,8 +5,12 @@ from django.template import RequestContext
 import datetime
 from django.core.context_processors import csrf
 from django.views.decorators.csrf import csrf_exempt
-import json
+import json, ast
 from django.http import *
+from lxml import etree
+from pykml.parser import Schema
+from pykml.factory import KML_ElementMaker as KML
+from pykml.factory import GX_ElementMaker as GX
 
 database_name = "rover"
 collection_name = "plans"
@@ -63,7 +67,15 @@ def DBOperation(request):
             elif request.POST['operation'] == 'getPlanInfo':
                 plan_name = request.POST['planName']
                 data = get_plan_info(plan_name)
-
+            elif request.POST['operation'] == 'renamePlan':
+                plan_name = request.POST['planName']
+                new_plan_name = request.POST['newName']
+                renamePlan(plan_name, new_plan_name)
+                data = get_plan_detail()
+            elif request.POST['operation'] == 'downloadAsKML':
+                plan_name = request.POST['planName']
+                data = export_kml(plan_name)
+            
         else:
             print 'why you do this!!'
     
@@ -107,6 +119,14 @@ def duplicatePlan(plan_name, new_plan_name, plan_desc):
     markersCursor['planDescription'] = plan_desc
     markersCursor['timeStamp'] = time
     collection.save(markersCursor)
+
+
+def renamePlan(plan_name, new_plan_name):
+    connection = Connection()
+
+    db = connection[database_name]
+    collection = db[collection_name]
+    markersCursor = collection.update({'planName' : plan_name}, {'$set' : {'planName' : new_plan_name}})
 
 def deletePlan(plan_name):
     connection = Connection()
@@ -163,21 +183,31 @@ def jsonData(request):
     planname_array = []
     tot_markers = []
 
+    plan_name = request.POST['planName']
+    new_plan_name = request.POST['newPlanName']
+
     connection = Connection()
+
     db = connection[database_name]
     collection = db[collection_name]
-    planListCursor = collection.find({},{'_id' : 0, 'planName' : 1})
+    markersCursor = collection.find_one({'planName' : plan_name})
+    markersCursor['planName'] = new_plan_name
+    collection.save(markersCursor)
+    # connection = Connection()
+    # db = connection[database_name]
+    # collection = db[collection_name]
+    # planListCursor = collection.find({},{'_id' : 0, 'planName' : 1})
 
-    for record in planListCursor:
-        planname_array.append(record['planName'])
+    # for record in planListCursor:
+    #     planname_array.append(record['planName'])
 
-        markersCursor = collection.find_one({'planName' : record['planName']}, {'_id':0, 'markers':1})
-        tot_markers.append(len(markersCursor['markers']))
+    #     markersCursor = collection.find_one({'planName' : record['planName']}, {'_id':0, 'markers':1})
+    #     tot_markers.append(len(markersCursor['markers']))
 
-    data['planName'] = planname_array
-    data['totalMarkers'] = tot_markers
+    # data['planName'] = planname_array
+    # data['totalMarkers'] = tot_markers
 
-    return HttpResponse(json.dumps(data), content_type = "application/json")
+    return HttpResponse(json.dumps("data"), content_type = "application/json")
 
 #getting all the plan name and count of markers in that plan from MongoDB
 def get_plan_detail():
@@ -201,3 +231,30 @@ def get_plan_detail():
     data['totalMarkers'] = tot_markers
 
     return data
+
+def export_kml(plan_name):
+
+    connection = Connection()
+    db = connection[database_name]
+    collection = db[collection_name]
+    
+    cursor = collection.find_one({'planName' : plan_name},{'_id' : 0})
+    cursor = ast.literal_eval(json.dumps(cursor))   #removing unicode 'u' from the json
+    fld = KML.Folder()
+    for marker in cursor['markers']:
+        #for key,value in marker.iteritems():
+         #   print key,value
+            #print "------- "
+
+        pm1 = KML.Placemark(
+             KML.name("Marker"),
+             KML.description(str(marker).strip('{}')),
+             KML.Point(
+              KML.coordinates('%s,%s' %(marker['lng'],marker['lat']))   
+             )
+           )
+        fld.append(pm1)
+
+    KML_content = etree.tostring(fld, pretty_print=True)
+    print KML_content
+    return KML_content

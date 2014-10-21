@@ -10,12 +10,57 @@ var eee;
 var locked = false;
 var lines = [];
 
+
+function setTextState(state) {
+
+  var taskFieldIds = ["bufValue", 
+  "mmrsExposureValue","mmrsAccumulationValue","mmrsNumberValue","sciencePanValue", "scienceTiltValue","imageStartAzimuthValue",
+  "imageEndAzimuthValue","imageStartElevationValue","imageEndElevationValue","spectraStartAzimuthValue",
+  "spectraEndAzimuthValue","spectraStartElevationValue","spectraEndElevationValue", "spectraAngularValue", "preciseMoveValue",
+  "spectraAngularCamera","spectraNavcamRecord","spectraSmartTarget","preciseMove"];
+
+   if(state == true) {
+    //locked is true
+    
+    $("#saveTaskButton").removeClass("show");
+    $("#saveTaskButton").addClass("hide");
+
+    $("#addDrill").removeClass("inlineshow");
+    $("#addDrill").addClass("hide");
+
+    for(iterator in taskFieldIds) {
+     
+      $("#"+taskFieldIds[iterator]).attr("disabled","");
+    }
+    //$("[name='drillType']").attr("disabled","");
+  }
+  else if(state == false) {
+    //locked is false
+    
+
+    $("#saveTaskButton").removeClass("hide");
+    $("#saveTaskButton").addClass("show");
+
+    $("#addDrill").removeClass("hide");
+    $("#addDrill").addClass("inlineshow");
+
+    for(iterator in taskFieldIds) {
+     
+      $("#"+taskFieldIds[iterator]).removeAttr("disabled");
+    }
+    //$("[name='drillType']").removeAttr("disabled","");
+  }
+
+}
 function initialize() {
-    console.log("#initialize");
+
 
     $("[name='my-checkbox']").on('switchChange.bootstrapSwitch', function(event, state) {
       locked = state;
+      setTextState(state);
     });
+
+    
 
   var mapOptions = {
     zoom: mapZoomConstant,
@@ -36,7 +81,11 @@ function initialize() {
             });*/
            // placeMarker(latitude,longitude);
            setTimeout("placeMarker("+latitude+","+longitude+","+null+")", 600);
-         }    
+         }
+         else
+        {
+          lockToggleButtonBlink();
+        }    
   });//function for map click
 }
 
@@ -61,9 +110,13 @@ function clearTaskTextFields() {
   //also to clear radios drillAndSave, onlyDrill, 
   //also to clear checkboxes drillImage, spectraAngularCamera, spectraNavcamRecord, spectraSmartTarget , preciseMove 
   //also to iterate drillAndSaveValue, onlyDrillValue
-  $("[name='drillType']").removeAttr("checked");
+ 
+  //$("[name='drillType']").removeAttr("checked");
   
-  $("#drillImage").removeAttr("checked");
+  //TODO - iterate through this.
+  //$("#drillSaveImage").removeAttr("checked");
+  //$("#drillSave").removeAttr("checked");
+
   $("#spectraAngularCamera").removeAttr("checked");
   $("#spectraNavcamRecord").removeAttr("checked");
   $("#spectraSmartTarget").removeAttr("checked");
@@ -82,8 +135,9 @@ function clearTaskTextFields() {
 
 
 function fillTaskPane(marker) {
-  //TODO - clear all the text fields
-    clearTaskTextFields();
+  
+    clearTaskTextFields(); //Clears the text fields initially 
+
    for(i=0;i<taskpoints.length;i++)
       {
         if(marker.position.lat()==taskpoints[i].lat&&marker.position.lng()==taskpoints[i].lng)
@@ -95,29 +149,48 @@ function fillTaskPane(marker) {
 
 function fillValue(taskDetails){
 
-        console.log("Fill value");
+        //console.log("Fill value");
         for(i in taskDetails){
 
             var key = i;
             var value = taskDetails[i];
 
-            console.log("**key is "+key+" value is "+value);
+            //console.log("**key is "+key+" value is "+value);
+
             if(key && key!= undefined && key!= null) {
-              var documentNode = document.getElementById(key);
-              if(documentNode && documentNode!= undefined && documentNode!= null) {
-                document.getElementById(key).value = value;             
+
+              var documentNode = $("#"+key);
+              var nodeType = $("#"+key).attr("type");
+              console.log("The nodee type is "+nodeType);
+              if(nodeType == "text" || nodeType == "hidden") {
+                if(documentNode && documentNode!= undefined && documentNode!= null) {
+                  //document.getElementById(key).value = value;             
+                  $("#"+key).val(value);
+                }  
               }
+              else if(nodeType == "checkbox") {
+                if(documentNode && documentNode!= undefined && documentNode!= null) {
+                  console.log("Setting to true")
+                  if(value == "Yes") {
+                    $("#"+key).prop("checked",true)  
+                  }
+                  
+                } 
+              }
+              
             }
         }     
 }
 function fillTaskDetails(latitudeValue,longitudeValue) {
- //also to clear radios drillAndSave, onlyDrill, 
+
+  //also to clear radios drillAndSave, onlyDrill, 
   //also to clear checkboxes drillImage, spectraAngularCamera, spectraNavcamRecord, spectraSmartTarget 
   //also to iterate drillAndSaveValue, onlyDrillValue
 
   console.log("Fill task Details");
 
-  var taskCheckBoxIds = ["drillImage", "spectraAngularCamera", "spectraNavcamRecord", "spectraSmartTarget" , "preciseMove" ];
+  //TODO - iterate through the drill checkboxes
+  var taskCheckBoxIds = ["spectraAngularCamera", "spectraNavcamRecord", "spectraSmartTarget" , "preciseMove" ];
 
   var taskTextFieldIds = ["bufValue", 
   "mmrsExposureValue","mmrsAccumulationValue","mmrsNumberValue","sciencePanValue", "scienceTiltValue","imageStartAzimuthValue",
@@ -130,16 +203,47 @@ function fillTaskDetails(latitudeValue,longitudeValue) {
         if(taskpoints[taskDetailsIterator].lat == latitudeValue && taskpoints[taskDetailsIterator].lng == longitudeValue) {
           for(iterator in taskTextFieldIds) {
             var taskValue = document.getElementById(taskTextFieldIds[iterator]).value;
+
             if(taskValue!="" && taskValue!=null && taskValue!= undefined) {
-              
+              //For text  fields  
               var taskDetails = taskpoints[taskDetailsIterator];
               var keyValue = taskTextFieldIds[iterator];
-              console.log("taaaa"+taskDetails);
-              console.log("taa2 "+keyValue);
-              console.log("key "+taskDetails[keyValue]);
-              console.log("setting "+taskpoints[taskDetailsIterator].lat+" key "+taskDetails[keyValue]+" value "+taskValue);
+              //console.log("taaaa"+taskDetails);
+              //console.log("taa2 "+keyValue);
+              //console.log("key "+taskDetails[keyValue]);
+              //console.log("setting "+taskpoints[taskDetailsIterator].lat+" key "+taskDetails[keyValue]+" value "+taskValue);
               taskDetails[keyValue] = taskValue;    
             }
+            else if(taskValue == "" || taskValue == null) {
+              //Check if the key value for text field already exists,
+              //IF so delete it
+               var taskDetails = taskpoints[taskDetailsIterator];
+               var keyValue = taskTextFieldIds[iterator];
+               if(taskDetails[keyValue] && taskDetails[keyValue] != undefined) {
+                delete taskDetails[keyValue];
+               }
+            }
+          }
+          for(iterator in taskCheckBoxIds) {
+            //For checkboxes
+            var taskSelection = $("#"+taskCheckBoxIds[iterator]).is(":checked");
+            if(taskSelection) {
+              var taskDetails = taskpoints[taskDetailsIterator];
+              var keyValue = taskCheckBoxIds[iterator];
+              console.log("Selection ** "+taskDetails[keyValue]);
+              taskDetails[keyValue] = "Yes";  
+            }
+            else {
+              //Remove if it already exists in the json
+             var taskDetails = taskpoints[taskDetailsIterator];
+             var keyValue = taskCheckBoxIds[iterator];
+             console.log("Selection ** "+taskDetails[keyValue]);
+             if(taskDetails[keyValue] == "Yes") {
+                delete taskDetails[keyValue];
+
+             }
+            }
+
           }
         }
       }
@@ -180,16 +284,21 @@ function placeMarker(latitude,longitude,backEndJson) {
   });
 
    google.maps.event.addListener(marker,'click',function(event){
-    if(locked == false)
-      {
-          $('.row-task-offcanvas').toggleClass('taskdisappear');
+    //if(locked == false)
+        //TODO - check if this is right
+          if($('.row-task-offcanvas').hasClass("taskappear")) {
+            console.log("it has appear");
+            $('.row-task-offcanvas').removeClass("taskappear");
+            $('.row-task-offcanvas').addClass("taskdisappear");
+          }
+          else if($('.row-task-offcanvas').hasClass("taskdisappear")) {
+            console.log("it has disappear");
+            $('.row-task-offcanvas').removeClass("taskdisappear");
+            $('.row-task-offcanvas').addClass("taskappear");
+          }
           $('.task-group-item').attr('tabindex', '');
 
           fillTaskPane(marker);
-
-
-          //Task point population
-      }
   });
 
     google.maps.event.addListener(marker, 'rightclick', function(event) {
@@ -249,6 +358,10 @@ function placeMarker(latitude,longitude,backEndJson) {
               }
             });
       }
+      else
+      {
+        lockToggleButtonBlink();
+      }
     });//function for right click
 
     google.maps.event.addListener(marker, 'dragstart', function(event) {
@@ -262,6 +375,10 @@ function placeMarker(latitude,longitude,backEndJson) {
               }
             }//for    
       }
+      else
+      {
+        lockToggleButtonBlink();
+      }
 
     });
     google.maps.event.addListener(marker, 'drag', function(event) {
@@ -270,6 +387,10 @@ function placeMarker(latitude,longitude,backEndJson) {
           marker.title = "Lat : "+marker.position.lat()+" Long : "+marker.position.lng();
           taskpoints[markerchanged]=(new google.maps.LatLng(marker.position.lat(),marker.position.lng()));
           drawline();
+      }
+      else
+      {
+        lockToggleButtonBlink();
       }
 
     });
@@ -280,6 +401,10 @@ function placeMarker(latitude,longitude,backEndJson) {
          taskpoints[markerchanged] = (new google.maps.LatLng(marker.position.lat(),marker.position.lng()));
          drawline(); 
       }                  
+      else
+      {
+        lockToggleButtonBlink();
+      }
     });
 
   }
@@ -326,6 +451,10 @@ function drawMarker() {
     var longitudeValue = parseFloat(document.getElementById('lngValue').value);
     placeMarker(latitudeValue,longitudeValue,null);
   }
+  else
+  {
+    lockToggleButtonBlink();
+  }
  } //draw marker    
 
   var eee;
@@ -333,16 +462,16 @@ function drawMarker() {
 function viewMarkers(markerJSON, planName){
   var i =0;
   //locked = true;
-  //location.reload();
+  //location.reload();  
   clearMap();
+
 
   for(i=0;i<markerJSON.length;i++){
     placeMarker(markerJSON[i].lat,markerJSON[i].lng,markerJSON);
     eee = markerJSON;
     fillValue(markerJSON[i]);
   }
-
-  locked = true;  
+      locked = true;
   $("[name='my-checkbox']").bootstrapSwitch('state', true); //applying bootstrapswitch CSS to checkbox
   $('#planNameDisplay').text(planName);
 }//function to call placemarker for viewing plan
@@ -377,9 +506,38 @@ function clearMap()
             });*/
            // placeMarker(latitude,longitude);
            setTimeout("placeMarker("+latitude+","+longitude+","+null+")", 600);
+         }
+         else
+         {
+            lockToggleButtonBlink();
          }    
   });
-    console.log("clear map )&&&&&&&&&&&&&&&&&&&&&&&77")
+    console.log("clear map")
+}
+
+function mapPanToAtacama()
+{
+  var ltLg = new google.maps.LatLng(-23.3695439,-69.8597406);
+  map.panTo(ltLg);
+  map.setZoom(mapZoomConstant);
+}
+
+function mapPanToPittsburgh()
+{
+  var ltLg = new google.maps.LatLng(40.4433,-79.9436);
+  map.panTo(ltLg);
+  map.setZoom(mapZoomConstant);
+}
+
+function lockToggleButtonBlink()
+{
+  flag = 2;
+  while(flag != 0)
+  {
+    $('.bootstrap-switch-id-my-checkbox').fadeOut();
+    $('.bootstrap-switch-id-my-checkbox').fadeIn();
+    flag--;
+  } 
 }
 
  google.maps.event.addDomListener(window, 'load', initialize);

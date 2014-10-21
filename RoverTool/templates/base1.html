@@ -24,6 +24,7 @@
     <script src="/static/js/bootstrap-switch.js"></script>
     <script src="/static/js/toastr.js"></script>
     <script src="/static/js/taskControl.js"></script>
+    <script src="/static/js/FileSaver.js"></script>
     
   </head>
 
@@ -48,6 +49,9 @@
         <li><a href="#contact">Help</a></li>
       </ul>
       <span class="navbar-form navbar-right">
+          <button class="btn btn-primary btn-large active" onclick="mapPanToAtacama();"> Goto Atacama</button>
+          <button class="btn btn-primary btn-large active" onclick="mapPanToPittsburgh();"> Goto Pittsburgh</button>
+          &nbsp;&nbsp;&nbsp;&nbsp;
           <input type="text" class="form-control" placeholder="Latitude..." id = "latValue">
           <input type="text" class="form-control" placeholder="Longitude..." id = "lngValue">
           <button class="btn btn-large active" onclick="drawMarker();"> Locate</button>
@@ -137,12 +141,37 @@
   </div>
 </div>
 
+
+<div class="modal fade" id="myRenameModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myRenameModalLabel">Rename Plan</h4>
+      </div>
+      <div class="modal-body">
+       <input type="text" class="form-control" placeholder="Plan name..." id = "planRename">
+       <p id="planNameErr" class="err"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id = "renamePlan">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
         <!-- //////////////////////////////////////////////////Right Click start////////////////////////////////////////////// -->
 <div id="contextMenu" class="dropdown clearfix">
     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
       <li><a tabindex="-1" href="#">Duplicate Plan</a></li>
+      <li><a tabindex="-1" href="#">Rename Plan</a></li>
       <li><a tabindex="-1" href="#">Delete Plan</a></li>
       <li><a tabindex="-1" href="#">Plan Details</a></li>
+      <li><a tabindex="-1" href="#">Download as KML</a></li>
 <!--      <li><a tabindex="-1" href="#">Something else here</a></li>
       <li class="divider"></li>
       <li><a tabindex="-1" href="#">Separated link</a></li> -->

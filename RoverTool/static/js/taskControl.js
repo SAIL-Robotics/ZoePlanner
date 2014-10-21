@@ -1,74 +1,74 @@
 var drillIterator = 1;
+var drillCount = 1;
 
 
 function addDrillDiv() {
 	console.log("Calling addDrill");
-	var drillType = $("[name='drillType']:checked").val();
-	if(drillType == 'drillAndSave') {
-		addDrillAndSaveDiv(drillIterator);
-		drillIterator++;
-	}
-	else if(drillType == 'onlyDrill') {
-		 addOnlyDrillDiv(drillIterator);
-		 drillIterator++;
-	}
-}
+	// var drillType = $("[name='drillType']:checked").val();
+	// if(drillType == 'drillAndSave') {
+	// 	addDrillAndSaveDiv(drillIterator);
+	// 	drillIterator++;
+	// }
+	// else if(drillType == 'onlyDrill') {
+	// 	 addOnlyDrillDiv(drillIterator);
+	// 	 drillIterator++;
+	// }
 
-function addDrillAndSaveDiv(drillIterator) {
+
 	jQuery('<div/>', {
-    id: 'drillAndSaveOperation'+drillIterator,
-    class:'drillAndSaveOperation',
+    id: 'newDrillDiv'+drillIterator,
+    class:'newDrillDiv',
 	}).appendTo('#drillDiv');
-	
-	jQuery('<input/>', {
-	type:'text',
-    id: 'drillAndSaveValue'+drillIterator,
-    class:'form-control taskText',
-    placeholder:'In Depth(cm)',
-	}).appendTo('#drillAndSaveOperation'+drillIterator);
-	
-	$('#drillAndSaveOperation'+drillIterator).append('&nbsp;');
 
 	jQuery('<input/>', {
-	type:'button',
-	value:'Save',
-    id: 'drillAndSaveButton'+drillIterator,
-    class:'btn btn-success'
-	}).appendTo('#drillAndSaveOperation'+drillIterator);
+	type:'checkbox',
+    id: 'drillSaveImage'+drillIterator,
+    value: 'drillSaveImage',
+	}).appendTo('#newDrillDiv'+drillIterator);
 
+	$("#newDrillDiv"+drillIterator).append("<span class='drillClose' id='drillClose"+drillIterator+"''>X</span>");
 
-	$('#drillAndSaveButton'+drillIterator).click(function(){
-		saveDrillValueToJson(this);	
+	$("#drillClose"+drillIterator).click(function( event ){
+			//To remove the entire parent element
+			var removeDiv = event.target;
+			var removeParentDiv = removeDiv.parentElement;
+			removeParentDiv.remove();
+			drillCount--;
+			
 	});
 
-}
+	jQuery('<label/>',{
+	text:'Save and take picture'
+	}).appendTo('#newDrillDiv'+drillIterator);
 
-function addOnlyDrillDiv(drillIterator) {
-	jQuery('<div/>', {
-    id: 'onlyDrillOperation'+drillIterator,
-    class:'onlyDrillOperation',
-	}).appendTo('#drillDiv');
-	
+	jQuery('<br/>',{}).appendTo("#newDrillDiv"+drillIterator);
+
+	jQuery('<input/>', {
+	type:'checkbox',
+    id: 'drillSave'+drillIterator,
+    value: 'drillSave',
+	}).appendTo('#newDrillDiv'+drillIterator);
+
+	jQuery('<label/>',{
+	text:'Save sample'
+	}).appendTo('#newDrillDiv'+drillIterator);
+
+	jQuery('<br/>',{}).appendTo("#newDrillDiv"+drillIterator);
+
 	jQuery('<input/>', {
 	type:'text',
-    id: 'onlyDrillValue'+drillIterator,
+    id: 'drillValue'+drillIterator,
     class:'form-control taskText',
     placeholder:'In Depth(cm)',
-	}).appendTo('#onlyDrillOperation'+drillIterator);
-	
-	$('#onlyDrillOperation'+drillIterator).append('&nbsp;');
+	}).appendTo('#newDrillDiv'+drillIterator);
 
-	jQuery('<input/>', {
-	type:'button',
-	value:'OK',
-    id: 'onlyDrillButton'+drillIterator,
-    class:'btn btn-success'
-	}).appendTo('#onlyDrillOperation'+drillIterator);
+	jQuery('<br/>',{}).appendTo("#drillDiv");
 
-	$('#onlyDrillButton'+drillIterator).click(function(){
-		saveDrillValueToJson(this);
-	});
+	drillIterator++;
+	drillCount++;
+
 }
+
 
 function saveDrillValueToJson(obj) {
 	console.log("the id for this is"+$(obj).attr('id'));

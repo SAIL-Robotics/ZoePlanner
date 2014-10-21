@@ -19,7 +19,23 @@
         float:right!important;
       }
       .taskdisappear {
-        right:-400px;
+        /*right:-400px;*/
+        display:none;
+      }
+      .taskappear{
+        display:block;
+      }
+      .hide{
+        display:none;
+      }
+      .show {
+        display:block;
+      }
+      .inlineshow{
+        display:inline;
+      }
+      .newDrillDiv {
+        border: solid 1px;
       }
       .taskText {
         width:150px!important;
@@ -37,4 +53,11 @@
       }
      .input-group-addon{
         text-align: left!important;
+      }
+      .drillClose {
+        float: right;
+        display: inline-block;
+        padding: 2px 5px;
+        background: #428bca;
+        color: #fff;
       }
