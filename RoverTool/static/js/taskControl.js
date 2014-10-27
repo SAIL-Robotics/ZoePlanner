@@ -139,7 +139,7 @@ function makeDrillDivs(drillIterator) {
 	});
 
 	jQuery('<label/>',{
-	text:'Save and take picture'
+	text:'Take picture'
 	}).appendTo('#newDrillDiv'+drillIterator);
 
 	jQuery('<br/>',{}).appendTo("#newDrillDiv"+drillIterator);

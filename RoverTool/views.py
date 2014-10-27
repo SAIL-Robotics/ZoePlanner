@@ -94,10 +94,8 @@ def saveToDB(plan_name, plan_name_update, plan_desc, markers):
 
     db = connection[database_name]
     collection = db[collection_name]
-    print 'asdsadasdsadasdsad999999999999999999999'
-    print validatePlanName(plan_name)
     
-    if validatePlanName(plan_name)['count'] == 0:
+    if validatePlanName(plan_name_update)['count'] == 0:
         plan = {"planName" : plan_name, "planDescription" : plan_desc, "timeStamp" : time, "markers" : markers}
         collection.save(plan)
     else:
