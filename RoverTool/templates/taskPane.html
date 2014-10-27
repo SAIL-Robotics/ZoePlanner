@@ -2,6 +2,8 @@
   
   <input type="hidden" id="lat" value="" />
   <input type="hidden" id="lng" value="" />
+  <input type="hidden" id="drillCount" value="" />
+  <input type="hidden" id="drillIterator" value="" />
 
   <a href="#" class="list-group-item task-group-item active">Tasks <span id='close'>x</span> </a>
   
@@ -11,7 +13,7 @@
         <!-- <input type="checkbox" id="drillSaveImage" value="drillAndSave"/>Save and Take Picture
         <input type="checkbox" id="drillSave" value="onlyDrill"/>Save Sample -->
 
-        <input type="button" id="addDrill" value="Add Drill" class="btn btn-primary" onclick="addDrillDiv()"/>
+        <input type="button" id="addDrill" value="Add Drill" class="btn btn-primary" onclick="addDrillDiv($('#drillIterator').val(),$('#drillCount').val())"/>
         <br/>
         <!-- <input type="checkbox" class="" id="drillImage" />Drill Image -->
         <br/><br/>

@@ -1,3 +1,4 @@
+var planList;
 $(document).ready(function () {
 
 $.ajax({
@@ -7,7 +8,7 @@ $.ajax({
                 'planName': 'lol',  //plan name
                 },
          success: function(response){
-               populatePlan(response)
+               populatePlan(response);
          }
 });
 
@@ -25,23 +26,23 @@ $('body').on('click', function (e) {
 });
 
 document.getElementById('close').onclick = function(){
-        $('.row-task-offcanvas').toggleClass('taskdisappear');
-          $('.task-group-item').attr('tabindex', '');
-
+        $('.row-task-offcanvas').removeClass("taskappear");
+            $('.row-task-offcanvas').addClass("taskdisappear");
         return false;
-  };
+};
 
 
 /****************************************************Right Click menu Start********************************************************/
   var $contextMenu = $("#contextMenu");
   
-  $("body").on("contextmenu", ".list-group-item", function(e) {
+  $("body").on("contextmenu", ".right-click", function(e) {
     $contextMenu.css({
       display: "block",
       left: e.pageX,
       top: e.pageY
     });
     $('#contextMenu').attr("name",e.currentTarget.firstChild.data);
+    
     return false;
   });
   
@@ -135,7 +136,7 @@ document.getElementById('close').onclick = function(){
 
 // Lock/unlock Toggle button
   $("[name='my-checkbox']").bootstrapSwitch();  //applying bootstrapswitch CSS to checkbox
-  $("#save-button").hide();     // hiding save button at start
+ // $("#save-button").hide();     // hiding save button at start
   $('.row-task-offcanvas').toggleClass('taskdisappear');
   $('[data-toggle=offcanvas]').click(function () {
     if ($('.sidebar-offcanvas').css('background-color') == 'rgb(255, 255, 255)') {
@@ -158,12 +159,14 @@ document.getElementById('close').onclick = function(){
     }
     else
     {
+      console.log($('#planName').val().trim())
       $.ajax({
          type:"POST",
          url:"/DBOperation/",
          data: {
                 'markers': JSON.stringify(taskpoints),    //constains lat, lon
                 'planName': $('#planName').val().trim(),  //plan name
+                'planNameUpdate': $('#planNameDisplay').text().trim(),
                 'planDesc': $('#planDesc').val().trim(),
                 'operation': 'save',
                 },
@@ -171,8 +174,8 @@ document.getElementById('close').onclick = function(){
              populatePlan(response)
          }
       });
-      $("#save-button").hide();
-      $('#planNameDisplay').text("");
+     // $("#save-button").hide();
+      //$('#planNameDisplay').text("");
       $('.row-plan-offcanvas').toggleClass('active');
       $('.row-task-offcanvas').toggleClass('taskactive');
       toastr.options.positionClass ="toast-bottom-right";
@@ -223,7 +226,7 @@ document.getElementById('close').onclick = function(){
               }
               else    //create plan actions
               {
-                $("#save-button").show();
+               // $("#save-button").show();
 
                 $('.plan-group-item').attr('tabindex', '-1');
                 $('.row-plan-offcanvas').toggleClass('active');
@@ -274,7 +277,7 @@ $("#renamePlan").click(function(){
                url:"/DBOperation/",
                data: {
                       'planName': $('#contextMenu').attr("name"),
-                      'newName' : $('#newName').val(),  
+                      'newName' : $('#planRename').val(),  
                       'operation': 'renamePlan',
                       },
                success: function(response){
@@ -294,6 +297,18 @@ $("#renamePlan").click(function(){
     }
   });
 
+  $("#planReset").click(function(){
+      $.ajax({
+         type:"POST",
+         url:"/DBOperation/",
+         data: {
+                'operation': 'getPlanList',
+                },
+         success: function(response){
+             populatePlan(response)
+         }
+      });
+  });
 
   $('#planMenu').on('click', '.abcd', function (event) {
    var target = event.target || event.srcElement;
@@ -312,16 +327,28 @@ $("#renamePlan").click(function(){
        }
     });
 
-});
+  });
+  
+  $( "#searchPlan" ).keyup(function() {
+    input = $("#searchPlan").val();
+    $("#planMenu").empty()
+    for(i = 0; i < planList.planName.length; i++)
+    {
+      if(planList.planName[i].indexOf(input.trim()) != -1)
+      {
+        $("#planMenu").append('<a href="#" class="list-group-item right-click abcd '+ planList.planName[i] +'">' + planList.planName[i] + '<span class="badge">'+ planList.totalMarkers[i] +'</span> </a>');  
+      }
+    }
+  });
 
 });
 
 function populatePlan(response)
 {
   $("#planMenu").empty()
-
+  planList = response;
   for(i = 0; i < response.planName.length; i++)
   {
-    $("#planMenu").append('<a href="#" class="list-group-item abcd '+ response.planName[i] +'">' + response.planName[i] + '<span class="badge">'+ response.totalMarkers[i] +'</span> </a>');  
+    $("#planMenu").append('<a href="#" class="list-group-item right-click abcd '+ response.planName[i] +'">' + response.planName[i] + '<span class="badge">'+ response.totalMarkers[i] +'</span> </a>');  
   }
 }

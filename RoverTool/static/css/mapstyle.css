@@ -34,8 +34,19 @@
       .inlineshow{
         display:inline;
       }
+      .inlineblockshow{
+        display:inline-block;
+      }
+      .visible {
+        visibility: visible;
+      }
+      .vishide {
+        visibility: hidden;
+      }
       .newDrillDiv {
         border: solid 1px;
+        padding: 7px 5px 10px 11px;
+        margin-bottom: 10px;
       }
       .taskText {
         width:150px!important;

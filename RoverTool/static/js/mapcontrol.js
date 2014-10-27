@@ -19,6 +19,10 @@ function setTextState(state) {
   "spectraEndAzimuthValue","spectraStartElevationValue","spectraEndElevationValue", "spectraAngularValue", "preciseMoveValue",
   "spectraAngularCamera","spectraNavcamRecord","spectraSmartTarget","preciseMove"];
 
+
+  var drillIterator = $("#drillIterator").val(); //drillIterator value
+  drillIterator = parseInt(drillIterator);
+
    if(state == true) {
     //locked is true
     
@@ -33,6 +37,15 @@ function setTextState(state) {
       $("#"+taskFieldIds[iterator]).attr("disabled","");
     }
     //$("[name='drillType']").attr("disabled","");
+    for(iterator=1;iterator<=drillIterator;iterator++) {
+     $("#drillValue"+iterator).attr("disabled",""); 
+     $("#drillSave"+iterator).attr("disabled",""); 
+     $("#drillSaveImage"+iterator).attr("disabled",""); 
+
+     $("#drillClose"+iterator).removeClass("visibile");
+     $("#drillClose"+iterator).addClass("vishide");
+    
+    }
   }
   else if(state == false) {
     //locked is false
@@ -49,6 +62,14 @@ function setTextState(state) {
       $("#"+taskFieldIds[iterator]).removeAttr("disabled");
     }
     //$("[name='drillType']").removeAttr("disabled","");
+   for(iterator=1;iterator<=drillIterator;iterator++) {
+     $("#drillValue"+iterator).removeAttr("disabled"); 
+     $("#drillSave"+iterator).removeAttr("disabled"); 
+     $("#drillSaveImage"+iterator).removeAttr("disabled"); 
+
+     $("#drillClose"+iterator).removeClass("vishide");
+     $("#drillClose"+iterator).addClass("visible");
+     }
   }
 
 }
@@ -100,6 +121,8 @@ function saveTaskDetails () {
         console.log(taskpoints[i].lat+" && "+latitudeValue);
         if(latitudeValue==taskpoints[i].lat&&longitudeValue==taskpoints[i].lng)
           {
+             $('.row-task-offcanvas').removeClass("taskappear");
+            $('.row-task-offcanvas').addClass("taskdisappear");
             console.log("Yes they are the same");
             fillTaskDetails(latitudeValue,longitudeValue); //To fill the task points based on the input field values
           }
@@ -145,6 +168,7 @@ function fillTaskPane(marker) {
             fillValue(taskpoints[i]); //To fill text fields if already exists
           }
       }  
+    initializeDrill(); //For initializing the drill fields
 }
 
 function fillValue(taskDetails){
@@ -200,7 +224,53 @@ function fillTaskDetails(latitudeValue,longitudeValue) {
   for(taskDetailsIterator in taskpoints) {
         console.log("lat "+taskpoints[taskDetailsIterator].lat+ " inp "+latitudeValue);
         console.log("lng "+taskpoints[taskDetailsIterator].lng+ " inp "+longitudeValue);
+        
         if(taskpoints[taskDetailsIterator].lat == latitudeValue && taskpoints[taskDetailsIterator].lng == longitudeValue) {
+        
+          console.log("Tryign to save task pints");
+
+          var taskDetails = taskpoints[taskDetailsIterator];
+          var drillCount = $("#drillCount").val();
+          var drillIterator = $("#drillIterator").val();
+
+          drillCount = parseInt(drillCount);
+          drillIterator = parseInt(drillIterator);
+
+          for(drillCountIterator=1;drillCountIterator<=drillIterator;drillCountIterator++) {
+            var drillSaveImageNode = "drillSaveImage"+drillCountIterator;
+            var drillSaveNode = "drillSave"+drillCountIterator;
+            var drillValueNode = "drillValue"+drillCountIterator;
+
+            var drillValue = $("#"+drillValueNode).val();
+            console.log("The drill vaue is "+drillValue);
+            if(drillValue!="" && drillValue!=null && drillValue!=undefined ) {
+              
+              var drillSaveImageSelection = $("#"+drillSaveImageNode).is(":checked");
+              var drillSaveSelection = $("#"+drillSaveNode).is(":checked");
+
+              
+              taskDetails[drillValueNode] = drillValue;
+
+              if(drillSaveSelection) {
+                taskDetails[drillSaveNode] = "Yes";  
+              }
+              else {
+                //Remove if it already exists and user has opted no
+                delete taskDetails[drillSaveNode];
+              }
+              if(drillSaveImageSelection) {
+                taskDetails[drillSaveImageNode] = "Yes";
+              }
+              else {
+                //Remove if it already exists and user has opted no
+                delete taskDetails[drillSaveImageNode];
+              }
+
+            }
+          }
+          taskDetails["drillCount"] = drillCount;
+          taskDetails["drillIterator"] = drillIterator;
+
           for(iterator in taskTextFieldIds) {
             var taskValue = document.getElementById(taskTextFieldIds[iterator]).value;
 
@@ -337,6 +407,7 @@ function placeMarker(latitude,longitude,backEndJson) {
                     marker.setMap(null);
                     // console.log(taskpoints);
                     var i=0;
+                    console.log("inside delete");
                     for(i=0;i<taskpoints.length;i++)
                       {
                         if(marker.position.lat()==taskpoints[i].lat&&marker.position.lng()==taskpoints[i].lng)
@@ -345,8 +416,10 @@ function placeMarker(latitude,longitude,backEndJson) {
                           for(j=i;j<taskpoints.length;j++)
                           {
                             taskpoints[j]=taskpoints[j+1];
+                            console.log("taskpoints rearranged");
                           }
                           taskpoints.pop();
+                          console.log(taskpoints);
                           drawline();
 
                           toastr.options.positionClass ="toast-bottom-right";
@@ -371,9 +444,15 @@ function placeMarker(latitude,longitude,backEndJson) {
             {
               if(marker.position.lat()==taskpoints[i].lat&&marker.position.lng()==taskpoints[i].lng)
               {
-                markerchanged=i;
+                var taskDetails1 = {};
+                  taskDetails1.lat = marker.position.lat();
+                  taskDetails1.lng = marker.position.lng();
+                  //taskpoints.push(taskDetails);
+
+          taskpoints[markerchanged]=(taskDetails1);    
               }
-            }//for    
+              }//for    
+
       }
       else
       {
@@ -385,7 +464,12 @@ function placeMarker(latitude,longitude,backEndJson) {
       if(locked == false)
       {
           marker.title = "Lat : "+marker.position.lat()+" Long : "+marker.position.lng();
-          taskpoints[markerchanged]=(new google.maps.LatLng(marker.position.lat(),marker.position.lng()));
+          var taskDetails1 = {};
+                  taskDetails1.lat = marker.position.lat();
+                  taskDetails1.lng = marker.position.lng();
+                  //taskpoints.push(taskDetails);
+
+          taskpoints[markerchanged]=taskDetails1;
           drawline();
       }
       else
@@ -398,8 +482,15 @@ function placeMarker(latitude,longitude,backEndJson) {
       if(locked == false)
       {
          marker.title = "Lat : "+marker.position.lat()+" Long : "+marker.position.lng();
-         taskpoints[markerchanged] = (new google.maps.LatLng(marker.position.lat(),marker.position.lng()));
+         //taskpoints[markerchanged] = (new google.maps.LatLng(marker.position.lat(),marker.position.lng()));
+         var taskDetails1 = {};
+                  taskDetails1.lat = marker.position.lat();
+                  taskDetails1.lng = marker.position.lng();
+                  //taskpoints.push(taskDetails);
+
+          taskpoints[markerchanged]=taskDetails1;
          drawline(); 
+         console.log(taskpoints);
       }                  
       else
       {

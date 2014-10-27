@@ -7,10 +7,11 @@ from django.core.context_processors import csrf
 from django.views.decorators.csrf import csrf_exempt
 import json, ast
 from django.http import *
-from lxml import etree
-from pykml.parser import Schema
-from pykml.factory import KML_ElementMaker as KML
-from pykml.factory import GX_ElementMaker as GX
+#from lxml import etree
+#from pykml.parser import Schema
+#from pykml.factory import KML_ElementMaker as KML
+#from pykml.factory import GX_ElementMaker as GX
+import simplekml
 
 database_name = "rover"
 collection_name = "plans"
@@ -44,8 +45,9 @@ def DBOperation(request):
             if request.POST['operation'] == 'save':
                 plan_name = request.POST['planName']
                 plan_desc = request.POST['planDesc']
+                plan_name_update = request.POST['planNameUpdate']
                 markers = json.loads(request.POST.get('markers'))
-                saveToDB(plan_name, plan_desc, markers)
+                saveToDB(plan_name, plan_name_update, plan_desc, markers)
                 data = get_plan_detail()                                    #update the let pane. getting plan names from 
             elif request.POST['operation'] == 'getMarkerInfo':
                 plan_name = request.POST['planName']
@@ -75,6 +77,8 @@ def DBOperation(request):
             elif request.POST['operation'] == 'downloadAsKML':
                 plan_name = request.POST['planName']
                 data = export_kml(plan_name)
+            elif request.POST['operation'] == 'getPlanList':
+                data = get_plan_detail()
             
         else:
             print 'why you do this!!'
@@ -82,7 +86,7 @@ def DBOperation(request):
     return HttpResponse(json.dumps(data), content_type = "application/json")
 
 
-def saveToDB(plan_name, plan_desc, markers):    
+def saveToDB(plan_name, plan_name_update, plan_desc, markers):    
     connection = Connection()
 
     now = datetime.datetime.now()
@@ -90,9 +94,29 @@ def saveToDB(plan_name, plan_desc, markers):
 
     db = connection[database_name]
     collection = db[collection_name]
-    plan = {"planName" : plan_name, "planDescription" : plan_desc, "timeStamp" : time, "markers" : markers}
+    print 'asdsadasdsadasdsad999999999999999999999'
+    print validatePlanName(plan_name)
+    
+    if validatePlanName(plan_name)['count'] == 0:
+        plan = {"planName" : plan_name, "planDescription" : plan_desc, "timeStamp" : time, "markers" : markers}
+        collection.save(plan)
+    else:
+        print "update"
+        update_plan(plan_name_update, plan_desc, markers)
 
-    collection.save(plan)
+   
+
+def update_plan(plan_name, plan_desc, markers):
+    connection = Connection()
+
+    #now = datetime.datetime.now()
+    #time = now.strftime("%Y-%m-%d %H:%M:%S")
+    print "in update"
+    db = connection[database_name]
+    collection = db[collection_name]
+    print plan_name
+    print markers
+    markersCursor = collection.update({'planName' : plan_name}, {'$set' : {'markers' : markers}})
 
 #getting all the markers information from MongoDB
 def getMarker(plan_name):    
@@ -238,23 +262,29 @@ def export_kml(plan_name):
     db = connection[database_name]
     collection = db[collection_name]
     
+    s_kml = simplekml.Kml()
     cursor = collection.find_one({'planName' : plan_name},{'_id' : 0})
     cursor = ast.literal_eval(json.dumps(cursor))   #removing unicode 'u' from the json
-    fld = KML.Folder()
+    #fld = KML.Folder()
     for marker in cursor['markers']:
         #for key,value in marker.iteritems():
          #   print key,value
             #print "------- "
+        s_kml.newpoint(name="Marker", description=str(marker).strip('{}'),
+                   coords=[(float(marker['lng']),float(marker['lat']),0)])
+        print marker['lng'],marker['lat']
+#coords=[]
+        # pm1 = KML.Placemark(
+        #      KML.name("Marker"),
+        #      KML.description(str(marker).strip('{}')),
+        #      KML.Point(
+        #       KML.coordinates('%s,%s' %(marker['lng'],marker['lat']))   
+        #      )
+        #    )
+        # fld.append(pm1)
 
-        pm1 = KML.Placemark(
-             KML.name("Marker"),
-             KML.description(str(marker).strip('{}')),
-             KML.Point(
-              KML.coordinates('%s,%s' %(marker['lng'],marker['lat']))   
-             )
-           )
-        fld.append(pm1)
-
-    KML_content = etree.tostring(fld, pretty_print=True)
-    print KML_content
-    return KML_content
+    #KML_content = etree.tostring(fld, pretty_print=True)
+    #print s_kml.kml()
+    #print KML_content
+    #return KML_content
+    return s_kml.kml()
