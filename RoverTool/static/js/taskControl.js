@@ -1,7 +1,7 @@
+//******************************************************************************************************
+//removeFromTaskDetails - to remove the drill div from the task pane
 function removeFromTaskDetails(removedId) {
-
 	for(taskDetailsIterator in taskpoints) {
-
 	  	var latitudeValue = document.getElementById("lat").value;
 	  	var longitudeValue = document.getElementById("lng").value;
 	  	var drillSplit = removedId.split("DrillDiv"); 
@@ -20,66 +20,53 @@ function removeFromTaskDetails(removedId) {
 			} //To delete the three keys from the json if they exist
 		}
 	}
+}//removeFromTaskDetails
 
-}
+//******************************************************************************************************
+//initializeDrill - to initialize for creating new drill tasks in a new task pane that is created/opened
 function initializeDrill() {
-
-	
 	removeExistingDrill();
-
 	var drillIterator = 1;
 	var drillCount = 1;
 	var taskDetails = {};
 
 	for(taskDetailsIterator in taskpoints) {
-
 	  	var latitudeValue = document.getElementById("lat").value;
-	  	var longitudeValue = document.getElementById("lng").value;
-
-	  	
+	  	var longitudeValue = document.getElementById("lng").value;	
 
 		if(taskpoints[taskDetailsIterator].lat == latitudeValue && taskpoints[taskDetailsIterator].lng == longitudeValue) {
-		
 			taskDetails = taskpoints[taskDetailsIterator];
 			if(taskDetails["drillCount"]) {
 				drillCount = taskDetails["drillCount"];	
 			}
 			if(taskDetails["drillIterator"]) {
 				drillIterator = taskDetails["drillIterator"];	
-			}
-			
+			}			
 		}
 	}
-
-
 	$("#drillIterator").val(drillIterator);
 	$("#drillCount").val(drillCount);
 
 	fillDrill(drillIterator,drillCount,taskDetails);
-}
+}//initializeDrill
 
+//******************************************************************************************************
+//removeExistingDrill - Remove the previous drill operations on opening a new instance of task pane 
 function removeExistingDrill() {
-
-
 	$("#drillDiv").find("div[id*='newDrill']").each(function(){
-		//do something here
 		this.remove();
-
 	});
-	
-}
+}//removeExistingDrill
 
+//******************************************************************************************************
+//fillDrill - to fill up values of the fields based on the json from backend/one that is constructed
 function fillDrill(drillIterator,drillCount,taskDetails) {
-
 	for(iterator=1;iterator<=drillIterator;iterator++) {
-
 				if(taskDetails!=undefined) {
 					if(taskDetails["drillValue"+iterator] && taskDetails["drillValue"+iterator]!=null && taskDetails["drillValue"+iterator]!=undefined) {
 					//Construct the new divs accordingly
-					makeDrillDivs(iterator); //DRILLCOUNT CONFUSIONNNN!!
-
+					makeDrillDivs(iterator); 
 					$("#drillValue"+iterator).val(taskDetails["drillValue"+iterator]);
-
 					if(taskDetails["drillSave"+iterator] == "Yes") {
 						//keep it selected
 						$("#drillSave"+iterator).prop("checked",true)  
@@ -89,23 +76,22 @@ function fillDrill(drillIterator,drillCount,taskDetails) {
 						$("#drillSaveImage"+iterator).prop("checked",true)  
 					}
 				}
-
 			}	
 		}
-}
+}//fillDrill
 
+//******************************************************************************************************
+//addDrillDiv - to add a new drill div
 function addDrillDiv(drillIterator,drillCount) {
-
 	makeDrillDivs(drillIterator);
-
 	drillIterator++;
 	drillCount++;
-
 	$("#drillIterator").val(drillIterator);
 	$("#drillCount").val(drillCount);
+}//addDrillDiv
 
-}
-
+//******************************************************************************************************
+//makeDrillDivs - to construct html for adding a new drillDiv
 function makeDrillDivs(drillIterator) {
 
 	jQuery('<div/>', {
@@ -134,8 +120,7 @@ function makeDrillDivs(drillIterator) {
 			var drillCount = $("#drillCount").val();
 			drillCount =parseInt(drillCount);
 			drillCount--;
-			$("#drillCount").val(drillCount);
-						
+			$("#drillCount").val(drillCount);					
 	});
 
 	jQuery('<label/>',{
@@ -164,4 +149,4 @@ function makeDrillDivs(drillIterator) {
 	}).appendTo('#newDrillDiv'+drillIterator);
 
 	//jQuery('<br/>',{}).appendTo("#drillDiv");
-}
+} //makeDrillDivs
