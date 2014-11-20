@@ -467,8 +467,7 @@ function drawline() {
                 strokeWeight: 2,
                 geodesic: true,
                 zIndex: 10
-              };
-      ee = smartTargetTaskPoints;        
+              };  
       var greenPolyline = new google.maps.Polyline(greenPolylineOptions);        
       greenPolyline.setMap(map);
     } 
