@@ -110,6 +110,7 @@ function saveTaskDetails () {
            fillTaskDetails(latitudeValue,longitudeValue); //To fill the task points based on the input field values
          }
      } 
+     drawline();
 }//saveTaskDetails
 
 //******************************************************************************************************
@@ -452,6 +453,27 @@ function drawline() {
   var polyline= new google.maps.Polyline(polylineOptions);
   lines.push(polyline);
   polyline.setMap(map);
+  //To draw green lines for smart Target
+  for(iterator=0;iterator<taskpoints.length;iterator++) {  
+    var nextIterator = iterator+1;
+    if(taskpoints[iterator].spectraSmartTarget && taskpoints[iterator].spectraSmartTarget == "Yes" && taskpoints[nextIterator] && taskpoints[nextIterator]!=undefined) {
+      var smartTargetTaskPoints = []; 
+      smartTargetTaskPoints.push(taskpoints[iterator]);
+      smartTargetTaskPoints.push(taskpoints[nextIterator]);
+      var greenPolylineOptions={
+              path:smartTargetTaskPoints,
+                strokeColor: '#33CC33',
+                strokeOpacity: 1.0,
+                strokeWeight: 2,
+                geodesic: true,
+                zIndex: 10
+              };
+      ee = smartTargetTaskPoints;        
+      var greenPolyline = new google.maps.Polyline(greenPolylineOptions);        
+      greenPolyline.setMap(map);
+    } 
+  }     
+
 } //function drawline   
 
 //******************************************************************************************************

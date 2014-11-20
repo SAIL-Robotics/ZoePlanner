@@ -11,7 +11,7 @@ from django.http import *
 #from pykml.parser import Schema
 #from pykml.factory import KML_ElementMaker as KML
 #from pykml.factory import GX_ElementMaker as GX
-#import simplekml
+import simplekml
 
 database_name = "rover"
 collection_name = "plans"
