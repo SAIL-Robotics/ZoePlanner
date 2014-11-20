@@ -45,18 +45,38 @@
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav navbar-right">
       <li><button class="btn btn-primary btn-large createPlan" data-target="#myModal" id="createPlanModal">
-        Create Plan
-      </button></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Help</a></li>
+        Start Plan
+      </button></li><li><button id="save-button" class="btn btn-primary btn-large  saveBtn" style="display:none"> Save Me</button></li>
+       <li> <button id = "map-reset" type="button" class="btn btn-primary btn-sm saveBtn" onclick = "clearMap();">
+            <span class="glyphicon glyphicon-refresh"></span>
+            </button></li>
+       <!--  <li><a href="#about">About</a></li>
+        <li><a href="#contact">Help</a></li> -->
       </ul>
+
+
+      
+
+
       <span class="navbar-form navbar-right">
-          <button class="btn btn-primary btn-large active" onclick="mapPanToAtacama();"> Goto Atacama</button>
+        <!--   <button class="btn btn-primary btn-large active" onclick="mapPanToAtacama();"> Goto Atacama</button>
           <button class="btn btn-primary btn-large active" onclick="mapPanToPittsburgh();"> Goto Pittsburgh</button>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <input type="text" class="form-control" placeholder="Latitude..." id = "latValue">
-          <input type="text" class="form-control" placeholder="Longitude..." id = "lngValue">
+          &nbsp;&nbsp;&nbsp;&nbsp; -->
+          <div class="btn-group">
+  <button class="btn">Take me to</button>
+  <button class="btn dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    <li> <a tabindex="-1" onclick="mapPanToAtacama();">Atacama</a></li>
+     <li> <a tabindex="-1" onclick="mapPanToPittsburgh();">Pittsburgh</a></li>
+  </ul>
+</div>
+          <input type="text" class="form-control" placeholder="Lat,Long..." id = "latLngValue">
+<!--           <input type="text" class="form-control" placeholder="Longitude..." id = "lngValue"> -->
           <button class="btn btn-large active" onclick="drawMarker();"> Locate</button>
+           <input type="checkbox" name="my-checkbox" id="my-checkbox" data-on-text="lock" data-off-text="unlock">
+
       </span>
     </div><!--/.nav-collapse -->
   </div>
@@ -97,38 +117,31 @@
           </div>
         </div>
 
-
-        <div class="col-xs-12 col-sm-9 content">
+        <div style = "height:0px;margin-left:-9px"> <a id="toggleSidebar" href="#" class="toggles" data-toggle="offcanvas"><i class="glyphicon glyphicon-align-justify"></i></a></div>
+        <div class="col-xs-3 col-sm-3 content">
          <p class="pull-right">
-          <input type="checkbox" name="my-checkbox" id="my-checkbox" data-on-text="lock" data-off-text="unlock">
-            <button id = "map-reset" type="button" class="btn btn-primary btn-sm saveBtn" onclick = "clearMap();">
-            <span class="glyphicon glyphicon-refresh"></span>
-            </button>
+         <!--  <input type="checkbox" name="my-checkbox" id="my-checkbox" data-on-text="lock" data-off-text="unlock"> -->
+           
           </p>
-          <p class="pull-left"> 
-            <a id="toggleSidebar" href="#" class="toggles" data-toggle="offcanvas"><i class="glyphicon glyphicon-align-justify"></i></a>
-            <div id = "displayName">
-            <form action="#" method="post"> 
-            {% csrf_token %}      
-              <span id="planNameDisplay"></span>
-              <button id="save-button" class="btn btn-primary btn-sm saveBtn"> Save Plan</button>
-            </form>  
-            </div>
-          </p>
+         
 
-          <br/>
+          
               {% block content %}
 
               {% endblock %}
         </div>
 
         <!-- ////////////////////////////////////////////////TASK PANE/////////////////////////////////////////////////////// -->
+
                 <div class="col-xs-3 col-sm-3 row-task-offcanvas row-offcanvas-right taskright" id="sidebar2" role="navigation">
                         {% include 'taskPane.html' %}.
-                </div><!--/span--> <!-- sidebar -->
-            </div><!--/span-->                
-        </div><!--/row-->
-      </div><!-- /.container -->
+                      </div><!--/span--> <!-- sidebar -->
+
+                     </div><!--/span-->
+                            
+                  </div><!--/row-->
+
+              </div><!-- /.container -->
 
 
         <!-- //////////////////////////////////////////////////TASKPANE END////////////////////////////////////////////// -->
