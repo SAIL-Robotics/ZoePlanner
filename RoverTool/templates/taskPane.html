@@ -1,3 +1,4 @@
+
 <div class="list-group scrollableList">
   
   <input type="hidden" id="lat" value="" />
@@ -6,7 +7,36 @@
   <input type="hidden" id="drillIterator" value="" />
 
   <a href="#" class="list-group-item task-group-item active">Tasks <span id='close'>x</span> </a>
-  
+
+  <div class="blockDiv">
+
+    <span class="list-group-item task-group-item">
+      <select id="selectTemplate" class="btn">
+        <option value="">Select Template</option>
+       </select> 
+    </span>
+
+    <span class="list-group-item task-group-item">
+          <select id="selectOperation" class="btn">
+            <option value="">Select Operation</option>
+            <option value="BUF">Drill</option>
+            <option value="BUF">BUF</option>
+            <option value="MMRS">MMRS</option>
+            <option value="Science Image">Science Image</option>
+            <option value="Image Panorama">Image Panorama</option>
+            <option value="Spectra Panorama">Spectra Panorama</option>
+            <option value="Precise Move">Precise Move</option>
+            <option value="Smart Target">Smart Target</option>
+          </select>
+        
+       <input type="button" id="addOperation" value="Add" class="btn btn-primary" onclick="constructDiv();"/>
+    </span>
+  </div>
+
+  <div class="operationDiv" id="operationDiv">
+  </div>
+
+  <!-- 
   <a class="list-group-item task-group-item"> 
     <span class="input-group-addon" id="drillDiv"><b>Drill</b> 
       <div>
@@ -71,7 +101,7 @@
   </a>
 
   <a class="list-group-item task-group-item">
-    <span class="input-group-addon"><b>Spectra Panorama</b>
+    <span class="input-group-addon"><b>Smart Target</b>
        <div>
         <input type="text" class="form-control halfTaskText" placeholder="Budget Value" id="spectraSmartTargetValue" />
         <input type="checkbox" id="spectraSmartTarget" /> Smart Target <br/> <br/>
@@ -86,9 +116,10 @@
         <input type="text" class="form-control halfTaskText" placeholder="Distance" id="preciseMoveValue" />
       </div>
     </span>
-  </a> 
+  </a>  -->
 
   <a class="list-group-item task-group-item">
+    <input type="button" class="btn btn-success" onclick="createTemplate();" id="createTemplateButton" value="Create Template"/>
     <input type="button" class="btn btn-success" onclick="saveTaskDetails();" id="saveTaskButton" value="Save Task"/>
   </a> 
 </div>

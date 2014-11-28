@@ -75,4 +75,14 @@
       .red {
         background-color: red!important;
       }
+      .blockDiv{
+        display:block!important;
+      }
+      .operationClose {
+        float: right;
+        display: inline-block;
+        padding: 2px 5px;
+        background: #428bca;
+        color: #fff;
+      }
       

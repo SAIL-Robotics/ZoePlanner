@@ -150,3 +150,401 @@ function makeDrillDivs(drillIterator) {
 
 	//jQuery('<br/>',{}).appendTo("#drillDiv");
 } //makeDrillDivs
+
+//******************************************************************************************************
+//selectOperation - To select a particular operation
+function selectOperation(object) {
+	console.log("the object is "+object);
+	var text = object.text;
+	constructDiv(text);
+}
+
+//******************************************************************************************************
+//constructDiv - To construct div based on selected option
+function constructDiv() {
+
+	var selectedOption = $('#selectOperation').val();
+
+	if(selectedOption && selectedOption != undefined) {
+
+		if(selectedOption == "BUF") {
+			var groupAnchor = jQuery('<a>', {
+	    	class:'list-group-item task-group-item',
+			}).appendTo('#operationDiv');
+
+			groupAnchor.append("<span class='operationClose' id='operationClose"+selectedOption+"''>X</span>");
+
+			$("#operationClose"+selectedOption).click(function( event ){
+				//To remove the entire parent element
+				var removeDiv = event.target;
+				var removeParentDiv = removeDiv.parentElement;
+				var removedId = removeParentDiv.id;
+				removeParentDiv.remove();
+
+				//TODO
+				//to remove this from the taskDetails json also				
+			});
+
+			var groupSpan = jQuery('<span>', {
+		    class:'input-group-addon'
+			}).hide().append(jQuery('<b>',{
+				text:"BUF"
+			}))
+			groupSpan.appendTo(groupAnchor);
+			groupSpan.show();
+
+			var inputDiv = jQuery('<div></div>').hide().append(jQuery('<input/>', {
+			type:'text',
+		    id: 'bufValue',
+		    class:'form-control taskText',
+		    placeholder:'LED Intensity',
+			}))//.appendTo(inputDiv);
+
+	     	inputDiv.appendTo(groupSpan);
+			inputDiv.show();
+		}//if selection is BUF
+		else if(selectedOption == "MMRS") {
+			console.log("sel "+selectedOption);
+
+			var groupAnchor = jQuery('<a>', {
+	    	class:'list-group-item task-group-item',
+			}).appendTo('#operationDiv');
+
+			groupAnchor.append("<span class='operationClose' id='operationClose"+selectedOption+"''>X</span>");
+
+			$("#operationClose"+selectedOption).click(function( event ){
+				//To remove the entire parent element
+				var removeDiv = event.target;
+				var removeParentDiv = removeDiv.parentElement;
+				var removedId = removeParentDiv.id;
+				removeParentDiv.remove();
+
+				//TODO
+				//to remove this from the taskDetails json also				
+			});
+
+			var groupSpan = jQuery('<span>', {
+		    class:'input-group-addon'
+			}).hide().append(jQuery('<b>',{
+				text:"MMRS"
+			}))
+			groupSpan.appendTo(groupAnchor);
+			groupSpan.show();
+
+			br = jQuery('<br/>');
+
+			mmrsExposureInput = jQuery('<input/>', {
+			type:'text',
+		    id: 'mmrsExposureValue',
+		    class:'form-control taskText',
+		    placeholder:'Exposure',
+			});
+
+			mmrsAccumulationInput = jQuery('<input/>', {
+			type:'text',
+		    id: 'mmrsAccumulationValue',
+		    class:'form-control taskText',
+		    placeholder:'Accumulation',
+			});
+
+			mmrsNumberInput = jQuery('<input/>', {
+			type:'text',
+		    id: 'mmrsNumberValue',
+		    class:'form-control taskText',
+		    placeholder:'Number of points',
+			});
+
+			var inputDiv = jQuery('<div></div>').hide().append(mmrsExposureInput,mmrsAccumulationInput,mmrsNumberInput);
+
+	     	inputDiv.appendTo(groupSpan);
+			inputDiv.show();
+
+			mmrsExposureInput.after(br);
+			mmrsAccumulationInput.after(br);
+
+
+		}//if selection is MMRS
+		else if(selectedOption == "Science Image") {
+			console.log("sel "+selectedOption);
+
+			var groupAnchor = jQuery('<a>', {
+	    	class:'list-group-item task-group-item',
+			}).appendTo('#operationDiv');
+
+			groupAnchor.append("<span class='operationClose' id='operationClose"+selectedOption+"''>X</span>");
+
+			$("#operationClose"+selectedOption).click(function( event ){
+				//To remove the entire parent element
+				var removeDiv = event.target;
+				var removeParentDiv = removeDiv.parentElement;
+				var removedId = removeParentDiv.id;
+				removeParentDiv.remove();
+
+				//TODO
+				//to remove this from the taskDetails json also				
+			});
+
+			var groupSpan = jQuery('<span>', {
+		    class:'input-group-addon'
+			}).hide().append(jQuery('<b>',{
+				text:"Science Image"
+			}))
+			groupSpan.appendTo(groupAnchor);
+			groupSpan.show();
+
+			br = jQuery('<br/>');
+
+			sciencePanInput = jQuery('<input/>', {
+			type:'text',
+		    id: 'sciencePanValue',
+		    class:'form-control taskText',
+		    placeholder:'Pan',
+			});
+
+			scienceTiltInput = jQuery('<input/>', {
+			type:'text',
+		    id: 'scienceTiltValue',
+		    class:'form-control taskText',
+		    placeholder:'Tilt',
+			});
+
+			var inputDiv = jQuery('<div></div>').hide().append(sciencePanInput,scienceTiltInput,br);
+
+	     	inputDiv.appendTo(groupSpan);
+			inputDiv.show();
+
+			sciencePanInput.after(br);
+
+		} //if selection is science image
+		else if(selectedOption == "Image Panorama") {
+			console.log("sel "+selectedOption);
+
+			var groupAnchor = jQuery('<a>', {
+	    	class:'list-group-item task-group-item',
+			}).appendTo('#operationDiv');
+
+			groupAnchor.append("<span class='operationClose' id='operationClose"+selectedOption+"''>X</span>");
+
+			$("#operationClose"+selectedOption).click(function( event ){
+				//To remove the entire parent element
+				var removeDiv = event.target;
+				var removeParentDiv = removeDiv.parentElement;
+				var removedId = removeParentDiv.id;
+				removeParentDiv.remove();
+
+				//TODO
+				//to remove this from the taskDetails json also				
+			});
+
+			var groupSpan = jQuery('<span>', {
+		    class:'input-group-addon'
+			}).hide().append(jQuery('<b>',{
+				text:"Image Panorama"
+			}))
+			groupSpan.appendTo(groupAnchor);
+			groupSpan.show();
+
+			br = jQuery('<br/>');
+
+			startAzimuthInput = jQuery('<input/>', {
+			type:'text',
+		    id: 'imageStartAzimuthValue',
+		    class:'form-control taskText',
+		    placeholder:'Start Azimuth',
+			});
+
+			endAzimuthInput = jQuery('<input/>', {
+			type:'text',
+		    id: 'imageEndAzimuthValue',
+		    class:'form-control taskText',
+		    placeholder:'End Azimuth',
+			});
+
+			startElevationInput = jQuery('<input/>', {
+			type:'text',
+		    id: 'imageStartElevationValue',
+		    class:'form-control taskText',
+		    placeholder:'Start Elevation',
+			});
+
+			endElevationInput = jQuery('<input/>', {
+			type:'text',
+		    id: 'imageEndElevationValue',
+		    class:'form-control taskText',
+		    placeholder:'End Elevation',
+			});
+
+			var inputDiv = jQuery('<div></div>').hide().append(startAzimuthInput,endAzimuthInput,startElevationInput,endElevationInput);
+
+	     	inputDiv.appendTo(groupSpan);
+			inputDiv.show();
+
+			endAzimuthInput.after(br);
+
+		}// if selection is Image Panorama
+		else if(selectedOption == "Spectra Panorama") {
+			console.log("sel "+selectedOption);
+
+						var groupAnchor = jQuery('<a>', {
+	    	class:'list-group-item task-group-item',
+			}).appendTo('#operationDiv');
+
+			groupAnchor.append("<span class='operationClose' id='operationClose"+selectedOption+"''>X</span>");
+
+			$("#operationClose"+selectedOption).click(function( event ){
+				//To remove the entire parent element
+				var removeDiv = event.target;
+				var removeParentDiv = removeDiv.parentElement;
+				var removedId = removeParentDiv.id;
+				removeParentDiv.remove();
+
+				//TODO
+				//to remove this from the taskDetails json also				
+			});
+
+			var groupSpan = jQuery('<span>', {
+		    class:'input-group-addon'
+			}).hide().append(jQuery('<b>',{
+				text:"Spectra Panorama"
+			}))
+			groupSpan.appendTo(groupAnchor);
+			groupSpan.show();
+
+			br = jQuery('<br/>');
+
+			startAzimuthInput = jQuery('<input/>', {
+			type:'text',
+		    id: 'spectraStartAzimuthValue',
+		    class:'form-control taskText',
+		    placeholder:'Start Azimuth',
+			});
+
+			endAzimuthInput = jQuery('<input/>', {
+			type:'text',
+		    id: 'spectraEndAzimuthValue',
+		    class:'form-control taskText',
+		    placeholder:'End Azimuth',
+			});
+
+			startElevationInput = jQuery('<input/>', {
+			type:'text',
+		    id: 'spectraStartElevationValue',
+		    class:'form-control taskText',
+		    placeholder:'Start Elevation',
+			});
+
+			endElevationInput = jQuery('<input/>', {
+			type:'text',
+		    id: 'spectraEndElevationValue',
+		    class:'form-control taskText',
+		    placeholder:'End Elevation',
+			});
+
+			var inputDiv = jQuery('<div></div>').hide().append(startAzimuthInput,endAzimuthInput,startElevationInput,endElevationInput);
+
+	     	inputDiv.appendTo(groupSpan);
+			inputDiv.show();
+
+			endAzimuthInput.after(br);
+
+
+		}// if selection is Spectra Panorama
+		else if(selectedOption == "Precise Move") {
+			console.log("sel "+selectedOption);
+
+			var groupAnchor = jQuery('<a>', {
+	    	class:'list-group-item task-group-item',
+			}).appendTo('#operationDiv');
+
+			groupAnchor.append("<span class='operationClose' id='operationClose"+selectedOption+"''>X</span>");
+
+			$("#operationClose"+selectedOption).click(function( event ){
+				//To remove the entire parent element
+				var removeDiv = event.target;
+				var removeParentDiv = removeDiv.parentElement;
+				var removedId = removeParentDiv.id;
+				removeParentDiv.remove();
+
+				//TODO
+				//to remove this from the taskDetails json also				
+			});
+
+			var groupSpan = jQuery('<span>', {
+		    class:'input-group-addon'
+			}).hide().append(jQuery('<b>',{
+				text:"Precise Move"
+			}))
+			groupSpan.appendTo(groupAnchor);
+			groupSpan.show();
+
+			var preciseMoveCheckBox = jQuery('<input/>',{
+				type:'checkbox',
+				id:'preciseMove'
+			});
+			var preciseMoveLabel = jQuery('<label/>',{
+				text:'Precise Move'
+			});
+			var preciseMoveInput = jQuery('<input/>', {
+			type:'text',
+		    id: 'preciseMoveValue',
+		    class:'form-control taskText',
+		    placeholder:'Distance',
+			});
+
+			var inputDiv = jQuery('<div></div>').hide().append(preciseMoveCheckBox,preciseMoveLabel,preciseMoveInput);
+
+	     	inputDiv.appendTo(groupSpan);
+			inputDiv.show();
+
+
+		}// if selection is Precise Move
+		else if(selectedOption == "Smart Target") {
+			console.log("sel "+selectedOption);
+
+			var groupAnchor = jQuery('<a>', {
+	    	class:'list-group-item task-group-item',
+			}).appendTo('#operationDiv');
+
+			groupAnchor.append("<span class='operationClose' id='operationClose"+selectedOption+"''>X</span>");
+
+			$("#operationClose"+selectedOption).click(function( event ){
+				//To remove the entire parent element
+				var removeDiv = event.target;
+				var removeParentDiv = removeDiv.parentElement;
+				var removedId = removeParentDiv.id;
+				removeParentDiv.remove();
+
+				//TODO
+				//to remove this from the taskDetails json also				
+			});
+
+			var groupSpan = jQuery('<span>', {
+		    class:'input-group-addon'
+			}).hide().append(jQuery('<b>',{
+				text:"Smart Target"
+			}))
+			groupSpan.appendTo(groupAnchor);
+			groupSpan.show();
+
+			var smartTargetCheckBox = jQuery('<input/>',{
+				type:'checkbox',
+				id:'spectraSmartTarget'
+			});
+			var smartTargetLabel = jQuery('<label/>',{
+				text:'Smart Target'
+			});
+			var smartTargetInput = jQuery('<input/>', {
+			type:'text',
+		    id: 'spectraSmartTargetValue',
+		    class:'form-control taskText',
+		    placeholder:'Budget Value',
+			});
+
+			var inputDiv = jQuery('<div></div>').hide().append(smartTargetCheckBox,smartTargetLabel,smartTargetInput);
+
+	     	inputDiv.appendTo(groupSpan);
+			inputDiv.show();
+
+		}// if selection is smart Target
+	}
+}
