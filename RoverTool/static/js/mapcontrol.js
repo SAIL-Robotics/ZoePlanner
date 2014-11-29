@@ -13,26 +13,33 @@ var lines = [];
 //******************************************************************************************************
 //setTextState - to set the task fields to be disabled/not based on lock/unlock state
 function setTextState(state) {
+    console.log("SSSSSSSSSETTTTTTTING");
 
   var taskFieldIds = ["bufValue", 
   "mmrsExposureValue","mmrsAccumulationValue","mmrsNumberValue","sciencePanValue", "scienceTiltValue","imageStartAzimuthValue",
   "imageEndAzimuthValue","imageStartElevationValue","imageEndElevationValue","spectraStartAzimuthValue",
   "spectraEndAzimuthValue","spectraStartElevationValue","spectraEndElevationValue", "spectraAngularValue", "preciseMoveValue",
-  "spectraAngularCamera","spectraNavcamRecord","spectraSmartTarget","preciseMove","spectraSmartTargetValue"];
+  "spectraAngularCamera","spectraNavcamRecord","spectraSmartTarget","preciseMove","spectraSmartTargetValue"]
+  var taskCloseButtons = ["operationCloseBUF", "operationCloseMMRS","operationCloseScienceImage","operationCloseImagePanorama","operationCloseSpectraPanorama","operationClosePreciseMove",
+  "operationCloseSmartTarget"];
 
   var drillIterator = $("#drillIterator").val(); //drillIterator value
   drillIterator = parseInt(drillIterator);
 
    if(state == true) {
-    //locked is true    
-    $("#saveTaskButton").removeClass("show");
-    $("#saveTaskButton").addClass("hide");
+    // //locked is true    
+    // $("#saveTaskButton").removeClass("show");
+    // $("#saveTaskButton").addClass("hide");
 
     $("#addDrill").removeClass("inlineshow");
     $("#addDrill").addClass("hide");
 
     for(iterator in taskFieldIds) {
       $("#"+taskFieldIds[iterator]).attr("disabled","");
+    }
+    for(iterator in taskCloseButtons) {
+      $("#"+taskCloseButtons[iterator]).removeClass("show");
+      $("#"+taskCloseButtons[iterator]).addClass("hide");
     }
     for(iterator=1;iterator<=drillIterator;iterator++) {
      $("#drillValue"+iterator).attr("disabled",""); 
@@ -46,8 +53,8 @@ function setTextState(state) {
   else if(state == false) {
     //locked is false
 
-    $("#saveTaskButton").removeClass("hide");
-    $("#saveTaskButton").addClass("show");
+    // $("#saveTaskButton").removeClass("hide");
+    // $("#saveTaskButton").addClass("show");
 
     $("#addDrill").removeClass("hide");
     $("#addDrill").addClass("inlineshow");
@@ -55,6 +62,10 @@ function setTextState(state) {
     for(iterator in taskFieldIds) {
      
       $("#"+taskFieldIds[iterator]).removeAttr("disabled");
+    }
+    for(iterator in taskCloseButtons) {
+      $("#"+taskCloseButtons[iterator]).addClass("show");
+      $("#"+taskCloseButtons[iterator]).removeClass("hide");
     }
    for(iterator=1;iterator<=drillIterator;iterator++) {
      $("#drillValue"+iterator).removeAttr("disabled"); 
@@ -135,7 +146,8 @@ function clearTaskTextFields() {
 //******************************************************************************************************
 //fillTaskPane - To fill the pane based on values retrieved from back end/json
 function fillTaskPane(marker) {
-    clearTaskTextFields(); //Clears the text fields initially 
+    //todo - uncomment this.
+    //clearTaskTextFields(); //Clears the text fields initially 
     for(i=0;i<taskpoints.length;i++)
       {
         if(marker.position.lat()==taskpoints[i].lat&&marker.position.lng()==taskpoints[i].lng)
@@ -258,6 +270,163 @@ function fillTaskDetails(latitudeValue,longitudeValue) {
     }
 }//fillTaskDetails
 
+
+// Nov 29
+//******************************************************************************************************
+//initializeOperationDiv - to initalize the divs for two selects
+function initializeOperationDiv() {
+
+  $("#operationDiv").children().remove(); 
+  $("#mainOperationDiv").children().remove(); 
+
+  var selectTemplate = jQuery('<select>', {
+    id:'selectTemplate',
+    class:'btn'
+  }).hide().append($("<option>").attr('value','Select Template').text('Select Template'));
+
+  var selectTemplateSpan = jQuery('<span>', {
+    class:'list-group-item task-group-item',
+    id:'selectTemplateDiv'
+  }).hide().append(selectTemplate);
+
+  var selectOperation = jQuery('<select>',{
+    id:'selectOperation',
+    class:'btn'
+  }).hide().append($("<option>").attr('value','Select Operation').text('Select Operation'));
+
+  var operationArray = [
+  {val : 'Drill', text: 'Drill'},
+  {val : 'BUF', text: 'BUF'},
+  {val : 'MMRS', text: 'MMRS'},
+  {val : 'Science Image', text: 'Science Image'},
+  {val : 'Image Panorama', text: 'Image Panorama'},
+  {val : 'Spectra Panorama', text: 'Spectra Panorama'},
+  {val : 'Precise Move', text: 'Precise Move'},
+  {val : 'Smart Target', text: 'Smart Target'}
+  ];
+
+  $(operationArray).each(function() {
+     selectOperation.append($("<option>").attr('value',this.val).text(this.text));
+  });
+
+  var addButton = jQuery('<input>',{
+    type:'button',
+    id:'addOperation',
+    value:'Add',
+    class:'btn btn-primary',
+    onClick:'constructDiv();'
+  });
+
+  var selectOperationSpan = jQuery('<span>', {
+    class:'list-group-item task-group-item',
+    id:'selectOperationDiv'
+  }).hide().append(selectOperation," &nbsp; ",addButton);
+
+  $("#mainOperationDiv").append(selectTemplateSpan);
+  $("#mainOperationDiv").append(selectOperationSpan);
+  selectTemplate.show();
+  selectTemplateSpan.show();
+  selectOperation.show();
+  selectOperationSpan.show();
+
+}//initializeOperationDiv
+
+// Nov 29
+//******************************************************************************************************
+//populateOperationDiv - to populate div based on taskpoints (if present)
+function populateOperationDiv(taskpoints) {
+
+  var currentTaskpoint;
+  var latitudeValue = document.getElementById("lat").value;
+  var longitudeValue = document.getElementById("lng").value;
+
+  for(taskDetailsIterator in taskpoints) {
+    if(taskpoints[taskDetailsIterator].lat && taskpoints[taskDetailsIterator].lng && taskpoints[taskDetailsIterator].lat == latitudeValue && taskpoints[taskDetailsIterator].lng == longitudeValue) {
+      currentTaskpoint = taskDetailsIterator;
+      break;
+    }
+  }
+  if(taskpoints[taskDetailsIterator].lat && taskpoints[taskDetailsIterator].lng) {
+
+    //value exists, need to populate based on currentTaskPoint
+     var taskDetails = taskpoints[currentTaskpoint];
+    //todo - do for drill also
+    initializeDrill();
+    if(taskDetails['bufValue'] && taskDetails['bufValue']!=undefined) {
+      var bufValue = taskDetails['bufValue'];
+      constructBufDiv(currentTaskpoint,"BUF",bufValue);
+      // remove this from the select option
+      $("#selectOperation option[value='BUF']").remove();
+    }
+    if(taskDetails['mmrsExposureValue'] && taskDetails['mmrsExposureValue']!=undefined && taskDetails['mmrsAccumulationValue'] && taskDetails['mmrsAccumulationValue']!=undefined && taskDetails['mmrsNumberValue'] && taskDetails['mmrsNumberValue']!=undefined) {
+      var mmrsExposureValue = taskDetails['mmrsExposureValue'];
+      var mmrsAccumulationValue = taskDetails['mmrsAccumulationValue'];
+      var mmrsNumberValue = taskDetails['mmrsNumberValue'];
+      constructMmrsDiv(currentTaskpoint,"MMRS",mmrsExposureValue,mmrsAccumulationValue,mmrsNumberValue);
+      //remove this from the select option
+      $("#selectOperation option[value='MMRS']").remove();
+    }
+    if(taskDetails['sciencePanValue'] && taskDetails['sciencePanValue']!=undefined && taskDetails['scienceTiltValue'] && taskDetails['scienceTiltValue']!=undefined ) {
+      var sciencePanValue = taskDetails['sciencePanValue'];
+      var scienceTiltValue = taskDetails['scienceTiltValue'];
+      constructScienceImageDiv(currentTaskpoint,"Science Image",sciencePanValue,scienceTiltValue);
+      //remove this from the select option
+      $("#selectOperation option[value='Science Image']").remove();
+    }
+    if(taskDetails['imageStartAzimuthValue'] && taskDetails['imageStartAzimuthValue']!=undefined && taskDetails['imageEndAzimuthValue'] && taskDetails['imageEndAzimuthValue']!=undefined && taskDetails['imageStartElevationValue'] && taskDetails['imageStartElevationValue']!=undefined && taskDetails['imageEndElevationValue'] && taskDetails['imageEndElevationValue']!=undefined) {
+      var imageStartAzimuthValue = taskDetails['imageStartAzimuthValue'];
+      var imageEndAzimuthValue = taskDetails['imageEndAzimuthValue'];
+      var imageStartElevationValue = taskDetails['imageStartElevationValue'];
+      var imageEndElevationValue = taskDetails['imageEndElevationValue'];
+      constructImagePanoramaDiv(currentTaskpoint,"Image Panorama",imageStartAzimuthValue,imageEndAzimuthValue,imageStartElevationValue,imageEndElevationValue);
+      //remove this from select option
+      $("#selectOperation option[value='Image Panorama']").remove();
+    }
+    if(taskDetails['spectraStartAzimuthValue'] && taskDetails['spectraStartAzimuthValue']!=undefined && taskDetails['spectraEndAzimuthValue'] && taskDetails['spectraEndAzimuthValue']!=undefined && taskDetails['spectraStartElevationValue'] && taskDetails['spectraStartElevationValue']!=undefined && taskDetails['spectraEndElevationValue'] && taskDetails['spectraEndElevationValue']!=undefined && taskDetails['spectraAngularValue'] && taskDetails['spectraAngularValue']!=undefined) {
+     var spectraStartAzimuthValue = taskDetails['spectraStartAzimuthValue'];
+     var spectraEndAzimuthValue = taskDetails['spectraEndAzimuthValue'];
+     var spectraStartElevationValue = taskDetails['spectraStartElevationValue'];
+     var spectraEndElevationValue = taskDetails['spectraEndElevationValue'];
+     var spectraAngularValue = taskDetails['spectraAngularValue'];
+     var spectraAngularCamera = "no"; 
+       var spectraNavcamRecord = "no";
+       if(taskDetails['spectraAngularCamera'] && taskDetails['spectraAngularCamera']!=undefined ) {
+        var spectraAngularCamera = "Yes"; 
+       }
+       if(taskDetails['spectraNavcamRecord'] && taskDetails['spectraNavcamRecord']!=undefined ) {
+        var spectraNavcamRecord = "Yes"; 
+       }
+     constructSpectraPanoramaDiv(currentTaskpoint,"Spectra Panorama",spectraStartAzimuthValue,spectraEndAzimuthValue,spectraStartElevationValue,spectraEndElevationValue,spectraAngularValue,spectraAngularCamera,spectraNavcamRecord);
+     //remove this from select option
+     $("#selectOperation option[value='Spectra Panorama']").remove();
+    }
+    if(taskDetails['spectraSmartTargetValue'] && taskDetails['spectraSmartTargetValue']!=undefined) {
+      var spectraSmartTargetValue = taskDetails['spectraSmartTargetValue'];
+      constructSmartTargetDiv(currentTaskpoint,"Smart Target",spectraSmartTargetValue);
+      //remove this from select option
+      $("#selectOperation option[value='Smart Target']").remove();
+    }  
+    if(taskDetails['preciseMoveValue'] && taskDetails['preciseMoveValue']!=undefined) {
+      var preciseMoveValue = taskDetails['preciseMoveValue'];
+      constructPreciseMoveDiv(currentTaskpoint,"Precise Move",preciseMoveValue);
+      //remove this from select option
+      $("#selectOperation option[value='Precise Move']").remove();
+    }
+  }   
+  setTextState(locked); //Set the text state accordingly
+}//populateOperationDiv
+
+// Nov 29
+//******************************************************************************************************
+//constructMainOperationDiv - to construct the divs for two selects
+function constructMainOperationDiv() {
+
+  initializeOperationDiv(); //construct the basic divs for select operations first
+  //todo - the code/function for templates
+  populateOperationDiv(taskpoints);
+
+}//constructMainOperationDiv
+
 //******************************************************************************************************
 //placeMarker - called to place the markers and associate events based on lat lng value
 //and also update the json correspondingly
@@ -305,7 +474,10 @@ function placeMarker(latitude,longitude,backEndJson) {
             $('.row-task-offcanvas').addClass("taskappear");
           }
           $('.task-group-item').attr('tabindex', '');
+          
           fillTaskPane(marker); //To open the operation pane and perform tasks using it
+          //Check - added as of Nov 29
+          constructMainOperationDiv();
   }); //event handler for single click
 
     google.maps.event.addListener(marker, 'rightclick', function(event) {

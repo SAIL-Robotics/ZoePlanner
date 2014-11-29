@@ -8,18 +8,18 @@
 
   <a href="#" class="list-group-item task-group-item active">Tasks <span id='close'>x</span> </a>
 
-  <div class="blockDiv">
+  <div class="blockDiv" id="mainOperationDiv">
 
-    <span class="list-group-item task-group-item">
+   <!--  <span class="list-group-item task-group-item" id="selectTemplateDiv">
       <select id="selectTemplate" class="btn">
         <option value="">Select Template</option>
        </select> 
     </span>
 
-    <span class="list-group-item task-group-item">
+    <span class="list-group-item task-group-item" id="selectOperationDiv">
           <select id="selectOperation" class="btn">
             <option value="">Select Operation</option>
-            <option value="BUF">Drill</option>
+            <option value="Drill">Drill</option>
             <option value="BUF">BUF</option>
             <option value="MMRS">MMRS</option>
             <option value="Science Image">Science Image</option>
@@ -30,7 +30,7 @@
           </select>
         
        <input type="button" id="addOperation" value="Add" class="btn btn-primary" onclick="constructDiv();"/>
-    </span>
+    </span> -->
   </div>
 
   <div class="operationDiv" id="operationDiv">
@@ -120,6 +120,6 @@
 
   <a class="list-group-item task-group-item">
     <input type="button" class="btn btn-success" onclick="createTemplate();" id="createTemplateButton" value="Create Template"/>
-    <input type="button" class="btn btn-success" onclick="saveTaskDetails();" id="saveTaskButton" value="Save Task"/>
+   <!--  <input type="button" class="btn btn-success" onclick="saveTaskDetails();" id="saveTaskButton" value="Save Task"/> -->
   </a> 
 </div>
