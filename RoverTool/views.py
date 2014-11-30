@@ -15,6 +15,8 @@ from django.http import *
 
 database_name = "rover"
 collection_name = "plans"
+collection_name_template = "templates"
+collection_name_operation = "operations"
 
 @csrf_exempt
 def index(request):
@@ -23,7 +25,12 @@ def index(request):
     data = []
 
     if request.is_ajax():
-        data = get_plan_detail()
+        if request.method == "POST":
+            if request.POST['operation'] == 'planPane':
+                data = get_plan_detail()
+            if request.POST['operation'] == 'operationConfig':
+                data = get_operation_detail()
+
         return HttpResponse(json.dumps(data), content_type = "application/json")
 
     return render_to_response('maplayout.html', c, RequestContext(request))
@@ -39,6 +46,7 @@ def DBOperation(request):
     plan_desc = ''
     task_points = []
     data = []
+    template_name = ''
 
     if request.is_ajax():
         if request.method == "POST":
@@ -79,6 +87,22 @@ def DBOperation(request):
                 data = export_kml(plan_name)
             elif request.POST['operation'] == 'getPlanList':
                 data = get_plan_detail()
+            elif request.POST['operation'] == 'getOperationList':
+                data = get_operation_detail()
+            elif request.POST['operation'] == 'createTemplate':
+                template_name = request.POST['templateName']
+                createTemplate(template_name)
+                data = get_template_detail()
+            elif request.POST['operation'] == 'operationConfig':
+                BUF = request.POST['BUF']
+                MMRS = request.POST['MMRS']
+                science_image = request.POST['Science Image']
+                image_panorama = request.POST['Image Panorama']
+                spectra_panorama = request.POST['Spectra Panorama']
+                precise_Move = request.POST['Precise Move']
+                smart_target = request.POST['Smart Target']
+                operationConfigSave(BUF, MMRS, science_image, image_panorama, spectra_panorama, precise_Move, smart_target)
+                #data = get_operation_detail()
             
         else:
             print 'why you do this!!'
@@ -195,6 +219,33 @@ def test(request):
 
     return render_to_response('test.html', c, RequestContext(request))
 
+def createTemplate(template_name):    
+    connection = Connection()
+
+    now = datetime.datetime.now()
+    time = now.strftime("%Y-%m-%d %H:%M:%S")
+
+    db = connection[database_name]
+    collection = db[collection_name_template]
+
+    print "heloooooooooooooooooooooooooo"
+    print template_name
+    #plan = {"planName" : plan_name, "planDescription" : plan_desc, "timeStamp" : time, "markers" : markers}
+    #collection.save(plan)
+
+def operationConfigSave(BUF, MMRS, science_image, image_panorama, spectra_panorama, precise_Move, smart_target):
+    connection = Connection()
+
+    now = datetime.datetime.now()
+    time = now.strftime("%Y-%m-%d %H:%M:%S")
+
+    db = connection[database_name]
+    collection = db[collection_name_operation]
+    collection.remove({})
+
+    operations = {"BUFConfig" : BUF, "MMRSConfig" : MMRS, "scienceImageConfig" : science_image, "imagePanoramaConfig" : image_panorama,
+                     "spectraPanoramaConfig" : spectra_panorama, "preciseMoveConfig" : precise_Move, "smartTargetConfig" : smart_target}
+    collection.save(operations)
 
 @csrf_exempt
 def jsonData(request):
@@ -254,6 +305,44 @@ def get_plan_detail():
 
     return data
 
+def get_template_detail():
+    data = {}
+    templateName_array = []
+
+    connection = Connection()
+    db = connection[database_name]
+    collection = db[collection_name_template]
+    templateListCursor = collection.find({},{'_id' : 0, 'templateName' : 1})
+
+    for record in templateListCursor:
+        templateName_array.append(record['templateName'])
+
+    data['templateName'] = templateName_array
+
+    return data    
+
+def get_operation_detail():
+    data = {}
+    operation_name_array = []
+    operation_value_array = []
+
+    connection = Connection()
+    db = connection[database_name]
+    collection = db[collection_name_operation]
+    operationListCursor = collection.find({},{'_id' : 0})
+
+    print operationListCursor[0].keys()
+    for key in operationListCursor[0].keys():
+        operation_name_array.append(key)
+        operation_value_array.append(operationListCursor[0][key])
+    
+        #templateName_array.append(record['templateName'])
+
+    data['operationName'] = operation_name_array
+    data['operationValue'] = operation_value_array
+
+    return data  
+
 def export_kml(plan_name):
 
     connection = Connection()
@@ -265,24 +354,7 @@ def export_kml(plan_name):
     cursor = ast.literal_eval(json.dumps(cursor))   #removing unicode 'u' from the json
     #fld = KML.Folder()
     for marker in cursor['markers']:
-        #for key,value in marker.iteritems():
-         #   print key,value
-            #print "------- "
         s_kml.newpoint(name="Marker", description=str(marker).strip('{}'),
                    coords=[(float(marker['lng']),float(marker['lat']),0)])
         print marker['lng'],marker['lat']
-#coords=[]
-        # pm1 = KML.Placemark(
-        #      KML.name("Marker"),
-        #      KML.description(str(marker).strip('{}')),
-        #      KML.Point(
-        #       KML.coordinates('%s,%s' %(marker['lng'],marker['lat']))   
-        #      )
-        #    )
-        # fld.append(pm1)
-
-    #KML_content = etree.tostring(fld, pretty_print=True)
-    #print s_kml.kml()
-    #print KML_content
-    #return KML_content
     return s_kml.kml()

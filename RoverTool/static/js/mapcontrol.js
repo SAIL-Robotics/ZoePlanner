@@ -213,7 +213,7 @@ function fillTaskDetails(latitudeValue,longitudeValue) {
             var drillSaveSelection = $("#"+drillSaveNode).is(":checked");
             taskDetails[drillValueNode] = drillValue;
             if(drillSaveSelection) {
-              taskDetails[drillSaveNode] = "Yes";  
+                taskDetails[drillSaveNode] = "Yes";  
             }
             else {
               //Remove if it already exists and user has opted no

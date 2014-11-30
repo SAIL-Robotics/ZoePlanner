@@ -2,17 +2,31 @@ var planList;
 var planTitle;
 $(document).ready(function () {
 
+/****************************************************Populate plan pane once the page get loaded********************************************************/
 $.ajax({
          type:"POST",
          url:'/',
          data: {
-                'planName': 'lol',  //plan name
+                'operation': 'planPane',
                 },
          success: function(response){
                populatePlan(response);
          }
 });
 
+/****************************************************Populate operation config once the page get loaded********************************************************/
+$.ajax({
+         type:"POST",
+         url:'/',
+         data: {
+                'operation': 'operationConfig',  
+                },
+         success: function(response){
+               populateOperationConfig(response);
+         }
+});
+
+/****************************************************Hide the rightclick menu********************************************************/
 $(document).click(function () {
       $contextMenu.hide();
   });
@@ -150,6 +164,7 @@ document.getElementById('close').onclick = function(){
   });
 
 
+/****************************************************Save Plan - Button ********************************************************/
 
 /* AJAX call and save the plan to DB*/
   $("#save-button").click(function(){
@@ -185,6 +200,7 @@ document.getElementById('close').onclick = function(){
   return false;         //for stopping the page from refreshing
   });
 
+/****************************************************Proceed button - Create Plan Modal*******************************************************/
 
    //proceed button in Create Plan Modal
   /* data validation inside createplan modal and display saveplan button*/
@@ -225,7 +241,7 @@ document.getElementById('close').onclick = function(){
                    }
                 });
               }
-              else    //create plan actions
+              else    //create new plan actions. 
               {
                 $('#createPlanModal').hide();
                 $("#save-button").show();
@@ -245,6 +261,8 @@ document.getElementById('close').onclick = function(){
     }
   });
 
+/****************************************************Create Plan Modal********************************************************/
+
    //"Create Plan" button in base1.html
   /* reset the data inside create plan modal*/
   $("#createPlanModal").click(function(){
@@ -257,6 +275,7 @@ document.getElementById('close').onclick = function(){
   });
 
 
+/****************************************************Right Click - Rename********************************************************/
 $("#renamePlan").click(function(){
 
     if($('#planRename').val().trim().length === 0) {
@@ -299,6 +318,9 @@ $("#renamePlan").click(function(){
     }
   });
 
+/****************************************************Plan Reset Icon********************************************************/
+//Retrieves all plan names from DB and populate it
+
   $("#planReset").click(function(){
       $.ajax({
          type:"POST",
@@ -311,6 +333,8 @@ $("#renamePlan").click(function(){
          }
       });
   });
+
+/****************************************************Click on a Plan to view it********************************************************/
 
   $('#planMenu').on('click', '.abcd', function (event) {
    var target = event.target || event.srcElement;
@@ -332,7 +356,9 @@ $("#renamePlan").click(function(){
     });
 
   });
-  
+
+/****************************************************Search Plan********************************************************/  
+//call this function upon every keystroke in the search textbox. 
   $( "#searchPlan" ).keyup(function() {
     input = $("#searchPlan").val();
     $("#planMenu").empty()
@@ -345,8 +371,72 @@ $("#renamePlan").click(function(){
     }
   });
 
+/****************************************************Create Template Button********************************************************/  
+
+  $("#createTemplateButton").click(function(){
+    $('#templateName').val('')
+    $('#templateNameErr').html('')
+    $('#createTemplateModal').modal('show');
+  });
+
+/****************************************************Create Template Button in Modal********************************************************/  
+
+  $("#createTemplate").click(function(){
+    $.ajax({
+       type:"POST",
+       url:"/DBOperation/",
+       data: {
+              'operation': 'createTemplate',
+              'templateName': $('#templateName').val(),
+              },
+       success: function(response){
+           
+       }
+    });
+    $('#createTemplateModal').modal('hide');
+  });
+
+/****************************************************Config Button********************************************************/  
+
+  $("#operationPaneConfig").click(function(){
+    
+    $.ajax({
+       type:"POST",
+       url:"/DBOperation/",
+       data: {
+              'operation': 'getOperationList',
+              },
+       success: function(response){
+           populateOperationConfig(response)
+       }
+    });
+    $('#operationConfigModal').modal('show');
+  });
+
+/****************************************************Operation Pane Default value Config Modal********************************************************/  
+
+  $('#saveConfig').click(function(){
+    $.ajax({
+       type:"POST",
+       url:"/DBOperation/",
+       data: {
+              'operation': 'operationConfig',
+              'BUF': $('#BUFConfig').val(),
+              'MMRS': $('#MMRSConfig').val(),
+              'Science Image': $('#scienceImageConfig').val(),
+              'Image Panorama': $('#imagePanoramaConfig').val(),
+              'Spectra Panorama': $('#spectraPanoramaConfig').val(),
+              'Precise Move': $('#preciseMoveConfig').val(),
+              'Smart Target': $('#smartTargetConfig').val(),
+              },
+       success: function(response){
+       }
+    });
+    $('#operationConfigModal').modal('hide');
+  });
 });
 
+/****************************************************Populate Plan Pane from the 'response'********************************************************/
 function populatePlan(response)
 {
   $("#planMenu").empty()
@@ -354,5 +444,15 @@ function populatePlan(response)
   for(i = 0; i < response.planName.length; i++)
   {
     $("#planMenu").append('<a href="#" class="list-group-item right-click abcd '+ response.planName[i] +'">' + response.planName[i] + '<span class="badge">'+ response.totalMarkers[i] +'</span> </a>');  
+  }
+}
+
+/****************************************************Populate Operation Config from the 'response'********************************************************/
+
+function populateOperationConfig(response)
+{
+  for(i = 0; i < response.operationName.length; i++)
+  {
+    $('#'+response.operationName[i]).val(response.operationValue[i]);
   }
 }
