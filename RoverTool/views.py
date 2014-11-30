@@ -87,6 +87,8 @@ def DBOperation(request):
                 data = export_kml(plan_name)
             elif request.POST['operation'] == 'getPlanList':
                 data = get_plan_detail()
+            elif request.POST['operation'] == 'getDeletedPlanList':
+                data = get_deleted_plan_detail()
             elif request.POST['operation'] == 'getOperationList':
                 data = get_operation_detail()
             elif request.POST['operation'] == 'createTemplate':
@@ -179,7 +181,8 @@ def deletePlan(plan_name):
 
     db = connection[database_name]
     collection = db[collection_name]
-    collection.remove({'planName' : plan_name});
+    markersCursor = collection.update({'planName' : plan_name}, {'$set' : {'deleted' : 1}})
+    #collection.remove({'planName' : plan_name});
 
 def validatePlanName(plan_name):
     data = {}
@@ -292,7 +295,7 @@ def get_plan_detail():
     connection = Connection()
     db = connection[database_name]
     collection = db[collection_name]
-    planListCursor = collection.find({},{'_id' : 0, 'planName' : 1})
+    planListCursor = collection.find({'deleted' : {"$ne" : 1}},{'_id' : 0, 'planName' : 1})
 
     for record in planListCursor:
         planname_array.append(record['planName'])
@@ -302,6 +305,27 @@ def get_plan_detail():
 
     data['planName'] = planname_array
     data['totalMarkers'] = tot_markers
+
+    return data
+
+def get_deleted_plan_detail():
+    data = {}
+    planname_array = []
+    tot_markers = []
+
+    connection = Connection()
+    db = connection[database_name]
+    collection = db[collection_name]
+    planListCursor = collection.find({'deleted' : 1},{'_id' : 0, 'planName' : 1})
+
+    for record in planListCursor:
+        planname_array.append(record['planName'])
+
+     #   markersCursor = collection.find_one({'planName' : record['planName']}, {'_id':0, 'markers':1})
+      #  tot_markers.append(len(markersCursor['markers']))
+
+    data['planName'] = planname_array
+    #data['totalMarkers'] = tot_markers
 
     return data
 

@@ -334,6 +334,21 @@ $("#renamePlan").click(function(){
       });
   });
 
+/****************************************************Plan Trash bin Icon********************************************************/
+  $('#planTrash').click(function(){
+    $('#planTrashModal').modal('show');
+      $.ajax({
+         type:"POST",
+         url:"/DBOperation/",
+         data: {
+                'operation': 'getDeletedPlanList',
+                },
+         success: function(response){
+            populatePlanTrash(response)
+         }
+      });
+  });
+
 /****************************************************Click on a Plan to view it********************************************************/
 
   $('#planMenu').on('click', '.abcd', function (event) {
@@ -354,6 +369,29 @@ $("#renamePlan").click(function(){
            viewMarkers(response,event.currentTarget.firstChild.data);
        }
     });
+
+  });
+
+/****************************************************Click on a Plan in trash to recover it********************************************************/
+
+  $('#planTrashDiv').on('click', '.planTrashClass', function (event) {
+   var target = event.target || event.srcElement;
+   console.log ( event.currentTarget.firstChild.data ); 
+
+   // $.ajax({
+   //     type:"POST",
+   //     url:"/DBOperation/",
+   //     data: {
+   //              'planName': event.currentTarget.firstChild.data,  //plan name
+   //              'operation': 'recoverPlan',
+   //            },
+   //     success: function(response){
+   //              $('#createPlanModal').show();
+   //              $("#save-button").show();
+   //         console.log(response);
+   //         viewMarkers(response,event.currentTarget.firstChild.data);
+   //     }
+   //  });
 
   });
 
@@ -454,5 +492,16 @@ function populateOperationConfig(response)
   for(i = 0; i < response.operationName.length; i++)
   {
     $('#'+response.operationName[i]).val(response.operationValue[i]);
+  }
+}
+
+/****************************************************Populate Plan Trash from the 'response'********************************************************/
+
+function populatePlanTrash(response)
+{
+  $("#planTrashDiv").empty()
+  for(i = 0; i < response.planName.length; i++)
+  {
+    $("#planTrashDiv").append('<a href="#" class="list-group-item planTrashClass">'+ response.planName[i] +'</a>'); 
   }
 }
