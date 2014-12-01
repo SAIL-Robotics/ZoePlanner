@@ -1,5 +1,6 @@
 var planList;
 var planTitle;
+var eve;
 $(document).ready(function () {
 
 /****************************************************Populate plan pane once the page get loaded********************************************************/
@@ -30,6 +31,10 @@ $.ajax({
 $(document).click(function () {
       $contextMenu.hide();
   });
+
+$(document.body).on('click', 'button', function() {
+    //console.log('button ' + this.class + ' clicked');
+});
 
 $('body').on('click', function (e) {
     $('[data-toggle=popover]').each(function () {
@@ -372,26 +377,54 @@ $("#renamePlan").click(function(){
 
   });
 
-/****************************************************Click on a Plan in trash to recover it********************************************************/
+/****************************************************Click on a Plan in trash to recover it and delete it forever :'( **********************************************/
 
   $('#planTrashDiv').on('click', '.planTrashClass', function (event) {
    var target = event.target || event.srcElement;
+   console.log(event.target);
    console.log ( event.currentTarget.firstChild.data ); 
+   eve = event;
 
-   // $.ajax({
-   //     type:"POST",
-   //     url:"/DBOperation/",
-   //     data: {
-   //              'planName': event.currentTarget.firstChild.data,  //plan name
-   //              'operation': 'recoverPlan',
-   //            },
-   //     success: function(response){
-   //              $('#createPlanModal').show();
-   //              $("#save-button").show();
-   //         console.log(response);
-   //         viewMarkers(response,event.currentTarget.firstChild.data);
-   //     }
-   //  });
+   if (event.target.className.search("trash") > 0)
+   {
+    console.log("trashhhhhh")
+       $.ajax({
+       type:"POST",
+       url:"/DBOperation/",
+       data: {
+                'planName': event.currentTarget.firstChild.data,  //plan name
+                'operation': 'deletePlanForever',
+              },
+       success: function(response){
+              populatePlanTrash(response)
+          }
+    });   
+   }
+   else if (event.target.className.search("recover") > 0)
+   {
+       $.ajax({
+       type:"POST",
+       url:"/DBOperation/",
+       data: {
+                'planName': event.currentTarget.firstChild.data,  //plan name
+                'operation': 'recoverPlan',
+              },
+       success: function(response){
+              populatePlanTrash(response)
+              $.ajax({
+                 type:"POST",
+                 url:"/DBOperation/",
+                 data: {
+                        'operation': 'getPlanList',
+                        },
+                 success: function(response){
+                     populatePlan(response)
+                 }
+              });
+          }
+    });   
+   } 
+  
 
   });
 
@@ -472,6 +505,12 @@ $("#renamePlan").click(function(){
     });
     $('#operationConfigModal').modal('hide');
   });
+
+  $('#TrashPop').click(function(){
+    $('#operationConfigModal').modal('show');
+
+  });
+
 });
 
 /****************************************************Populate Plan Pane from the 'response'********************************************************/
@@ -502,6 +541,6 @@ function populatePlanTrash(response)
   $("#planTrashDiv").empty()
   for(i = 0; i < response.planName.length; i++)
   {
-    $("#planTrashDiv").append('<a href="#" class="list-group-item planTrashClass">'+ response.planName[i] +'</a>'); 
+    $("#planTrashDiv").append('<div href="#" class="list-group-item clearfix planTrashClass">'+ response.planName[i] +'<span class="pull-right">  <button class="btn btn-xs btn-info trash" id='+response.planName[i]+'> <span class="glyphicon glyphicon-trash trash"></span> </button>  <button class="btn btn-xs btn-info recover" id='+response.planName[i]+'> <span class="glyphicon glyphicon-log-in recover"></span> </button> </span> </span></div>'); 
   }
 }

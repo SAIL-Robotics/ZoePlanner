@@ -67,7 +67,14 @@ def DBOperation(request):
                 plan_name = request.POST['planName']
                 deletePlan(plan_name)
                 data = get_plan_detail()
-                print data['planName']
+            elif request.POST['operation'] == 'deletePlanForever':
+                plan_name = request.POST['planName']
+                delete_plan_forever(plan_name)
+                data = get_deleted_plan_detail()
+            elif request.POST['operation'] == 'recoverPlan':
+                plan_name = request.POST['planName']
+                recover_plan(plan_name)
+                data = get_deleted_plan_detail()
             elif request.POST['operation'] == 'duplicate':
                 plan_name = request.POST['planName']
                 new_plan_name = request.POST['newPlanName']
@@ -183,6 +190,20 @@ def deletePlan(plan_name):
     collection = db[collection_name]
     markersCursor = collection.update({'planName' : plan_name}, {'$set' : {'deleted' : 1}})
     #collection.remove({'planName' : plan_name});
+
+def delete_plan_forever(plan_name):
+    connection = Connection()
+
+    db = connection[database_name]
+    collection = db[collection_name]
+    collection.remove({'planName' : plan_name});    
+
+def recover_plan(plan_name):
+    connection = Connection()
+
+    db = connection[database_name]
+    collection = db[collection_name]
+    markersCursor = collection.update({'planName' : plan_name}, {'$set' : {'deleted' : 0}})
 
 def validatePlanName(plan_name):
     data = {}
