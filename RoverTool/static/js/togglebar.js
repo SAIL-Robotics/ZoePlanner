@@ -23,7 +23,9 @@ $.ajax({
                 'operation': 'operationConfig',  
                 },
          success: function(response){
+          eve = response
                populateOperationConfig(response);
+               updateDefaultValues(response);
          }
 });
 
@@ -383,7 +385,7 @@ $("#renamePlan").click(function(){
    var target = event.target || event.srcElement;
    console.log(event.target);
    console.log ( event.currentTarget.firstChild.data ); 
-   eve = event;
+   //eve = event;
 
    if (event.target.className.search("trash") > 0)
    {
@@ -479,6 +481,8 @@ $("#renamePlan").click(function(){
               },
        success: function(response){
            populateOperationConfig(response)
+           //eve = response;
+           updateDefaultValues(response);
        }
     });
     $('#operationConfigModal').modal('show');
@@ -493,14 +497,26 @@ $("#renamePlan").click(function(){
        data: {
               'operation': 'operationConfig',
               'BUF': $('#BUFConfig').val(),
-              'MMRS': $('#MMRSConfig').val(),
-              'Science Image': $('#scienceImageConfig').val(),
-              'Image Panorama': $('#imagePanoramaConfig').val(),
-              'Spectra Panorama': $('#spectraPanoramaConfig').val(),
+              'MMRS1': $('#MMRSConfig1').val(),
+              'MMRS2': $('#MMRSConfig2').val(),
+              'MMRS3': $('#MMRSConfig3').val(),
+              'Science Image1': $('#scienceImageConfig1').val(),
+              'Science Image2': $('#scienceImageConfig2').val(),
+              'Image Panorama1': $('#imagePanoramaConfig1').val(),
+              'Image Panorama2': $('#imagePanoramaConfig2').val(),
+              'Image Panorama3': $('#imagePanoramaConfig3').val(),
+              'Image Panorama4': $('#imagePanoramaConfig4').val(),
+              'Spectra Panorama1': $('#spectraPanoramaConfig1').val(),
+              'Spectra Panorama2': $('#spectraPanoramaConfig2').val(),
+              'Spectra Panorama3': $('#spectraPanoramaConfig3').val(),
+              'Spectra Panorama4': $('#spectraPanoramaConfig4').val(),
+              'Spectra Panorama5': $('#spectraPanoramaConfig5').val(),
               'Precise Move': $('#preciseMoveConfig').val(),
               'Smart Target': $('#smartTargetConfig').val(),
               },
        success: function(response){
+           //eve = response;
+           updateDefaultValues(response);
        }
     });
     $('#operationConfigModal').modal('hide');
@@ -538,6 +554,7 @@ function populateOperationConfig(response)
 
 function populatePlanTrash(response)
 {
+
   $("#planTrashDiv").empty()
   for(i = 0; i < response.planName.length; i++)
   {

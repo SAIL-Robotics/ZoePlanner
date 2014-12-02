@@ -104,14 +104,24 @@ def DBOperation(request):
                 saveTemplate(template_name,markers)  
             elif request.POST['operation'] == 'operationConfig':
                 BUF = request.POST['BUF']
-                MMRS = request.POST['MMRS']
-                science_image = request.POST['Science Image']
-                image_panorama = request.POST['Image Panorama']
-                spectra_panorama = request.POST['Spectra Panorama']
+                MMRS1 = request.POST['MMRS1']
+                MMRS2 = request.POST['MMRS2']
+                MMRS3 = request.POST['MMRS3']
+                science_image1 = request.POST['Science Image1']
+                science_image2 = request.POST['Science Image2']
+                image_panorama1 = request.POST['Image Panorama1']
+                image_panorama2 = request.POST['Image Panorama2']
+                image_panorama3 = request.POST['Image Panorama3']
+                image_panorama4 = request.POST['Image Panorama4']
+                spectra_panorama1 = request.POST['Spectra Panorama1']
+                spectra_panorama2 = request.POST['Spectra Panorama2']
+                spectra_panorama3 = request.POST['Spectra Panorama3']
+                spectra_panorama4 = request.POST['Spectra Panorama4']
+                spectra_panorama5 = request.POST['Spectra Panorama5']
                 precise_Move = request.POST['Precise Move']
                 smart_target = request.POST['Smart Target']
-                operationConfigSave(BUF, MMRS, science_image, image_panorama, spectra_panorama, precise_Move, smart_target)
-                #data = get_operation_detail()
+                operationConfigSave(BUF, MMRS1, MMRS2, MMRS3, science_image1, science_image2, image_panorama1, image_panorama2, image_panorama3, image_panorama4, spectra_panorama1, spectra_panorama2, spectra_panorama3, spectra_panorama4, spectra_panorama5, precise_Move, smart_target)
+                data = get_operation_detail()
             
         else:
             print 'why you do this!!'
@@ -264,7 +274,7 @@ def createTemplate(template_name):
     #plan = {"planName" : plan_name, "planDescription" : plan_desc, "timeStamp" : time, "markers" : markers}
     #collection.save(plan)
 
-def operationConfigSave(BUF, MMRS, science_image, image_panorama, spectra_panorama, precise_Move, smart_target):
+def operationConfigSave(BUF, MMRS1, MMRS2, MMRS3, science_image1, science_image2, image_panorama1, image_panorama2, image_panorama3, image_panorama4, spectra_panorama1, spectra_panorama2, spectra_panorama3, spectra_panorama4, spectra_panorama5, precise_Move, smart_target):
     connection = Connection()
 
     now = datetime.datetime.now()
@@ -274,8 +284,7 @@ def operationConfigSave(BUF, MMRS, science_image, image_panorama, spectra_panora
     collection = db[collection_name_operation]
     collection.remove({})
 
-    operations = {"BUFConfig" : BUF, "MMRSConfig" : MMRS, "scienceImageConfig" : science_image, "imagePanoramaConfig" : image_panorama,
-                     "spectraPanoramaConfig" : spectra_panorama, "preciseMoveConfig" : precise_Move, "smartTargetConfig" : smart_target}
+    operations = {"BUFConfig" : BUF, "MMRSConfig1" : MMRS1, "MMRSConfig2" : MMRS2, "MMRSConfig3" : MMRS3, "scienceImageConfig1" : science_image1, "scienceImageConfig2" : science_image2, "imagePanoramaConfig1" : image_panorama1, "imagePanoramaConfig2" : image_panorama2, "imagePanoramaConfig3" : image_panorama3, "imagePanoramaConfig4" : image_panorama4, "spectraPanoramaConfig1" : spectra_panorama1, "spectraPanoramaConfig2" : spectra_panorama2, "spectraPanoramaConfig3" : spectra_panorama3, "spectraPanoramaConfig4" : spectra_panorama4, "spectraPanoramaConfig5" : spectra_panorama5, "preciseMoveConfig" : precise_Move, "smartTargetConfig" : smart_target}
     collection.save(operations)
 
 @csrf_exempt

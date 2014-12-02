@@ -1,3 +1,66 @@
+var operationDrillDefault; 
+var operationBufDefault; 
+var operationMmrsExposureDefault; 
+var operationMmrsAccumulationDefault; 
+var operationMmrsNumberDefault; 
+var operationSciencePanDefault; 
+var operationScienceTiltDefault; 
+var operationImageStartAzimuthDefault; 
+var operationImageEndAzimuthDefault; 
+var operationImageStartElevationDefault; 
+var operationImageEndElevationDefault; 
+var operationSpectraStartAzimuthDefault; 
+var operationSpectraEndAzimuthDefault; 
+var operationSpectraStartElevationDefault; 
+var operationSpectraEndElevationDefault; 
+var operationSpectraAngularDefault; 
+var operationPreciseMoveDefault; 
+var operationSmartTargetDefault; 
+//******************************************************************************************************
+//updateDefaultValues - to update the default value for the operations in the operation pane
+function updateDefaultValues(defaultValues) {
+	
+	for(i = 0; i < defaultValues.operationName.length; i++)
+  	{
+  		if(defaultValues.operationName[i] == "imagePanoramaConfig1")
+			operationImageStartAzimuthDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "imagePanoramaConfig2")
+			operationImageEndAzimuthDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "imagePanoramaConfig3")
+			operationImageStartElevationDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "imagePanoramaConfig4")
+			operationImageEndElevationDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "preciseMoveConfig")
+			operationPreciseMoveDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "spectraPanoramaConfig3")
+			operationSpectraStartElevationDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "spectraPanoramaConfig2")
+			operationSpectraEndAzimuthDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "spectraPanoramaConfig1")
+			operationSpectraStartAzimuthDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "smartTargetConfig")
+			operationSmartTargetDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "BUFConfig")
+			operationBufDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "spectraPanoramaConfig5")
+			operationSpectraAngularDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "spectraPanoramaConfig4")
+			operationSpectraEndElevationDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "MMRSConfig3")
+			operationMmrsNumberDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "scienceImageConfig2")
+			operationScienceTiltDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "MMRSConfig1")
+			operationMmrsExposureDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "MMRSConfig2")
+			operationMmrsAccumulationDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "scienceImageConfig1")
+			operationSciencePanDefault = defaultValues.operationValue[i]; 
+	}
+	
+}//updateDefaultValues
+
+
 //******************************************************************************************************
 //removeFromTaskDetails - to remove the drill div from the task pane
 function removeFromTaskDetails(removedId) {
@@ -183,28 +246,28 @@ function constructDiv() {
 	if(selectedOption && selectedOption != undefined) {
 
 		if(selectedOption == "Drill") {
-			constructDrillDiv(currentTaskpoint,selectedOption,30);
+			constructDrillDiv(currentTaskpoint,selectedOption,operationDrillDefault);
 		}
 		else if(selectedOption == "BUF") {
-			constructBufDiv(currentTaskpoint,selectedOption,30);
+			constructBufDiv(currentTaskpoint,selectedOption,operationBufDefault);
 		}//if selection is BUF
 		else if(selectedOption == "MMRS") {
-			constructMmrsDiv(currentTaskpoint,selectedOption,40,40,40);
+			constructMmrsDiv(currentTaskpoint,selectedOption,operationMmrsExposureDefault,operationMmrsAccumulationDefault,operationMmrsNumberDefault);
 		}//if selection is MMRS
 		else if(selectedOption == "Science Image") {
-			constructScienceImageDiv(currentTaskpoint,selectedOption,50,50);
+			constructScienceImageDiv(currentTaskpoint,selectedOption,operationSciencePanDefault,operationScienceTiltDefault);
 		} //if selection is science image
 		else if(selectedOption == "Image Panorama") {
-			constructImagePanoramaDiv(currentTaskpoint,selectedOption,55,55,55,55);
+			constructImagePanoramaDiv(currentTaskpoint,selectedOption,operationImageStartAzimuthDefault,operationImageEndAzimuthDefault,operationImageStartElevationDefault,operationImageEndElevationDefault);
 		}// if selection is Image Panorama
 		else if(selectedOption == "Spectra Panorama") {
-			constructSpectraPanoramaDiv(currentTaskpoint,selectedOption,60,60,60,60,60,"Yes","Yes");
+			constructSpectraPanoramaDiv(currentTaskpoint,selectedOption,operationSpectraStartAzimuthDefault,operationSpectraEndAzimuthDefault,operationSpectraStartElevationDefault,operationSpectraEndElevationDefault,operationSpectraAngularDefault,"Yes","Yes");
 		}// if selection is Spectra Panorama
 		else if(selectedOption == "Precise Move") {
-			constructPreciseMoveDiv(currentTaskpoint,selectedOption,70);
+			constructPreciseMoveDiv(currentTaskpoint,selectedOption,operationPreciseMoveDefault);
 		}// if selection is Precise Move
 		else if(selectedOption == "Smart Target") {
-			constructSmartTargetDiv(currentTaskpoint,selectedOption,80);
+			constructSmartTargetDiv(currentTaskpoint,selectedOption,operationSmartTargetDefault);
 		}// if selection is smart Target
 	}
 }//end of construct div function
