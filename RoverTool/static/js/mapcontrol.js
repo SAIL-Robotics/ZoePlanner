@@ -13,15 +13,15 @@ var lines = [];
 //******************************************************************************************************
 //setTextState - to set the task fields to be disabled/not based on lock/unlock state
 function setTextState(state) {
-    console.log("SSSSSSSSSETTTTTTTING");
 
   var taskFieldIds = ["bufValue", 
   "mmrsExposureValue","mmrsAccumulationValue","mmrsNumberValue","sciencePanValue", "scienceTiltValue","imageStartAzimuthValue",
   "imageEndAzimuthValue","imageStartElevationValue","imageEndElevationValue","spectraStartAzimuthValue",
   "spectraEndAzimuthValue","spectraStartElevationValue","spectraEndElevationValue", "spectraAngularValue", "preciseMoveValue",
-  "spectraAngularCamera","spectraNavcamRecord","spectraSmartTarget","preciseMove","spectraSmartTargetValue"]
+  "spectraAngularCamera","spectraNavcamRecord","spectraSmartTarget","preciseMove","spectraSmartTargetValue","selectTemplate","selectOperation",
+  "addOperation","createTemplateButton"]
   var taskCloseButtons = ["operationCloseBUF", "operationCloseMMRS","operationCloseScienceImage","operationCloseImagePanorama","operationCloseSpectraPanorama","operationClosePreciseMove",
-  "operationCloseSmartTarget"];
+  "operationCloseSmartTarget",];
 
   var drillIterator = $("#drillIterator").val(); //drillIterator value
   drillIterator = parseInt(drillIterator);
