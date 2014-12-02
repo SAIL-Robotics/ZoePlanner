@@ -747,3 +747,29 @@ function lockToggleButtonBlink()
 
 //******************************************************************************************************
  google.maps.event.addDomListener(window, 'load', initialize);
+ function createTemplate(){
+  bootbox.prompt("Template Name:", function(result) {                
+  if (result === null) {                                             
+    toastr.success('Please provide a template name','');                              
+  } else {
+    saveTemplate(result)
+                              
+  }
+});
+
+}
+function saveTemplate(result){
+  $.ajax({
+         type:"POST",
+         url:"/DBOperation/",
+         data: {
+                'markers': JSON.stringify(taskpoints),    //constains lat, lon
+                'name':result,
+                'operation': 'createTemplate',
+                },
+         success: function(data){
+             //populatePlan(response)
+             toastr.success('Template Created','');
+         }
+      });
+}

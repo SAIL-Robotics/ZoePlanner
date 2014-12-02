@@ -15,8 +15,8 @@ from django.http import *
 
 database_name = "rover"
 collection_name = "plans"
-collection_name_template = "templates"
 collection_name_operation = "operations"
+template_collection = "templates"
 
 @csrf_exempt
 def index(request):
@@ -99,9 +99,9 @@ def DBOperation(request):
             elif request.POST['operation'] == 'getOperationList':
                 data = get_operation_detail()
             elif request.POST['operation'] == 'createTemplate':
-                template_name = request.POST['templateName']
-                createTemplate(template_name)
-                data = get_template_detail()
+                template_name = request.POST['name'] 
+                markers = json.loads(request.POST.get('markers'))
+                saveTemplate(template_name,markers)  
             elif request.POST['operation'] == 'operationConfig':
                 BUF = request.POST['BUF']
                 MMRS = request.POST['MMRS']
@@ -135,7 +135,14 @@ def saveToDB(plan_name, plan_name_update, plan_desc, markers):
         print "update"
         update_plan(plan_name_update, plan_desc, markers)
 
-   
+def saveTemplate(template_name,markers):
+    connection = Connection()
+    now = datetime.datetime.now()
+    time = now.strftime("%Y-%m-%d %H:%M:%S")
+    db = connection[database_name]
+    collection = db[template_collection]
+    template_details = {"template_name":template_name,"markers":markers}
+    collection.save(template_details)   
 
 def update_plan(plan_name, plan_desc, markers):
     connection = Connection()
