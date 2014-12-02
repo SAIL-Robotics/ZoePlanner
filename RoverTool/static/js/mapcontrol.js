@@ -281,7 +281,8 @@ function initializeOperationDiv() {
 
   var selectTemplate = jQuery('<select>', {
     id:'selectTemplate',
-    class:'btn'
+    class:'btn',
+    onChange: 'populateTemplate();'
   }).hide().append($("<option>").attr('value','Select Template').text('Select Template'));
 
   var selectTemplateSpan = jQuery('<span>', {
@@ -309,6 +310,21 @@ function initializeOperationDiv() {
      selectOperation.append($("<option>").attr('value',this.val).text(this.text));
   });
 
+  $.ajax({
+         type:"POST",
+         url:"/DBOperation/",
+         data: {
+                'operation': 'fetchTemplates',
+
+                },
+         success: function(data){
+              for(i = 0; i < data.templateName.length; i++){
+               selectTemplate.append($("<option>").attr('value',data.templateName[i]).text(data.templateName[i])); 
+              }
+             
+         }
+      });
+
   var addButton = jQuery('<input>',{
     type:'button',
     id:'addOperation',
@@ -334,6 +350,110 @@ function initializeOperationDiv() {
 // Nov 29
 //******************************************************************************************************
 //populateOperationDiv - to populate div based on taskpoints (if present)
+function populateTemplate(){
+  $("#operationDiv").children().remove();
+  $.ajax({
+         type:"POST",
+         url:"/DBOperation/",
+         data: {
+                'operation': 'getTemplateDetails',
+                'template_name': $('#selectTemplate').val()
+                },
+         success: function(data){
+             
+               populateTemplateDetails(data)
+
+              }
+             
+         
+      });
+}
+
+function populateTemplateDetails(taskDetails) {
+  
+  var currentTaskpoint;
+  var latitudeValue = document.getElementById("lat").value;
+  var longitudeValue = document.getElementById("lng").value;
+
+  for(taskDetailsIterator in taskpoints) {
+    if(taskpoints[taskDetailsIterator].lat == latitudeValue && taskpoints[taskDetailsIterator].lng == longitudeValue) {
+      currentTaskpoint = taskDetailsIterator;
+      break;
+    }
+  }
+  var lat = taskpoints[currentTaskpoint].lat;
+  var lng = taskpoints[currentTaskpoint].lng;
+
+  taskpoints[currentTaskpoint] = {};
+  taskpoints[currentTaskpoint].lat = lat;
+  taskpoints[currentTaskpoint].lng = lng;
+  
+ for(i =0; i<taskDetails.length;i++){
+   
+    if(taskDetails[i]['bufValue'] && taskDetails[i]['bufValue']!=undefined) {
+      
+      constructBufDiv(currentTaskpoint,"BUF",taskDetails[i]['bufValue']);
+      // remove this from the select option
+      $("#selectOperation option[value='BUF']").remove();
+    }
+    if(taskDetails[i]['mmrsExposureValue'] && taskDetails[i]['mmrsExposureValue']!=undefined && taskDetails[i]['mmrsAccumulationValue'] && taskDetails[i]['mmrsAccumulationValue']!=undefined && taskDetails[i]['mmrsNumberValue'] && taskDetails[i]['mmrsNumberValue']!=undefined) {
+      var mmrsExposureValue = taskDetails[i]['mmrsExposureValue'];
+      var mmrsAccumulationValue = taskDetails[i]['mmrsAccumulationValue'];
+      var mmrsNumberValue = taskDetails[i]['mmrsNumberValue'];
+      constructMmrsDiv(currentTaskpoint,"MMRS",mmrsExposureValue,mmrsAccumulationValue,mmrsNumberValue);
+      //remove this from the select option
+      $("#selectOperation option[value='MMRS']").remove();
+    }
+    if(taskDetails[i]['sciencePanValue'] && taskDetails[i]['sciencePanValue']!=undefined && taskDetails[i]['scienceTiltValue'] && taskDetails[i]['scienceTiltValue']!=undefined ) {
+      var sciencePanValue = taskDetails[i]['sciencePanValue'];
+      var scienceTiltValue = taskDetails[i]['scienceTiltValue'];
+      constructScienceImageDiv(currentTaskpoint,"Science Image",sciencePanValue,scienceTiltValue);
+      //remove this from the select option
+      $("#selectOperation option[value='Science Image']").remove();
+    }
+    if(taskDetails[i]['imageStartAzimuthValue'] && taskDetails[i]['imageStartAzimuthValue']!=undefined && taskDetails[i]['imageEndAzimuthValue'] && taskDetails[i]['imageEndAzimuthValue']!=undefined && taskDetails[i]['imageStartElevationValue'] && taskDetails[i]['imageStartElevationValue']!=undefined && taskDetails[i]['imageEndElevationValue'] && taskDetails[i]['imageEndElevationValue']!=undefined) {
+      var imageStartAzimuthValue = taskDetails[i]['imageStartAzimuthValue'];
+      var imageEndAzimuthValue = taskDetails[i]['imageEndAzimuthValue'];
+      var imageStartElevationValue = taskDetails[i]['imageStartElevationValue'];
+      var imageEndElevationValue = taskDetails[i]['imageEndElevationValue'];
+      constructImagePanoramaDiv(currentTaskpoint,"Image Panorama",imageStartAzimuthValue,imageEndAzimuthValue,imageStartElevationValue,imageEndElevationValue);
+      //remove this from select option
+      $("#selectOperation option[value='Image Panorama']").remove();
+    }
+    if(taskDetails[i]['spectraStartAzimuthValue'] && taskDetails[i]['spectraStartAzimuthValue']!=undefined && taskDetails[i]['spectraEndAzimuthValue'] && taskDetails[i]['spectraEndAzimuthValue']!=undefined && taskDetails[i]['spectraStartElevationValue'] && taskDetails[i]['spectraStartElevationValue']!=undefined && taskDetails[i]['spectraEndElevationValue'] && taskDetails[i]['spectraEndElevationValue']!=undefined && taskDetails[i]['spectraAngularValue'] && taskDetails[i]['spectraAngularValue']!=undefined) {
+     var spectraStartAzimuthValue = taskDetails[i]['spectraStartAzimuthValue'];
+     var spectraEndAzimuthValue = taskDetails[i]['spectraEndAzimuthValue'];
+     var spectraStartElevationValue = taskDetails[i]['spectraStartElevationValue'];
+     var spectraEndElevationValue = taskDetails[i]['spectraEndElevationValue'];
+     var spectraAngularValue = taskDetails[i]['spectraAngularValue'];
+     var spectraAngularCamera = "no"; 
+       var spectraNavcamRecord = "no";
+       if(taskDetails[i]['spectraAngularCamera'] && taskDetails[i]['spectraAngularCamera']!=undefined ) {
+        var spectraAngularCamera = "Yes"; 
+       }
+       if(taskDetails[i]['spectraNavcamRecord'] && taskDetails[i]['spectraNavcamRecord']!=undefined ) {
+        var spectraNavcamRecord = "Yes"; 
+       }
+     constructSpectraPanoramaDiv(currentTaskpoint,"Spectra Panorama",spectraStartAzimuthValue,spectraEndAzimuthValue,spectraStartElevationValue,spectraEndElevationValue,spectraAngularValue,spectraAngularCamera,spectraNavcamRecord);
+     //remove this from select option
+     $("#selectOperation option[value='Spectra Panorama']").remove();
+    }
+    if(taskDetails[i]['spectraSmartTargetValue'] && taskDetails[i]['spectraSmartTargetValue']!=undefined) {
+      var spectraSmartTargetValue = taskDetails[i]['spectraSmartTargetValue'];
+      constructSmartTargetDiv(currentTaskpoint,"Smart Target",spectraSmartTargetValue);
+      //remove this from select option
+      $("#selectOperation option[value='Smart Target']").remove();
+    }  
+    if(taskDetails[i]['preciseMoveValue'] && taskDetails[i]['preciseMoveValue']!=undefined) {
+      var preciseMoveValue = taskDetails[i]['preciseMoveValue'];
+      constructPreciseMoveDiv(currentTaskpoint,"Precise Move",preciseMoveValue);
+      //remove this from select option
+      $("#selectOperation option[value='Precise Move']").remove();
+    }
+  }
+  setTextState(locked); //Set the text state accordingly
+}//populateOperationDiv
+
 function populateOperationDiv(taskpoints) {
 
   var currentTaskpoint;

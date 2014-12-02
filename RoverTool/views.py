@@ -122,6 +122,11 @@ def DBOperation(request):
                 smart_target = request.POST['Smart Target']
                 operationConfigSave(BUF, MMRS1, MMRS2, MMRS3, science_image1, science_image2, image_panorama1, image_panorama2, image_panorama3, image_panorama4, spectra_panorama1, spectra_panorama2, spectra_panorama3, spectra_panorama4, spectra_panorama5, precise_Move, smart_target)
                 data = get_operation_detail()
+            elif request.POST['operation'] == "fetchTemplates":
+                data = fetch_templates()
+            elif request.POST['operation'] == "getTemplateDetails":
+                template_name = request.POST['template_name'] 
+                data = get_template_details(template_name)
             
         else:
             print 'why you do this!!'
@@ -345,6 +350,18 @@ def get_plan_detail():
 
     return data
 
+def get_template_details(template_name):
+    print "*******************************"
+    connection = Connection()
+
+    db = connection[database_name]
+    collection = db[template_collection]
+
+    markersCursor = collection.find_one({'template_name' : template_name}, {'_id':0, 'markers':1})
+    print markersCursor['markers']
+
+    return markersCursor['markers']
+
 def get_deleted_plan_detail():
     data = {}
     planname_array = []
@@ -381,6 +398,24 @@ def get_template_detail():
     data['templateName'] = templateName_array
 
     return data    
+
+def fetch_templates():
+    data = {}
+    templateName_array = []
+
+    connection = Connection()
+    db = connection[database_name]
+    collection = db[template_collection]
+    templateListCursor = collection.find({},{'_id' : 0, 'template_name' : 1})
+    print templateListCursor
+    for record in templateListCursor:
+        templateName_array.append(record['template_name'])
+
+    data['templateName'] = templateName_array
+    print data
+
+    return data    
+
 
 def get_operation_detail():
     data = {}
