@@ -1053,6 +1053,27 @@ function constructSmartTargetDiv(currentTaskpoint,selectedOption,operationSmartT
 		type:'checkbox',
 		id:'spectraSmartTarget'
 	});
+
+	if(smartTargetCheckBox.attr('checked')) {
+			taskDetails["spectraSmartTarget"] = "Yes";
+	}
+
+	smartTargetCheckBox.change(function() { 
+
+	var isChecked = smartTargetCheckBox.prop('checked');
+		console.log("the value is "+isChecked);
+		if(isChecked == true) {
+			var taskDetails = taskpoints[currentTaskpoint];
+			taskDetails["spectraSmartTarget"] = "Yes";
+		}
+		else {
+			var taskDetails = taskpoints[currentTaskpoint];
+			if(taskDetails["spectraSmartTarget"] && taskDetails["spectraSmartTarget"]!=undefined) {
+				delete taskDetails["spectraSmartTarget"];
+			}
+		}
+	});
+	
 	var smartTargetLabel = jQuery('<label/>',{
 		text:'Smart Target'
 	});
