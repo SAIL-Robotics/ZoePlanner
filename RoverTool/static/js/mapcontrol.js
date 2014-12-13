@@ -389,6 +389,9 @@ function populateTemplateDetails(taskDetails) {
   taskpoints[currentTaskpoint].lng = lng;
   
  for(i =0; i<taskDetails.length;i++){
+
+    //todo
+    //if(taskDetails[i]['drillValue'])
    
     if(taskDetails[i]['bufValue'] && taskDetails[i]['bufValue']!=undefined) {
       
