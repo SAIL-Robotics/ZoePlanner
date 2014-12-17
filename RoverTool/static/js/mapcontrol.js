@@ -274,10 +274,53 @@ function fillTaskDetails(latitudeValue,longitudeValue) {
 // Nov 29
 //******************************************************************************************************
 //initializeOperationDiv - to initalize the divs for two selects
-function initializeOperationDiv() {
+function initializeOperationDiv(taskpoints) {
 
   $("#operationDiv").children().remove(); 
   $("#mainOperationDiv").children().remove(); 
+
+  var currentTaskPoint;
+  var latitudeValue = document.getElementById("lat").value;
+  var longitudeValue = document.getElementById("lng").value;
+
+  for(taskDetailsIterator in taskpoints) {
+    if(taskpoints[taskDetailsIterator].lat && taskpoints[taskDetailsIterator].lng && taskpoints[taskDetailsIterator].lat == latitudeValue && taskpoints[taskDetailsIterator].lng == longitudeValue) {
+      currentTaskPoint = taskDetailsIterator;
+      break;
+    }
+  }
+
+  var randomMarkerName = "";
+  var existingMarkerNames = [];
+
+  for(taskDetailsIterator in taskpoints) {
+    if(taskpoints[taskDetailsIterator].markerName && taskpoints[taskDetailsIterator].markerName != undefined) {
+      var markerName = taskpoints[taskDetailsIterator].markerName;
+      existingMarkerNames.add(markerName);
+    }
+  }
+
+  var markerName = jQuery('<input>',{
+    id:'markerName',
+    type:'text',
+    
+    class:'form-control taskText',
+    placeholder:'Unique Marker Name',
+  }).hide();
+
+  markerName.focusout(function() {
+    console.log("Focusing markerName out....");
+    var currentMarkerNameValue = $('#markerName').val();
+    var currentTaskDetails = taskpoints[currentTaskPoint];
+    if(currentTaskDetails['markerName'] != currentMarkerNameValue) {
+      currentTaskDetails['markerName'] = currentMarkerNameValue;
+    }
+  });
+
+  var markerNameSpan = jQuery('<span>', {
+    class:'list-group-item task-group-item',
+    id:'markerNameDiv'
+  }).hide().append(markerName);
 
   var selectTemplate = jQuery('<select>', {
     id:'selectTemplate',
@@ -338,8 +381,12 @@ function initializeOperationDiv() {
     id:'selectOperationDiv'
   }).hide().append(selectOperation," &nbsp; ",addButton);
 
+  $("#mainOperationDiv").append(markerNameSpan);
   $("#mainOperationDiv").append(selectTemplateSpan);
   $("#mainOperationDiv").append(selectOperationSpan);
+
+  markerName.show();
+  markerNameSpan.show();
   selectTemplate.show();
   selectTemplateSpan.show();
   selectOperation.show();
@@ -544,7 +591,7 @@ function populateOperationDiv(taskpoints) {
 //constructMainOperationDiv - to construct the divs for two selects
 function constructMainOperationDiv() {
 
-  initializeOperationDiv(); //construct the basic divs for select operations first
+  initializeOperationDiv(taskpoints); //construct the basic divs for select operations first
   //todo - the code/function for templates
   populateOperationDiv(taskpoints);
 
@@ -691,7 +738,7 @@ function placeMarker(latitude,longitude,backEndJson) {
                   //taskpoints.push(taskDetails);
 
           taskpoints[markerchanged]=taskDetails1;
-          drawline();
+          //drawline();
       }
       else
       {
@@ -748,6 +795,7 @@ function drawline() {
   var polyline= new google.maps.Polyline(polylineOptions);
   lines.push(polyline);
   polyline.setMap(map);
+
   //To draw green lines for smart Target
   for(iterator=0;iterator<taskpoints.length;iterator++) {  
     var nextIterator = iterator+1;
@@ -763,7 +811,8 @@ function drawline() {
                 geodesic: true,
                 zIndex: 10
               };  
-      var greenPolyline = new google.maps.Polyline(greenPolylineOptions);        
+      var greenPolyline = new google.maps.Polyline(greenPolylineOptions);     
+      lines.push(greenPolyline);   
       greenPolyline.setMap(map);
     } 
   }     
