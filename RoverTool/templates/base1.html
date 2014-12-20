@@ -45,6 +45,15 @@
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav navbar-right">
         <li>  
+          <label id="planNameDisplay" style="color: white;">PlanName</label>
+        </li>
+        <li>
+        <span class="margintop">
+        <input type="checkbox" name="my-checkbox" id="my-checkbox" data-on-text="lock" data-off-text="unlock">
+        </span>
+        </li>
+
+        <li>  
           <button class="btn btn-primary btn-large createPlan" data-target="#myModal" id="createPlanModal">
               Start Plan 
           </button>
@@ -59,11 +68,11 @@
             <span class="glyphicon glyphicon-refresh"></span>
           </button>
         </li>
-        <li>
+        <!-- <li>
           <button id="operationPaneConfig" class="btn btn-primary btn-large createPlan"> 
                 Config
           </button>
-        </li>
+        </li> -->
        <!--  <li><a href="#about">About</a></li>
         <li><a href="#contact">Help</a></li> -->
       </ul>
@@ -85,7 +94,7 @@
           <input type="text" class="form-control" placeholder="Latitude ,Longitude" id = "latLngValue">
 <!--           <input type="text" class="form-control" placeholder="Longitude..." id = "lngValue"> -->
           <button class="btn btn-large active" onclick="drawMarker();"> Locate</button>
-          <input type="checkbox" name="my-checkbox" id="my-checkbox" data-on-text="lock" data-off-text="unlock">
+          
       </span>
     </div><!--/.nav-collapse -->
   </div>
@@ -168,7 +177,8 @@
       <div class="modal-body">
        <input type="text" class="form-control" placeholder="Plan name..." id = "planName">
        <p id="planNameError" class="err"></p>
-       <textarea rows = "5" cols = "10" class="form-control" placeholder="Description...(optional)" id = "planDesc"></textarea>
+       <textarea rows = "5" cols = "10" class="form-control" placeholder="Description...(optional)" id = "planDesc"></textarea><br>
+       Execution Date : <input type="date" id="executionDate">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

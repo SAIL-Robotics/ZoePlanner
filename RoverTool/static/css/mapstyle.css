@@ -85,4 +85,32 @@
         background: #428bca;
         color: #fff;
       }
-      
+      .margintop{
+      margin-top: 9px;
+      display: block;
+      }
+      #planNameDisplay{
+      color: white;
+      margin-top: 13px;
+      margin-right: 18px;
+      }
+      .margintop-2 {
+        margin: 2px auto!important;
+      }
+      .configTitle{
+        margin: 0 auto;
+        width: 13%;
+        font-size: large;
+        margin-top: 10px;
+        color: white;
+      }
+      .adminConfigure{
+        margin-top: 15px;
+        margin-bottom: 10px;
+        margin-left:547px;
+      }
+      .adminRecover{
+        margin-top: 30px;
+        margin-bottom: 10px;
+        margin-left:586px;
+      }

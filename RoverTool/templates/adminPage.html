@@ -1,0 +1,152 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Rover Commander Tool</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/dashboard1.css" rel="stylesheet">
+    <link href="/static/css/mapstyle.css" rel="stylesheet">
+    <link href="/static/css/toastr.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-switch.css" rel="stylesheet">
+
+    <script src="/static/js/jquery.min.js"></script>
+   
+    <script src="/static/js/bootstrap-switch.js"></script>
+    <script src="/static/js/toastr.js"></script>
+    
+    <script src="/static/js/FileSaver.js"></script>
+    
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="configTitle">
+        Administrator Page
+      </div>
+    </div>
+      <div class="adminConfigure">
+       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+  Configure Operation values
+</button>
+      </div>
+      <div class="adminRecover">
+        <button type="button" class="btn btn-primary" id = "recoverPlan">Recover Plan</button>
+      </div>
+    </div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+ <!--  <div class="modal-dialog">
+    <div class="modal-content"> -->
+      
+      
+        
+    <div class="modal-dialog margintop-2">
+      <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Configuration Page</h4>
+      </div>
+        <div class="modal-body">
+          <form id="configForm" class="form-horizontal">
+              <div class="form-group">
+                  <label class="col-sm-4 control-label">BUF</label>
+                  <div class="col-sm-4">
+                      <input type="text" class="form-control" id="BUFConfig" />
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-4 control-label">MMRS</label>
+                  <div class="col-sm-4">
+                      <input type="text" class="form-control" id="MMRSConfig1" />
+                      <input type="text" class="form-control" id="MMRSConfig2" />
+                      <input type="text" class="form-control" id="MMRSConfig3" />
+                  </div>
+                  <div class="col-sm-4">
+                      
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-4 control-label">Science Image</label>
+                  <div class="col-sm-4">
+                      <input type="text" class="form-control" id="scienceImageConfig1" />
+                  </div>
+                  <div class="col-sm-4">
+                      <input type="text" class="form-control" id="scienceImageConfig2" />
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-4 control-label">Image Panorama</label>
+                  <div class="col-sm-4">
+                      <input type="text" class="form-control" id="imagePanoramaConfig1" />
+                      <input type="text" class="form-control" id="imagePanoramaConfig2" />
+                  </div>
+                  <div class="col-sm-4">
+                      <input type="text" class="form-control" id="imagePanoramaConfig3" />
+                      <input type="text" class="form-control" id="imagePanoramaConfig4" />
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-4 control-label">Spectra Panorama</label>
+                  <div class="col-sm-4">
+                      <input type="text" class="form-control" id="spectraPanoramaConfig1" />
+                      <input type="text" class="form-control" id="spectraPanoramaConfig2" />
+                      <input type="text" class="form-control" id="spectraPanoramaConfig3" />
+                  </div>
+                  <div class="col-sm-4">
+                      <input type="text" class="form-control" id="spectraPanoramaConfig4" />
+                      <input type="text" class="form-control" id="spectraPanoramaConfig5" />
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-4 control-label">Precise Move</label>
+                  <div class="col-sm-4">
+                      <input type="text" class="form-control" id="preciseMoveConfig" />
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-4 control-label">Smart Target</label>
+                  <div class="col-sm-4">
+                      <input type="text" class="form-control" id="smartTargetConfig" />
+                  </div>
+              </div>
+
+          </form>
+
+          <p id="templateNameErr" class="err"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> 
+          <button type="button" class="btn btn-primary" id = "saveConfig">Save</button>
+        </div>
+      </div>
+    </div>
+      </div>
+    
+  <!--   </div>
+  </div> -->
+
+  </body>
+   <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="/static/js/taskControl.js"></script>
+   
+
+    
+  </html>

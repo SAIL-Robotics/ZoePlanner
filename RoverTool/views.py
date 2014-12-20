@@ -35,6 +35,14 @@ def index(request):
 
     return render_to_response('maplayout.html', c, RequestContext(request))
 
+@csrf_exempt
+def administratorControl(request):
+    c = {}
+    c.update(csrf(request))
+    data = []
+
+    return render_to_response('adminPage.html', c, RequestContext(request))
+
 #fuction that handle the ajax request for save operation and getMarkerInfo operation(left pane single click on plan name)
 @csrf_exempt
 def DBOperation(request):
@@ -53,9 +61,12 @@ def DBOperation(request):
             if request.POST['operation'] == 'save':
                 plan_name = request.POST['planName']
                 plan_desc = request.POST['planDesc']
+                plan_date = request.POST['executionDate']
+                print '**********'
+                print plan_date
                 plan_name_update = request.POST['planNameUpdate']
                 markers = json.loads(request.POST.get('markers'))
-                saveToDB(plan_name, plan_name_update, plan_desc, markers)
+                saveToDB(plan_name, plan_name_update, plan_desc, markers,plan_date)
                 data = get_plan_detail()                                    #update the let pane. getting plan names from 
             elif request.POST['operation'] == 'getMarkerInfo':
                 plan_name = request.POST['planName']
@@ -134,7 +145,7 @@ def DBOperation(request):
     return HttpResponse(json.dumps(data), content_type = "application/json")
 
 
-def saveToDB(plan_name, plan_name_update, plan_desc, markers):    
+def saveToDB(plan_name, plan_name_update, plan_desc, markers,plan_date):    
     connection = Connection()
 
     now = datetime.datetime.now()
@@ -144,7 +155,7 @@ def saveToDB(plan_name, plan_name_update, plan_desc, markers):
     collection = db[collection_name]
     
     if validatePlanName(plan_name_update)['count'] == 0:
-        plan = {"planName" : plan_name, "planDescription" : plan_desc, "timeStamp" : time, "markers" : markers}
+        plan = {"planName" : plan_name, "planDescription" : plan_desc, "timeStamp" : time, "markers" : markers, "planDate" : plan_date}
         collection.save(plan)
     else:
         print "update"
