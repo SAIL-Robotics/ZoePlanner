@@ -191,6 +191,7 @@ document.getElementById('close').onclick = function(){
                 'planName': $('#planName').val().trim(),  //plan name
                 'planNameUpdate': $('#planNameDisplay').text().trim(),
                 'planDesc': $('#planDesc').val().trim(),
+                'executionDate': $('#executionDate').val().trim(),
                 'operation': 'save',
                 },
          success: function(response){
