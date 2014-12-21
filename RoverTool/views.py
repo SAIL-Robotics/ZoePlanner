@@ -19,6 +19,23 @@ collection_name_operation = "operations"
 template_collection = "templates"
 
 @csrf_exempt
+def viewResults(request):
+    c = {}
+    c.update(csrf(request))
+    data = []
+
+    if request.is_ajax():
+        if request.method == "POST":
+            if request.POST['operation'] == 'planPane':
+                data = get_plan_detail()
+            if request.POST['operation'] == 'operationConfig':
+                data = get_operation_detail()
+
+        return HttpResponse(json.dumps(data), content_type = "application/json")
+
+    return render_to_response('maplayout2.html', c, RequestContext(request))
+
+@csrf_exempt
 def index(request):
     c = {}
     c.update(csrf(request))
@@ -58,15 +75,16 @@ def DBOperation(request):
 
     if request.is_ajax():
         if request.method == "POST":
+            print "POST"
             if request.POST['operation'] == 'save':
                 plan_name = request.POST['planName']
                 plan_desc = request.POST['planDesc']
-                plan_date = request.POST['executionDate']
-                print '**********'
-                print plan_date
+                #plan_date = request.POST['executionDate']
+                #print '**********'
+                #print plan_date
                 plan_name_update = request.POST['planNameUpdate']
                 markers = json.loads(request.POST.get('markers'))
-                saveToDB(plan_name, plan_name_update, plan_desc, markers,plan_date)
+              #  saveToDB(plan_name, plan_name_update, plan_desc, markers,plan_date)
                 data = get_plan_detail()                                    #update the let pane. getting plan names from 
             elif request.POST['operation'] == 'getMarkerInfo':
                 plan_name = request.POST['planName']

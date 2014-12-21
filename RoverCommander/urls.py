@@ -11,5 +11,6 @@ urlpatterns = patterns('',
     url(r'^test/', 'RoverTool.views.test'),
     url(r'^jsonData/', 'RoverTool.views.jsonData'),
     url(r'^DBOperation/', 'RoverTool.views.DBOperation'),
-    url(r'^config/', 'RoverTool.views.administratorControl')
+    url(r'^config/', 'RoverTool.views.administratorControl'),
+    url(r'^results/', 'RoverTool.views.viewResults')
 )

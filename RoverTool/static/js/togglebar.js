@@ -364,7 +364,7 @@ $("#renamePlan").click(function(){
    console.log ( event.currentTarget.firstChild.data ); 
 
    $.ajax({
-       type:"POST",
+       type:"POST", 
        url:"/DBOperation/",
        data: {
                 'planName': event.currentTarget.firstChild.data,  //plan name

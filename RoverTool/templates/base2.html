@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>View Results</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/dashboard1.css" rel="stylesheet">
+    <link href="/static/css/mapstyle.css" rel="stylesheet">
+    <link href="/static/css/toastr.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-switch.css" rel="stylesheet">
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/togglebar.js"></script>
+    <script src="/static/js/bootbox.js"></script>
+    <script src="/static/js/bootstrap-switch.js"></script>
+    <script src="/static/js/toastr.js"></script>
+    
+    <script src="/static/js/FileSaver.js"></script>
+    
+  </head>
+
+  <body>
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header"> 
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#" style="color: white;">Rover Commander Tool - View Results</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      
+    </div><!--/.nav-collapse -->
+  </div>
+</div>
+  
+<div class="container-fluid">
+  <div class="col-xs-12 col-sm-12 content">
+      <div class="row row-plan-offcanvas row-offcanvas row-offcanvas-left">
+
+        <div class="col-xs-3 col-sm-1 sidebar-offcanvas" id="sidebar" role="navigation">
+
+<!--           <div class="list-group">
+              <a href="#" class="list-group-item plan-group-item active">Plans</a>
+              <a href="#" class="list-group-item plan-group-item">Plan 1</a>
+            </div>-->
+
+          <div class="list-group">
+            <span class="list-group-item active">
+              <button id = "planReset" type="button" class="btn btn-primary btn-sm">
+                <span class="glyphicon glyphicon-refresh"></span>
+              </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;
+            Plans
+            </span>
+            
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-search"></i>
+              </span>
+              <input type="text" id="searchPlan" class="form-control" placeholder="Search plan..."/>
+              
+            </div>
+            
+            <div id="planMenu">
+                <!-- <a href="#" class="list-group-item">Dapibus ac facilisis in <span class="badge">14</span> </a> -->
+            </div>
+          </div>
+        </div>
+
+        <div style = "height:0px;margin-left:-9px"> <a id="toggleSidebar" href="#" class="toggles" data-toggle="offcanvas"><i class="glyphicon glyphicon-align-justify"></i></a></div>
+        <div class="col-xs-3 col-sm-3 content">
+         <p class="pull-right">
+         <!--  <input type="checkbox" name="my-checkbox" id="my-checkbox" data-on-text="lock" data-off-text="unlock"> -->
+           
+          </p>
+         
+
+          
+              {% block content %}
+
+              {% endblock %}
+        </div>
+
+        <!-- ////////////////////////////////////////////////TASK PANE/////////////////////////////////////////////////////// -->
+
+                <div class="col-xs-3 col-sm-3 row-task-offcanvas row-offcanvas-right taskright" id="sidebar2" role="navigation">
+                        {% include 'taskPane.html' %}.
+                </div><!--/span--> <!-- sidebar -->
+
+               </div><!--/span-->
+                      
+            </div><!--/row-->
+
+        </div><!-- /.container -->
+
+
+        <!-- //////////////////////////////////////////////////TASKPANE END////////////////////////////////////////////// -->
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">New Plan</h4>
+      </div>
+      <div class="modal-body">
+       <input type="text" class="form-control" placeholder="Plan name..." id = "planName">
+       <p id="planNameError" class="err"></p>
+       <textarea rows = "5" cols = "10" class="form-control" placeholder="Description...(optional)" id = "planDesc"></textarea><br>
+       Execution Date : <input type="date" id="executionDate">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id = "createPlan">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="myRenameModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myRenameModalLabel">Rename Plan</h4>
+      </div>
+      <div class="modal-body">
+       <input type="text" class="form-control" placeholder="Plan name..." id = "planRename">
+       <p id="planNameErr" class="err"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id = "renamePlan">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="modal fade" id="createTemplateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="createTemplateModalLabel">Template Name</h4>
+      </div>
+      <div class="modal-body">
+       <input type="text" class="form-control" placeholder="Template name ..." id = "templateName">
+       <p id="templateNameErr" class="err"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id = "createTemplate">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+ -->
+
+<div class="modal fade" id="operationConfigModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  {% include 'operationPaneConfig.html' %}
+</div>
+
+<div class="modal fade" id="planTrashModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="planTrashModalLabel">Trash</h4>
+      </div>
+      <div id="planTrashDiv" class="modal-body">
+       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id = "TrashPop">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+        <!-- //////////////////////////////////////////////////Right Click start////////////////////////////////////////////// -->
+  <div id="contextMenu" class="dropdown clearfix">
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+      <li><a tabindex="-1" href="#">Duplicate Plan</a></li>
+      <li><a tabindex="-1" href="#">Plan Details</a></li>
+      <li><a tabindex="-1" href="#">Rename Plan</a></li>
+      <li><a tabindex="-1" href="#">Delete Plan</a></li>
+      <li><a tabindex="-1" href="#">Download as KML</a></li>
+<!--      <li><a tabindex="-1" href="#">Something else here</a></li>
+      <li class="divider"></li>
+      <li><a tabindex="-1" href="#">Separated link</a></li> -->
+    </ul>
+  </div>
+        <!-- //////////////////////////////////////////////////Right Click  END////////////////////////////////////////////// -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="/static/js/viewResultsMapControl.js"></script>
+    
+  </body>
+</html>

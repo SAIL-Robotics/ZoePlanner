@@ -738,7 +738,7 @@ function placeMarker(latitude,longitude,backEndJson) {
                   //taskpoints.push(taskDetails);
 
           taskpoints[markerchanged]=taskDetails1;
-          //drawline();
+          drawline();
       }
       else
       {
@@ -945,3 +945,4 @@ function saveTemplate(result){
          }
       });
 }
+

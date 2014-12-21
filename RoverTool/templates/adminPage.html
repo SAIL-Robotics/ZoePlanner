@@ -40,9 +40,32 @@
 </button>
       </div>
       <div class="adminRecover">
-        <button type="button" class="btn btn-primary" id = "recoverPlan">Recover Plan</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" id = "recoverPlan" data-target="#planTrashModal">Recover Plan</button>
       </div>
     </div>
+
+<!-- //////////////////////////////////////////////////////// -->    
+
+<div class="modal fade" id="planTrashModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="planTrashModalLabel">Trash</h4>
+      </div>
+      <div id="planTrashDiv" class="modal-body">
+       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id = "TrashPop">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- //////////////////////////////////////////////////////// -->    
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
  <!--  <div class="modal-dialog">
@@ -145,6 +168,7 @@
    <!-- Placed at the end of the document so the pages load faster -->
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="/static/js/togglebar.js"></script>
     <script src="/static/js/taskControl.js"></script>
    
 
