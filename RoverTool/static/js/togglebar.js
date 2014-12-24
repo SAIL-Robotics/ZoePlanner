@@ -121,7 +121,7 @@ document.getElementById('close').onclick = function(){
                pName = $('#contextMenu').attr("name")
                response.planDescription==null ? desc = "" : desc = response.planDescription
 
-               dataContent = "<div style='width:500px; word-wrap:break-word'><b>Description:</b>"+desc + "<br/><b>Created Time : </b> " + response.timeStamp+"</div>"
+               dataContent = "<div style='width:500px; word-wrap:break-word'><b>Description:</b>"+desc + "<br/><b>Created Time : </b> " + response.timeStamp+"<br/><b>Execution Date : </b> " + response.planDate+"</div>"
               
               $('.'+pName).attr("data-toggle", "popover")
 

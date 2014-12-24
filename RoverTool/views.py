@@ -79,12 +79,12 @@ def DBOperation(request):
             if request.POST['operation'] == 'save':
                 plan_name = request.POST['planName']
                 plan_desc = request.POST['planDesc']
-                #plan_date = request.POST['executionDate']
+                plan_date = request.POST['executionDate']
                 #print '**********'
                 #print plan_date
                 plan_name_update = request.POST['planNameUpdate']
                 markers = json.loads(request.POST.get('markers'))
-              #  saveToDB(plan_name, plan_name_update, plan_desc, markers,plan_date)
+                saveToDB(plan_name, plan_name_update, plan_desc, markers,plan_date)
                 data = get_plan_detail()                                    #update the let pane. getting plan names from 
             elif request.POST['operation'] == 'getMarkerInfo':
                 plan_name = request.POST['planName']
@@ -274,7 +274,7 @@ def get_plan_info(plan_name):
     db = connection[database_name]
     collection = db[collection_name]
 
-    cursor = collection.find_one({"planName": plan_name},{"_id" : 0, "planDescription" : 1, "timeStamp" : 1})
+    cursor = collection.find_one({"planName": plan_name},{"_id" : 0, "planDescription" : 1, "timeStamp" : 1, "planDate" : 1})
 
     return cursor
 
