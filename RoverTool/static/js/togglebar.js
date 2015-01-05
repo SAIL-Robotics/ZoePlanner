@@ -81,7 +81,7 @@ document.getElementById('close').onclick = function(){
                     'operation': 'deletePlan',
                     },
              success: function(response){
-                toastr.options.positionClass ="toast-top-full-width";
+                toastr.options.positionClass ="toast-bottom-right";
                 toastr.success('Plan Deleted!','');
                 populatePlan(response)
              }
@@ -214,11 +214,14 @@ document.getElementById('close').onclick = function(){
   /* data validation inside createplan modal and display saveplan button*/
   $("#createPlan").click(function(){
 
+   
     if($('#planName').val().trim().length === 0) {
        $('#planNameError').html("<span class=\"label label-danger\">Plan name cannot be empty!</span>");
     }
+  
     else if($('#planName').val().length > 0 )
     {
+       
         $.ajax({                              //ajax call for validating if planname already exist
          type:"POST",
          url:"/DBOperation/",
@@ -243,7 +246,7 @@ document.getElementById('close').onclick = function(){
                           'operation': 'duplicate',
                           },
                    success: function(response){
-                      toastr.options.positionClass ="toast-top-full-width";
+                      toastr.options.positionClass ="toast-bottom-right";
                       toastr.success('Plan Duplicated!','');
                       populatePlan(response)
                    }
@@ -251,7 +254,7 @@ document.getElementById('close').onclick = function(){
               }
               else    //create new plan actions. 
               {
-                $('#createPlanModal').hide();
+                //$('#createPlanModal').hide();
                 $("#save-button").show();
 
                 $('.plan-group-item').attr('tabindex', '-1');
@@ -266,7 +269,8 @@ document.getElementById('close').onclick = function(){
             }
          }
         });
-    }
+      }
+    
   });
 
 /****************************************************Create Plan Modal********************************************************/
@@ -279,7 +283,16 @@ document.getElementById('close').onclick = function(){
     $('#planName').val('')
     $('#planDesc').val('')
     $('#planNameError').html('')
-    $('#myModal').modal('show');
+    if($('#planNameDisplay').text() != ""){
+        bootbox.confirm("There are unsaved changes to the current plan - "+$('#planNameDisplay').text()+". Do you want to create a new plan?", function(result) {
+          if(result == true){
+            $('#myModal').modal('show');
+          }
+        });
+       }
+    else{
+      $('#myModal').modal('show');
+    }
   });
 
 
@@ -310,7 +323,7 @@ $("#renamePlan").click(function(){
                       'operation': 'renamePlan',
                       },
                success: function(response){
-                  toastr.options.positionClass ="toast-top-full-width";
+                  toastr.options.positionClass ="toast-bottom-right";
                   toastr.success('Rename Successfull!','');
                   populatePlan(response)
                }
