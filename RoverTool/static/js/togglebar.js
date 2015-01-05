@@ -221,7 +221,8 @@ document.getElementById('close').onclick = function(){
   
     else if($('#planName').val().length > 0 )
     {
-       
+       $('#margintop').show();
+       locked = false;
         $.ajax({                              //ajax call for validating if planname already exist
          type:"POST",
          url:"/DBOperation/",

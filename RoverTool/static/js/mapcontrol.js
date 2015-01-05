@@ -84,7 +84,10 @@ function initialize() {
     $("[name='my-checkbox']").on('switchChange.bootstrapSwitch', function(event, state) {
       locked = state;
       setTextState(state);
-    });   
+    }); 
+    if($('#planNameDisplay').text() ==""){
+    locked = true
+    }  
   var mapOptions = {
     zoom: mapZoomConstant,
     center: new google.maps.LatLng(-23.3695439,-69.8597406),
@@ -104,6 +107,7 @@ function initialize() {
           lockToggleButtonBlink();
         }    
   });//function for map click
+
 }//initialize
 
 //******************************************************************************************************
