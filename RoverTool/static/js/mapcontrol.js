@@ -741,9 +741,10 @@ function placeMarker(latitude,longitude,backEndJson) {
           var taskDetails1 = {};
                   taskDetails1.lat = marker.position.lat();
                   taskDetails1.lng = marker.position.lng();
-                  //taskpoints.push(taskDetails);
 
-          taskpoints[markerchanged]=taskDetails1;
+          //taskpoints[markerchanged]=taskDetails1;
+          taskpoints[markerchanged].lat = marker.position.lat();
+          taskpoints[markerchanged].lng = marker.position.lng();
           drawline();
       }
       else
@@ -761,7 +762,11 @@ function placeMarker(latitude,longitude,backEndJson) {
          var taskDetails1 = {};
          taskDetails1.lat = marker.position.lat();
          taskDetails1.lng = marker.position.lng();
-         taskpoints[markerchanged]=taskDetails1;
+         //taskpoints[markerchanged]=taskDetails1;
+         
+          taskpoints[markerchanged].lat = marker.position.lat();
+          taskpoints[markerchanged].lng = marker.position.lng();
+         
          drawline(); 
       }                  
       else
