@@ -742,9 +742,20 @@ function placeMarker(latitude,longitude,backEndJson) {
                   taskDetails1.lat = marker.position.lat();
                   taskDetails1.lng = marker.position.lng();
 
+          var oldLatitude = taskpoints[markerchanged].lat;
+          var oldLongitude = taskpoints[markerchanged].lng;
+
+          var latitudeValue = $("#lat").val();
+          var longitudeValue = $("#lng").val();
+
+          if(oldLatitude == latitudeValue && oldLongitude == longitudeValue) {
+            $("#lat").val(marker.position.lat());
+            $("#lng").val(marker.position.lng());
+          }
           //taskpoints[markerchanged]=taskDetails1;
           taskpoints[markerchanged].lat = marker.position.lat();
           taskpoints[markerchanged].lng = marker.position.lng();
+
           drawline();
       }
       else
@@ -763,7 +774,16 @@ function placeMarker(latitude,longitude,backEndJson) {
          taskDetails1.lat = marker.position.lat();
          taskDetails1.lng = marker.position.lng();
          //taskpoints[markerchanged]=taskDetails1;
-         
+          var oldLatitude = taskpoints[markerchanged].lat;
+          var oldLongitude = taskpoints[markerchanged].lng;
+
+          var latitudeValue = $("#lat").val();
+          var longitudeValue = $("#lng").val();
+
+          if(oldLatitude == latitudeValue && oldLongitude == longitudeValue) {
+            $("#lat").val(marker.position.lat());
+            $("#lng").val(marker.position.lng());
+          }
           taskpoints[markerchanged].lat = marker.position.lat();
           taskpoints[markerchanged].lng = marker.position.lng();
          
