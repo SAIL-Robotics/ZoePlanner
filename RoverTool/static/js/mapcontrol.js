@@ -18,7 +18,7 @@ function setTextState(state) {
   "mmrsExposureValue","mmrsAccumulationValue","mmrsNumberValue","sciencePanValue", "scienceTiltValue","imageStartAzimuthValue",
   "imageEndAzimuthValue","imageStartElevationValue","imageEndElevationValue","spectraStartAzimuthValue",
   "spectraEndAzimuthValue","spectraStartElevationValue","spectraEndElevationValue", "spectraAngularValue", "preciseMoveValue",
-  "spectraAngularCamera","spectraNavcamRecord","spectraSmartTarget","preciseMove","spectraSmartTargetValue","selectTemplate","selectOperation",
+  "spectraAngularCamera","spectraNavcamRecord","spectraSmartTargetValue","selectTemplate","selectOperation",
   "addOperation","createTemplateButton"]
   var taskCloseButtons = ["operationCloseBUF", "operationCloseMMRS","operationCloseScienceImage","operationCloseImagePanorama","operationCloseSpectraPanorama","operationClosePreciseMove",
   "operationCloseSmartTarget",];
@@ -134,8 +134,8 @@ function saveTaskDetails () {
 function clearTaskTextFields() {
   $("#spectraAngularCamera").removeAttr("checked");
   $("#spectraNavcamRecord").removeAttr("checked");
-  $("#spectraSmartTarget").removeAttr("checked");
-  $("#preciseMove").removeAttr("checked");
+  //$("#spectraSmartTarget").removeAttr("checked");
+  //$("#preciseMove").removeAttr("checked");
   
   var taskTextFieldIds = ["bufValue", 
   "mmrsExposureValue","mmrsAccumulationValue","mmrsNumberValue","sciencePanValue", "scienceTiltValue","imageStartAzimuthValue",
@@ -191,7 +191,7 @@ function fillValue(taskDetails){
 //fillTaskDetails - To fill the json based on values from the text fields
 function fillTaskDetails(latitudeValue,longitudeValue) {
  
-  var taskCheckBoxIds = ["spectraAngularCamera", "spectraNavcamRecord", "spectraSmartTarget" , "preciseMove" ];
+  var taskCheckBoxIds = ["spectraAngularCamera", "spectraNavcamRecord"];//, "spectraSmartTarget" , "preciseMove" ];
   var taskTextFieldIds = ["bufValue", 
   "mmrsExposureValue","mmrsAccumulationValue","mmrsNumberValue","sciencePanValue", "scienceTiltValue","imageStartAzimuthValue",
   "imageEndAzimuthValue","imageStartElevationValue","imageEndElevationValue","spectraStartAzimuthValue","spectraSmartTargetValue",
@@ -639,6 +639,7 @@ function placeMarker(latitude,longitude,backEndJson) {
   });
 
    google.maps.event.addListener(marker,'click',function(event){
+          drawline(); //to re-draw the lines
           if($('.row-task-offcanvas').hasClass("taskappear")) {
             $('.row-task-offcanvas').removeClass("taskappear");
             $('.row-task-offcanvas').addClass("taskdisappear");
@@ -652,6 +653,7 @@ function placeMarker(latitude,longitude,backEndJson) {
           fillTaskPane(marker); //To open the operation pane and perform tasks using it
           //Check - added as of Nov 29
           constructMainOperationDiv();
+
   }); //event handler for single click
 
     google.maps.event.addListener(marker, 'rightclick', function(event) {
@@ -803,7 +805,7 @@ function drawline() {
   //To draw green lines for smart Target
   for(iterator=0;iterator<taskpoints.length;iterator++) {  
     var nextIterator = iterator+1;
-    if(taskpoints[iterator].spectraSmartTarget && taskpoints[iterator].spectraSmartTarget == "Yes" && taskpoints[nextIterator] && taskpoints[nextIterator]!=undefined) {
+    if(taskpoints[iterator].spectraSmartTargetValue && taskpoints[iterator].spectraSmartTargetValue != undefined && taskpoints[nextIterator] && taskpoints[nextIterator]!=undefined) {
       var smartTargetTaskPoints = []; 
       smartTargetTaskPoints.push(taskpoints[iterator]);
       smartTargetTaskPoints.push(taskpoints[nextIterator]);

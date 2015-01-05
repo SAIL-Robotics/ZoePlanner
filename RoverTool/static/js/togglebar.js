@@ -50,6 +50,7 @@ $('body').on('click', function (e) {
 document.getElementById('close').onclick = function(){
         $('.row-task-offcanvas').removeClass("taskappear");
             $('.row-task-offcanvas').addClass("taskdisappear");
+            drawline();
         return false;
 };
 

@@ -1095,10 +1095,10 @@ function constructPreciseMoveDiv(currentTaskpoint,selectedOption,operationPrecis
 	groupSpan.appendTo(groupAnchor);
 	groupSpan.show();
 
-	var preciseMoveCheckBox = jQuery('<input/>',{
-		type:'checkbox',
-		id:'preciseMove'
-	});
+	// var preciseMoveCheckBox = jQuery('<input/>',{
+	// 	type:'checkbox',
+	// 	id:'preciseMove'
+	// });
 	var preciseMoveLabel = jQuery('<label/>',{
 		text:'Precise Move'
 	});
@@ -1118,13 +1118,17 @@ function constructPreciseMoveDiv(currentTaskpoint,selectedOption,operationPrecis
 		}
 	});	
 
-	var inputDiv = jQuery('<div></div>').hide().append(preciseMoveCheckBox,preciseMoveLabel,preciseMoveInput);
+	var inputDiv = jQuery('<div></div>').hide().append(preciseMoveInput);
 
  	inputDiv.appendTo(groupSpan);
 	inputDiv.show();
 
 	var taskDetails = taskpoints[currentTaskpoint];
-	taskDetails["preciseMoveValue"] = $('#preciseMoveValue').val();
+	var preciseMoveValue = $('#preciseMoveValue').val();
+	if(preciseMoveValue && preciseMoveValue!=undefined) {
+		taskDetails["preciseMoveValue"] = $('#preciseMoveValue').val();	
+	}
+	
 
 	$("#selectOperation option[value='"+selectedOption+"']").remove(); 
 
@@ -1165,30 +1169,30 @@ function constructSmartTargetDiv(currentTaskpoint,selectedOption,operationSmartT
 	groupSpan.appendTo(groupAnchor);
 	groupSpan.show();
 
-	var smartTargetCheckBox = jQuery('<input/>',{
-		type:'checkbox',
-		id:'spectraSmartTarget'
-	});
+	// var smartTargetCheckBox = jQuery('<input/>',{
+	// 	type:'checkbox',
+	// 	id:'spectraSmartTarget'
+	// });
 
-	if(smartTargetCheckBox.attr('checked')) {
-			taskDetails["spectraSmartTarget"] = "Yes";
-	}
+	// if(smartTargetCheckBox.attr('checked')) {
+	// 		taskDetails["spectraSmartTarget"] = "Yes";
+	// }
 
-	smartTargetCheckBox.change(function() { 
+	// smartTargetCheckBox.change(function() { 
 
-	var isChecked = smartTargetCheckBox.prop('checked');
-		console.log("the value is "+isChecked);
-		if(isChecked == true) {
-			var taskDetails = taskpoints[currentTaskpoint];
-			taskDetails["spectraSmartTarget"] = "Yes";
-		}
-		else {
-			var taskDetails = taskpoints[currentTaskpoint];
-			if(taskDetails["spectraSmartTarget"] && taskDetails["spectraSmartTarget"]!=undefined) {
-				delete taskDetails["spectraSmartTarget"];
-			}
-		}
-	});
+	// var isChecked = smartTargetCheckBox.prop('checked');
+	// 	console.log("the value is "+isChecked);
+	// 	if(isChecked == true) {
+	// 		var taskDetails = taskpoints[currentTaskpoint];
+	// 		taskDetails["spectraSmartTarget"] = "Yes";
+	// 	}
+	// 	else {
+	// 		var taskDetails = taskpoints[currentTaskpoint];
+	// 		if(taskDetails["spectraSmartTarget"] && taskDetails["spectraSmartTarget"]!=undefined) {
+	// 			delete taskDetails["spectraSmartTarget"];
+	// 		}
+	// 	}
+	// });
 	
 	var smartTargetLabel = jQuery('<label/>',{
 		text:'Smart Target'
@@ -1209,13 +1213,17 @@ function constructSmartTargetDiv(currentTaskpoint,selectedOption,operationSmartT
 		}
 	});	
 
-	var inputDiv = jQuery('<div></div>').hide().append(smartTargetCheckBox,smartTargetLabel,smartTargetInput);
+	var inputDiv = jQuery('<div></div>').hide().append(smartTargetInput);
 
  	inputDiv.appendTo(groupSpan);
 	inputDiv.show();
 
 	var taskDetails = taskpoints[currentTaskpoint];
-	taskDetails["spectraSmartTargetValue"] = $('#spectraSmartTargetValue').val(); 
+	var spectraSmartTargetValue = $('#spectraSmartTargetValue').val();
+	if(spectraSmartTargetValue && spectraSmartTargetValue!=undefined) {
+		taskDetails["spectraSmartTargetValue"] = $('#spectraSmartTargetValue').val(); 	
+	}
+	
 
 	$("#selectOperation option[value='"+selectedOption+"']").remove();
 }//End of constructSmartTargetDiv
