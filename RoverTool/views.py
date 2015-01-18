@@ -149,7 +149,8 @@ def DBOperation(request):
                 spectra_panorama5 = request.POST['Spectra Panorama5']
                 precise_Move = request.POST['Precise Move']
                 smart_target = request.POST['Smart Target']
-                operationConfigSave(BUF, MMRS1, MMRS2, MMRS3, science_image1, science_image2, image_panorama1, image_panorama2, image_panorama3, image_panorama4, spectra_panorama1, spectra_panorama2, spectra_panorama3, spectra_panorama4, spectra_panorama5, precise_Move, smart_target)
+                marker_name = request.POST['Marker Name']
+                operationConfigSave(BUF, MMRS1, MMRS2, MMRS3, science_image1, science_image2, image_panorama1, image_panorama2, image_panorama3, image_panorama4, spectra_panorama1, spectra_panorama2, spectra_panorama3, spectra_panorama4, spectra_panorama5, precise_Move, smart_target,marker_name)
                 data = get_operation_detail()
             elif request.POST['operation'] == "fetchTemplates":
                 data = fetch_templates()
@@ -308,7 +309,7 @@ def createTemplate(template_name):
     #plan = {"planName" : plan_name, "planDescription" : plan_desc, "timeStamp" : time, "markers" : markers}
     #collection.save(plan)
 
-def operationConfigSave(BUF, MMRS1, MMRS2, MMRS3, science_image1, science_image2, image_panorama1, image_panorama2, image_panorama3, image_panorama4, spectra_panorama1, spectra_panorama2, spectra_panorama3, spectra_panorama4, spectra_panorama5, precise_Move, smart_target):
+def operationConfigSave(BUF, MMRS1, MMRS2, MMRS3, science_image1, science_image2, image_panorama1, image_panorama2, image_panorama3, image_panorama4, spectra_panorama1, spectra_panorama2, spectra_panorama3, spectra_panorama4, spectra_panorama5, precise_Move, smart_target,marker_name):
     connection = Connection()
 
     now = datetime.datetime.now()
@@ -318,7 +319,7 @@ def operationConfigSave(BUF, MMRS1, MMRS2, MMRS3, science_image1, science_image2
     collection = db[collection_name_operation]
     collection.remove({})
 
-    operations = {"BUFConfig" : BUF, "MMRSConfig1" : MMRS1, "MMRSConfig2" : MMRS2, "MMRSConfig3" : MMRS3, "scienceImageConfig1" : science_image1, "scienceImageConfig2" : science_image2, "imagePanoramaConfig1" : image_panorama1, "imagePanoramaConfig2" : image_panorama2, "imagePanoramaConfig3" : image_panorama3, "imagePanoramaConfig4" : image_panorama4, "spectraPanoramaConfig1" : spectra_panorama1, "spectraPanoramaConfig2" : spectra_panorama2, "spectraPanoramaConfig3" : spectra_panorama3, "spectraPanoramaConfig4" : spectra_panorama4, "spectraPanoramaConfig5" : spectra_panorama5, "preciseMoveConfig" : precise_Move, "smartTargetConfig" : smart_target}
+    operations = {"BUFConfig" : BUF, "MMRSConfig1" : MMRS1, "MMRSConfig2" : MMRS2, "MMRSConfig3" : MMRS3, "scienceImageConfig1" : science_image1, "scienceImageConfig2" : science_image2, "imagePanoramaConfig1" : image_panorama1, "imagePanoramaConfig2" : image_panorama2, "imagePanoramaConfig3" : image_panorama3, "imagePanoramaConfig4" : image_panorama4, "spectraPanoramaConfig1" : spectra_panorama1, "spectraPanoramaConfig2" : spectra_panorama2, "spectraPanoramaConfig3" : spectra_panorama3, "spectraPanoramaConfig4" : spectra_panorama4, "spectraPanoramaConfig5" : spectra_panorama5, "preciseMoveConfig" : precise_Move, "smartTargetConfig" : smart_target,"markerNameConfig":marker_name}
     collection.save(operations)
 
 @csrf_exempt

@@ -18,6 +18,7 @@ var operationSpectraEndElevationDefault;
 var operationSpectraAngularDefault; 
 var operationPreciseMoveDefault; 
 var operationSmartTargetDefault; 
+var operationMarkerNameDefault;
 
 //******************************************************************************************************
 //updateDefaultValues - to update the default value for the operations in the operation pane
@@ -59,6 +60,8 @@ function updateDefaultValues(defaultValues) {
 			operationMmrsAccumulationDefault = defaultValues.operationValue[i]; 
 		if(defaultValues.operationName[i] == "scienceImageConfig1")
 			operationSciencePanDefault = defaultValues.operationValue[i]; 
+		if(defaultValues.operationName[i] == "markerNameConfig")
+			operationMarkerNameDefault = defaultValues.operationValue[i];
 	}
 	
 }//updateDefaultValues

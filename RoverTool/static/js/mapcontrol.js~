@@ -294,8 +294,10 @@ function initializeOperationDiv(taskpoints) {
     }
   }
 
-  existingMarkerNames = []; //to validate if the new markers name is unique on changing
+  var randomMarkerName = "";
+  existingMarkerNames = [];
 
+   //TODO - populate values and also text hover
   for(taskDetailsIterator in taskpoints) {
     if(taskpoints[taskDetailsIterator].markerName && taskpoints[taskDetailsIterator].markerName != undefined) {
       var markerName = taskpoints[taskDetailsIterator].markerName;
@@ -304,7 +306,15 @@ function initializeOperationDiv(taskpoints) {
   }
   
   var currentTaskDetails = taskpoints[currentTaskPoint];
-  var markerNameValue = currentTaskDetails['markerName']; //The one that is auto generated while creating marker itself
+  var markerNameValue = currentTaskDetails['markerName'];
+
+  if(markerNameValue == null || markerNameValue == "" ||markerNameValue == " ") {
+    var markerCount = $('#markerCount').val();
+    markerNameValue = operationMarkerNameDefault+"-"+markerCount;
+    currentTaskDetails['markerName'] = markerNameValue;       
+    markerCount = parseInt(markerCount)+1;
+    $('#markerCount').val(markerCount);
+  }
 
   var markerName = jQuery('<input>',{
     id:'markerName',
@@ -315,14 +325,17 @@ function initializeOperationDiv(taskpoints) {
   }).hide();
  
   markerName.focusout(function() {
+    console.log("Focusing markerName out....");
     $("#markerName").removeClass("text-error");
     var currentMarkerNameValue = $('#markerName').val();
-    var existingFlag = false; //Check for uniqueness with existing marker name values
+    //todo - check if no error
+    //var currentTaskDetails = taskpoints[currentTaskPoint];
+    var existingFlag = false;
 
     if(currentTaskDetails['markerName'] != currentMarkerNameValue) {
       for(existingMarkerName in existingMarkerNames) {    
         if(currentMarkerNameValue == existingMarkerNames[existingMarkerName]) {
-          existingFlag = true; //indicates that there is a marker name with the same value as entered
+          existingFlag = true;
         }  
       }
       
@@ -330,12 +343,13 @@ function initializeOperationDiv(taskpoints) {
           currentTaskDetails['markerName'] = currentMarkerNameValue;        
       }
       else {
-        //indicates that there is a marker name with the same value as entered
         $("#markerName").addClass("text-error");
         toastr.options.positionClass ="toast-bottom-right";
         toastr.error('Marker name exists already!','');
       }
+
     }
+ 
   });
 
   var markerNameSpan = jQuery('<span>', {
@@ -645,12 +659,7 @@ function placeMarker(latitude,longitude,backEndJson) {
        else {
          taskDetails.lat = latitude;
          taskDetails.lng = longitude;
-         var markerCount = $('#markerCount').val();
-         markerNameValue = operationMarkerNameDefault+"-"+markerCount;
-         taskDetails.markerName = markerNameValue;       
-         markerCount = parseInt(markerCount)+1;
-         $('#markerCount').val(markerCount);
-         //taskpoints.push(new google.maps.LatLng(latitude,longitude));
+          //taskpoints.push(new google.maps.LatLng(latitude,longitude));
          taskpoints.push(taskDetails);
         } 
           count++;

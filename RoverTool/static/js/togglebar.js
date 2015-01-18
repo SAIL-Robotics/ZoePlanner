@@ -214,64 +214,93 @@ document.getElementById('close').onclick = function(){
    //proceed button in Create Plan Modal
   /* data validation inside createplan modal and display saveplan button*/
   $("#createPlan").click(function(){
+    $('#planNameError').html("");
+    $('#executionDateError').html("");
 
-   
+     executionDateFlag = false;
+
     if($('#planName').val().trim().length === 0) {
        $('#planNameError').html("<span class=\"label label-danger\">Plan name cannot be empty!</span>");
     }
+    
   
     else if($('#planName').val().length > 0 )
     {
-       $('#margintop').show();
-       locked = false;
-        $.ajax({                              //ajax call for validating if planname already exist
-         type:"POST",
-         url:"/DBOperation/",
-         data: {
-                'planName': $('#planName').val().trim(),   
-                'operation': 'validatePlanName',
-                },
-         success: function(response){
-            if(response.count == 0)
-            {
-              if($("#createPlan").attr("name") === "duplicate")                  //ajax call for duplicate plan
-              {
-                console.log($('#planName').val().trim())
 
-                $.ajax({
-                   type:"POST",
-                   url:"/DBOperation/",
-                   data: {
-                          'planName': $('#contextMenu').attr("name"),
-                          'newPlanName': $('#planName').val().trim(),
-                          'planDesc': $('#planDesc').val().trim(),
-                          'operation': 'duplicate',
-                          },
-                   success: function(response){
-                      toastr.options.positionClass ="toast-bottom-right";
-                      toastr.success('Plan Duplicated!','');
-                      populatePlan(response)
-                   }
-                });
-              }
-              else    //create new plan actions. 
-              {
-                //$('#createPlanModal').hide();
-                $("#save-button").show();
+      if($('#executionDate').val().trim().length != 0) { 
 
-                $('.plan-group-item').attr('tabindex', '-1');
-                $('.row-plan-offcanvas').toggleClass('active');
-                $('.row-task-offcanvas').toggleClass('taskactive');
-              }             
-              $('#myModal').modal('hide')
-              $('#planNameDisplay').text($('#planName').val());
-            } 
-            else{
-              $('#planNameError').html("<span class=\"label label-danger\">There exists a plan by the same name. </span>");
-            }
-         }
-        });
+        var dateRegEx = new RegExp("^((0[13578]|1[02])[\/.](0[1-9]|[12][0-9]|3[01])[\/.](18|19|20)[0-9]{2})|((0[469]|11)[\/.](0[1-9]|[12][0-9]|30)[\/.](18|19|20)[0-9]{2})|((02)[\/.](0[1-9]|1[0-9]|2[0-8])[\/.](18|19|20)[0-9]{2})|((02)[\/.]29[\/.](((18|19|20)(04|08|[2468][048]|[13579][26]))|2000))$");
+        var executionDateValue = $('#executionDate').val();
+
+        if(!dateRegEx.test(executionDateValue)) {
+          $('#executionDateError').html("<span class=\"label label-danger\">Provide validate date in (mm/dd/yy) format!</span>");
+          //also checks leap years
+          var executionDateFlag = false;
+        }
+        else {
+          executionDateFlag = true;
+        }
       }
+      else if($('#executionDate').val().trim().length === 0) {
+        executionDateFlag = true;
+      }
+
+      if(executionDateFlag == true) {
+         $('#margintop').show();
+         locked = false;
+          $.ajax({                              //ajax call for validating if planname already exist
+           type:"POST",
+           url:"/DBOperation/",
+           data: {
+                  'planName': $('#planName').val().trim(),   
+                  'operation': 'validatePlanName',
+                  },
+           success: function(response){
+              if(response.count == 0)
+              {
+                if($("#createPlan").attr("name") === "duplicate")                  //ajax call for duplicate plan
+                {
+                  console.log($('#planName').val().trim())
+
+                  $.ajax({
+                     type:"POST",
+                     url:"/DBOperation/",
+                     data: {
+                            'planName': $('#contextMenu').attr("name"),
+                            'newPlanName': $('#planName').val().trim(),
+                            'planDesc': $('#planDesc').val().trim(),
+                            'operation': 'duplicate',
+                            },
+                     success: function(response){
+                        toastr.options.positionClass ="toast-bottom-right";
+                        toastr.success('Plan Duplicated!','');
+                        //todo - this
+                        var markerCount = parseInt(response.totalMarkers[i])+1;
+                        $('#markerCount').val(markerCount);
+                        populatePlan(response)
+                     }
+                  });
+                }
+                else    //create new plan actions. 
+                {
+                  //$('#createPlanModal').hide();
+
+                  $("#save-button").show();
+                  $('#markerCount').val("1");
+                  $('.plan-group-item').attr('tabindex', '-1');
+                  $('.row-plan-offcanvas').toggleClass('active');
+                  $('.row-task-offcanvas').toggleClass('taskactive');
+                }             
+                $('#myModal').modal('hide')
+                $('#planNameDisplay').text($('#planName').val());
+              } 
+              else{
+                $('#planNameError').html("<span class=\"label label-danger\">There exists a plan by the same name. </span>");
+              }
+           }
+          });
+       }
+    }
     
   });
 
@@ -282,11 +311,13 @@ document.getElementById('close').onclick = function(){
   $("#createPlanModal").click(function(){
     $("#createPlan").attr("name","");
     $("#myModalLabel").text("New Plan");
-    $('#planName').val('')
-    $('#planDesc').val('')
-    $('#planNameError').html('')
+    $('#planName').val('');
+    $('#planDesc').val('');
+    $('#planNameError').html('');
+    $('#executionDate').val('');
+    $('executionDateError').html('');
     if($('#planNameDisplay').text() != ""){
-        bootbox.confirm("There are unsaved changes to the current plan - "+$('#planNameDisplay').text()+". Do you want to create a new plan?", function(result) {
+        bootbox.confirm("You are currently working on the plan - "+$('#planNameDisplay').text()+". Are you sure you want to create a new plan?", function(result) {
           if(result == true){
             $('#myModal').modal('show');
           }
@@ -377,6 +408,9 @@ $("#renamePlan").click(function(){
   $('#planMenu').on('click', '.abcd', function (event) {
    var target = event.target || event.srcElement;
    console.log ( event.currentTarget.firstChild.data ); 
+
+  $('.row-task-offcanvas').removeClass("taskappear");
+  $('.row-task-offcanvas').addClass("taskdisappear");
 
    $.ajax({
        type:"POST", 
@@ -529,11 +563,20 @@ $("#renamePlan").click(function(){
               'Spectra Panorama5': $('#spectraPanoramaConfig5').val(),
               'Precise Move': $('#preciseMoveConfig').val(),
               'Smart Target': $('#smartTargetConfig').val(),
+              'Marker Name': $('#markerNameConfig').val()
               },
        success: function(response){
            //eve = response;
+
+           toastr.options.positionClass ="toast-bottom-right";
+           toastr.success('Configuration values are saved!','');
            updateDefaultValues(response);
+       },
+       error: function(jqXHR,errorThrown){
+          toastr.options.positionClass ="toast-bottom-right";
+          toastr.error('Error in saving Configuration values!','');
        }
+
     });
     $('#operationConfigModal').modal('hide');
   });
