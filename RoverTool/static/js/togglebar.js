@@ -1,6 +1,7 @@
 var planList;
 var planTitle;
 var eve;
+
 $(document).ready(function () {
 
 /****************************************************Populate plan pane once the page get loaded********************************************************/
@@ -233,7 +234,7 @@ document.getElementById('close').onclick = function(){
         var executionDateValue = $('#executionDate').val();
 
         if(!dateRegEx.test(executionDateValue)) {
-          $('#executionDateError').html("<span class=\"label label-danger\">Provide validate date in (mm/dd/yy) format!</span>");
+          $('#executionDateError').html("<span class=\"label label-danger\">Provide valid date in (mm/dd/yyyy) format!</span>");
           //also checks leap years
           var executionDateFlag = false;
         }
@@ -247,6 +248,7 @@ document.getElementById('close').onclick = function(){
 
       if(executionDateFlag == true) {
          $('#margintop').show();
+         $("[name='my-checkbox']").bootstrapSwitch('state', false);
          locked = false;
           $.ajax({                              //ajax call for validating if planname already exist
            type:"POST",
@@ -311,14 +313,14 @@ document.getElementById('close').onclick = function(){
   $("#createPlanModal").click(function(){
     $("#createPlan").attr("name","");
     $("#myModalLabel").text("New Plan");
-    $('#planName').val('');
-    $('#planDesc').val('');
-    $('#planNameError').html('');
-    $('#executionDate').val('');
-    $('executionDateError').html('');
     if($('#planNameDisplay').text() != ""){
         bootbox.confirm("You are currently working on the plan - "+$('#planNameDisplay').text()+". Are you sure you want to create a new plan?", function(result) {
           if(result == true){
+            $('#planName').val('');
+            $('#planDesc').val('');
+            $('#planNameError').html('');
+            $('#executionDate').val('');
+            $('executionDateError').html('');
             $('#myModal').modal('show');
           }
         });
@@ -422,6 +424,10 @@ $("#renamePlan").click(function(){
        success: function(response){
                 $('#createPlanModal').show();
                 $("#save-button").show();
+                $('#margintop').show();
+                $("[name='my-checkbox']").bootstrapSwitch('state', true);
+                locked = true;
+
            console.log(response);
            viewMarkers(response,event.currentTarget.firstChild.data);
        }

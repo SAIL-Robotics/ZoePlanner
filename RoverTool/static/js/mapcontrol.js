@@ -619,6 +619,23 @@ function constructMainOperationDiv() {
 }//constructMainOperationDiv
 
 //******************************************************************************************************
+//ajaxForConfigUpdate - to make ajax calls to update the dedault config values in the home page
+function ajaxForConfigUpdate() {
+  $.ajax({
+         type:"POST",
+         url:'/',
+         data: {
+                'operation': 'operationConfig',  
+                },
+         success: function(response){
+          eve = response
+              // populateOperationConfig(response);
+               updateDefaultValues(response);
+         }
+  });
+}
+
+//******************************************************************************************************
 //placeMarker - called to place the markers and associate events based on lat lng value
 //and also update the json correspondingly
 function placeMarker(latitude,longitude,backEndJson) {
@@ -646,7 +663,13 @@ function placeMarker(latitude,longitude,backEndJson) {
          taskDetails.lat = latitude;
          taskDetails.lng = longitude;
          var markerCount = $('#markerCount').val();
-         markerNameValue = operationMarkerNameDefault+"-"+markerCount;
+         var markerNameValue;
+         if(operationMarkerNameDefault == undefined || operationMarkerNameDefault.trim() == "") {           
+           markerNameValue = "Location"+"-"+markerCount; 
+         } else {
+           markerNameValue = operationMarkerNameDefault+"-"+markerCount;          
+
+         }
          taskDetails.markerName = markerNameValue;       
          markerCount = parseInt(markerCount)+1;
          $('#markerCount').val(markerCount);
@@ -664,6 +687,7 @@ function placeMarker(latitude,longitude,backEndJson) {
 
    google.maps.event.addListener(marker,'click',function(event){
           drawline(); //to re-draw the lines
+          ajaxForConfigUpdate(); // for the ajax call to update the default values
           if($('.row-task-offcanvas').hasClass("taskappear")) {
             $('.row-task-offcanvas').removeClass("taskappear");
             $('.row-task-offcanvas').addClass("taskdisappear");
