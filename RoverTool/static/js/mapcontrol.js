@@ -87,6 +87,7 @@ function initialize() {
     }); 
     if($('#planNameDisplay').text() ==""){
     locked = true
+
     }  
   var mapOptions = {
     zoom: mapZoomConstant,
@@ -419,6 +420,7 @@ function initializeOperationDiv(taskpoints) {
 //******************************************************************************************************
 //populateOperationDiv - to populate div based on taskpoints (if present)
 function populateTemplate(){
+var task = []
   $("#operationDiv").children().remove();
   $.ajax({
          type:"POST",
@@ -427,9 +429,9 @@ function populateTemplate(){
                 'operation': 'getTemplateDetails',
                 'template_name': $('#selectTemplate').val()
                 },
-         success: function(data){
-             
-               populateTemplateDetails(data)
+         success: function(result){
+              task.push(result)
+               populateTemplateDetails(task)
 
               }
              
@@ -904,9 +906,8 @@ function drawline() {
 function drawMarker() {
   if(locked == false)
   {
-    var latitudeValue = parseFloat(document.getElementById('latValue').value);
-    var longitudeValue = parseFloat(document.getElementById('lngValue').value);
-    placeMarker(latitudeValue,longitudeValue,null);
+    var location = (document.getElementById('latLngValue').value).split(',');
+    placeMarker(parseFloat(location[0]),parseFloat(location[1]),null);
   }
   else
   {
@@ -1002,23 +1003,31 @@ function lockToggleButtonBlink()
 //******************************************************************************************************
  google.maps.event.addDomListener(window, 'load', initialize);
  function createTemplate(){
+  var tasks = {}
   bootbox.prompt("Template Name:", function(result) {                
   if (result == null || result == "" || result == " " ) {     
     toastr.options.positionClass ="toast-bottom-right";                                        
     toastr.error('Please provide a template name','');                              
   } else {
-    saveTemplate(result)
+    var latitudeValue = document.getElementById("lat").value;
+      var longitudeValue = document.getElementById("lng").value;  
+    for(taskDetailsIterator in taskpoints) {  
+    if(taskpoints[taskDetailsIterator].lat == latitudeValue && taskpoints[taskDetailsIterator].lng == longitudeValue) {
+      tasks = taskpoints[taskDetailsIterator];
+      }
+    }
+    saveTemplate(result,tasks)
                               
   }
 });
 
 }
-function saveTemplate(result){
+function saveTemplate(result,tasks){
   $.ajax({
          type:"POST",
          url:"/DBOperation/",
          data: {
-                'markers': JSON.stringify(taskpoints),    //constains lat, lon
+                'markers': JSON.stringify(tasks),    //constains lat, lon
                 'name':result,
                 'operation': 'createTemplate',
                 },
@@ -1028,5 +1037,7 @@ function saveTemplate(result){
              toastr.success('Template Created','');
          }
       });
-}
+  } 
+ 
+
 
