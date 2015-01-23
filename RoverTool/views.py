@@ -7,6 +7,10 @@ from django.core.context_processors import csrf
 from django.views.decorators.csrf import csrf_exempt
 import json, ast
 from django.http import *
+import os
+import commands
+import cgi, cgitb
+import re
 #from lxml import etree
 #from pykml.parser import Schema
 #from pykml.factory import KML_ElementMaker as KML
@@ -58,7 +62,65 @@ def administratorControl(request):
     c.update(csrf(request))
     data = []
 
+    filedata = request.FILES.get("ipl")
+    if filedata != None:
+        if filedata.file: # field really is an upload
+            with file("siteInformation.kml", 'w') as outfile:
+                outfile.write(filedata.file.read())
+
+
+            pushKmlToMongo()
     return render_to_response('adminPage.html', c, RequestContext(request))
+
+@csrf_exempt
+def pushKmlToMongo():
+    data = {}
+    connection = Connection()
+
+    db = connection["rover"]
+    collection = db["siteInfo"]
+
+    filename = "/home/arjun/aish.kml"
+
+    #WARNING : DELETING ALL RECORD
+    collection.remove({})
+
+    with open(filename, "r") as ins:
+        
+        for line in ins:
+            array = []
+            data = {}
+            if re.search(r"^site", line):
+                siteName = line
+            else:
+                for points in line.split("#"):
+                    points = points.replace("\n", "")
+                    array.append(points)
+                    siteName = siteName.replace("\n", "")
+                    data['siteName'] = siteName
+                    data['coords'] = array
+
+            if data != {}:
+                collection.save(data)
+
+def read_site_coords():
+    data = {}
+    connection = Connection()
+    db = connection["rover"]
+    collection = db["siteInfo"]
+    cursor = collection.find({},{'_id' : 0})
+
+    siteName = []
+    coords = []
+    for record in cursor:
+        siteName.append(record['siteName'])
+        coords.append(record['coords'])
+
+    data['siteName'] = siteName
+    data['coords'] = coords
+
+    print data
+    return data
 
 #fuction that handle the ajax request for save operation and getMarkerInfo operation(left pane single click on plan name)
 @csrf_exempt
@@ -92,6 +154,11 @@ def DBOperation(request):
             elif request.POST['operation'] == 'validatePlanName':
                 plan_name = request.POST.get('planName')
                 data = validatePlanName(plan_name)
+            elif request.POST['operation'] == 'validateTemplateName':
+                template_name = request.POST.get('template_name')
+                print "-----------------------"
+                print template_name
+                data = validateTemplateName(template_name)
             elif request.POST['operation'] == 'deletePlan':
                 plan_name = request.POST['planName']
                 deletePlan(plan_name)
@@ -130,7 +197,7 @@ def DBOperation(request):
             elif request.POST['operation'] == 'createTemplate':
                 template_name = request.POST['name'] 
                 markers = json.loads(request.POST.get('markers'))
-                saveTemplate(template_name,markers)  
+                saveTemplate(template_name,markers)      
             elif request.POST['operation'] == 'operationConfig':
                 BUF = request.POST['BUF']
                 MMRS1 = request.POST['MMRS1']
@@ -157,11 +224,14 @@ def DBOperation(request):
             elif request.POST['operation'] == "getTemplateDetails":
                 template_name = request.POST['template_name'] 
                 data = get_template_details(template_name)
-            
+            elif request.POST['operation'] == "loadSiteCoords":
+                print "edhooo"
+                data = read_site_coords()
         else:
             print 'why you do this!!'
     
     return HttpResponse(json.dumps(data), content_type = "application/json")
+
 
 
 def saveToDB(plan_name, plan_name_update, plan_desc, markers,plan_date):    
@@ -267,6 +337,15 @@ def validatePlanName(plan_name):
     data['count'] = collection.find({"planName": plan_name}).count()
 
     return data
+
+def validateTemplateName(template_name):
+    data = {}
+    connection = Connection()
+    db = connection[database_name]
+    collection = db[template_collection]
+    data['count'] = collection.find({"template_name": template_name}).count()
+    return data
+
 
 def get_plan_info(plan_name):
     data = {}

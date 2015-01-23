@@ -4,6 +4,9 @@ var eve;
 
 $(document).ready(function () {
 
+
+
+
 /****************************************************Populate plan pane once the page get loaded********************************************************/
 $.ajax({
          type:"POST",

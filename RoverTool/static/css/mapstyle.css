@@ -121,3 +121,19 @@
       #myfield_description {
         display: none;
       }
+      /*body{
+        overflow-y: hidden!important;
+      }
+      .sidebar-offcanvas{
+        overflow-y: auto!important;
+        overflow-x: hidden!important;
+      }*/
+      .adminUploadSiteInfo{
+        margin-top: 30px;
+        margin-bottom: 10px;
+        margin-left:39.03%;
+      }
+      input[type=file] {
+        display:inline-block;
+        border-color:black!important;
+      }

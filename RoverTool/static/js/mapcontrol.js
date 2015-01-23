@@ -108,8 +108,62 @@ function initialize() {
           lockToggleButtonBlink();
         }    
   });//function for map click
+  ajaxForLoadingSiteCoords();
+
 
 }//initialize
+
+function ajaxForLoadingSiteCoords(){
+  console.log("ajax")
+  $.ajax({
+         type:"POST",
+         url:'/DBOperation/',
+         data: {
+                'operation': 'loadSiteCoords',  
+                },
+         success: function(response){
+          if (response!=undefined)
+          plotCoords(response);
+          res = response
+         }
+  });
+}
+
+function plotCoords(response){
+
+  var color=['#FF00EE','#FF0000','#FFFF00','#0000FF','#00FF00','#F0F0F0','#0F0F0F','#0FFFF0']
+  for(i=0;i<response.siteName.length;i++)
+  {
+    var siteBoundaries=[]
+    for(j=0;j<response.coords[i].length;j++)
+    {
+
+       siteBoundaries.push(new google.maps.LatLng(response.coords[i][j].split(",")[0], response.coords[i][j].split(",")[1]));
+    }
+    //draw here
+    preebb = siteBoundaries;
+    // triangleCoords = [
+    // new google.maps.LatLng(25.774252, -80.190262)];
+    // triangleCoords.push(new google.maps.LatLng(18.466465, -66.118292));
+    // triangleCoords.push(new google.maps.LatLng(32.321384, -64.75737));
+    // triangleCoords.push(new google.maps.LatLng(25.774252, -80.190262));
+    drawSite(siteBoundaries,color[i%8])
+  }
+
+}
+
+function drawSite(siteBoundaries,color) {
+  site = new google.maps.Polygon({
+    paths: siteBoundaries,
+    strokeColor: color,
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: color,
+    fillOpacity: 0.35
+  });
+
+  site.setMap(map);
+}
 
 //******************************************************************************************************
 //saveTaskDetails - to save the task information given in the textboxes to json 
@@ -1000,15 +1054,12 @@ function lockToggleButtonBlink()
   $('.bootstrap-switch-handle-on').removeClass("red");
 }//lockToggleButtonBlink
 
-//******************************************************************************************************
+//************************************Create Template Validations**********************************************
  google.maps.event.addDomListener(window, 'load', initialize);
- function createTemplate(){
+ 
+function createTemplate(){
   var tasks = {}
-  bootbox.prompt("Template Name:", function(result) {                
-  if (result == null || result == "" || result == " " ) {     
-    toastr.options.positionClass ="toast-bottom-right";                                        
-    toastr.error('Please provide a template name','');                              
-  } else {
+  var flag = false;
     var latitudeValue = document.getElementById("lat").value;
       var longitudeValue = document.getElementById("lng").value;  
     for(taskDetailsIterator in taskpoints) {  
@@ -1016,12 +1067,56 @@ function lockToggleButtonBlink()
       tasks = taskpoints[taskDetailsIterator];
       }
     }
-    saveTemplate(result,tasks)
-                              
+    if(Object.keys(tasks).length <= 3){ // tasks should have other than the three keys (lat,lng,markername) to create a template
+   
+       toastr.options.positionClass ="toast-bottom-right";                                        
+       toastr.error('Please select operations to create a template',''); 
+               
+    }
+    else{
+      flag = true
+    }
+
+    if(flag == true){
+      bootbox.prompt("Template Name:", function(result) {                
+  if (result == null || result == "" || result == " " ) {     
+    toastr.options.positionClass ="toast-bottom-right";                                        
+    toastr.error('Please provide a template name','');  
+    flag = false;                            
   }
+  else{
+    $.ajax({                              //ajax call for validating if template already exist
+       type:"POST",
+       url:"/DBOperation/",
+       data: {
+              'template_name': result,   
+              'operation': 'validateTemplateName',
+              },
+       success: function(response){
+          if(response.count == 0)
+          {
+           saveTemplate(result,tasks)    
+          } 
+          else{
+            toastr.options.positionClass ="toast-bottom-right";                                        
+            toastr.error('Template name already exists','');           
+          }
+       }
+      });
+  } 
 });
 
+    }
+
+    
+   
+    //saveTemplate(result,tasks)
+                              
+  //}
+//});
+
 }
+ 
 function saveTemplate(result,tasks){
   $.ajax({
          type:"POST",

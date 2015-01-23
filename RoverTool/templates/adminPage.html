@@ -20,9 +20,9 @@
     <link href="/static/css/bootstrap-switch.css" rel="stylesheet">
 
     <script src="/static/js/jquery.min.js"></script>
-   
     <script src="/static/js/bootstrap-switch.js"></script>
     <script src="/static/js/toastr.js"></script>
+  
     
     <script src="/static/js/FileSaver.js"></script>
     
@@ -39,11 +39,31 @@
        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" id = "operationPaneConfig">
   Configure Operation values
 </button>
-      </div>
+    </div>
       <div class="adminRecover">
         <button type="button" class="btn btn-primary" data-toggle="modal" id = "planTrash">Recover Plan</button>
       </div>
-    </div>
+      <div class="adminUploadSiteInfo">
+        <form id="uploadFile" method="POST" action="/config/" enctype="multipart/form-data">
+        <input type="file" class="btn" name="ipl" />
+        <input type="submit" class="btn btn-primary" value="Upload" name="uploadFile" />
+      </form>
+      </div>
+      
+<!--       <form id="upload" method="post" action="upload.php" enctype="multipart/form-data">
+            <div id="drop">
+                Drop Here
+
+                <a>Browse</a>
+                <input type="file" name="upl" multiple />
+            </div>
+
+            <ul>
+            </ul>
+
+        </form>
+ -->    
+ </div>
 
 <!-- //////////////////////////////////////////////////////// -->    
 
