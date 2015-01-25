@@ -19,6 +19,9 @@ var operationSpectraAngularDefault;
 var operationPreciseMoveDefault; 
 var operationSmartTargetDefault; 
 var operationMarkerNameDefault;
+var operationDrillImagePanoramaValueDefault;
+var operationDrillMmrsValueDefault;
+
 
 //******************************************************************************************************
 //updateDefaultValues - to update the default value for the operations in the operation pane
@@ -141,6 +144,8 @@ function fillDrill(currentTaskpoint,drillIterator,drillCount,taskDetails) {
           var operationDrillValue = "";
           var operationDrillSaveValue = "";
           var operationDrillSaveImageValue = "";
+          var operationDrillImagePanoramaValue = "";
+          var operationDrillMmrsValue = "";
           operationDrillValue = taskDetails["drillValue"+iterator];
           if(taskDetails["drillSave"+iterator] == "Yes") {
             //keep it selected
@@ -150,12 +155,22 @@ function fillDrill(currentTaskpoint,drillIterator,drillCount,taskDetails) {
             //keep it selected
             operationDrillSaveImageValue = taskDetails["drillSaveImage"+iterator];
           }
+
+          if(taskDetails["imagePanorama"+iterator] == "Yes") {
+            //keep it selected
+            operationDrillImagePanoramaValue = taskDetails["imagePanorama"+iterator];
+          }
+
+          if(taskDetails["mmrs"+iterator] == "Yes") {
+            //keep it selected
+            operationDrillMmrsValue = taskDetails["mmrs"+iterator];
+          }
           occured++;
           if(occured ==1) { //This should happen only once
             //todo - operationDrillValue keeps repeating next time one person clicks 'Add' button????
             constructDrillDiv(currentTaskpoint,"Drill",operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue); 
           }       
-          makeDrillDivs(currentTaskpoint,iterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue);          
+          makeDrillDivs(currentTaskpoint,iterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillMmrsValue);          
         
         }
       } 
@@ -164,21 +179,21 @@ function fillDrill(currentTaskpoint,drillIterator,drillCount,taskDetails) {
 
 //******************************************************************************************************
 //addDrillDiv - to add a new drill div
-function addDrillDiv(currentTaskPoint,drillIterator,drillCount,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue) {
+function addDrillDiv(currentTaskPoint,drillIterator,drillCount,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillMmrsValue,operationDrillImagePanoramaValue,operationDrillMmrsValue) {
   console.log("Calling add drill div");
   drillIterator++;
   drillCount++;
   $("#drillIterator").val(drillIterator);
   $("#drillCount").val(drillCount);
-  makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue);
+  makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillMmrsValue);
   
 }//addDrillDiv
 
 //******************************************************************************************************
 //makeDrillDivs - to construct html for adding a new drillDiv
-function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue) {
+function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillMmrsValue) {
   
-  console.log("Calling make drill divs");
+  console.log("Calling make drill divs with values ");
 
   jQuery('<div/>', {
     id: 'newDrillDiv'+drillIterator,
@@ -207,6 +222,71 @@ function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operat
     }
   });
 
+  jQuery('<label/>',{
+  text:'Take picture'
+  }).appendTo('#newDrillDiv'+drillIterator);
+
+  jQuery('<br/>',{}).appendTo("#newDrillDiv"+drillIterator);
+
+  //Image panorama
+  var imagePanoramaCheckBox = jQuery('<input/>', {
+  type:'checkbox',
+    id: 'imagePanorama'+drillIterator,
+    value: 'imagePanorama',
+  });
+  imagePanoramaCheckBox.appendTo('#newDrillDiv'+drillIterator);
+
+  imagePanoramaCheckBox.change(function() { 
+    var isChecked = imagePanoramaCheckBox.prop('checked');
+    console.log("the value is "+isChecked);
+    if(isChecked == true) {
+      var taskDetails = taskpoints[currentTaskPoint];
+      taskDetails["imagePanorama"+drillIterator] = "Yes";
+    }
+    else {
+      var taskDetails = taskpoints[currentTaskPoint];
+      if(taskDetails["imagePanorama"+drillIterator] && taskDetails["imagePanorama"+drillIterator]!=undefined) {
+        delete taskDetails["imagePanorama"+drillIterator];
+      }
+    }
+  });
+
+  jQuery('<label/>',{
+  text:'Image Panorama'
+  }).appendTo('#newDrillDiv'+drillIterator);
+
+  jQuery('<br/>',{}).appendTo("#newDrillDiv"+drillIterator);
+
+  //mmrs
+  var mmrsCheckBox = jQuery('<input/>', {
+  type:'checkbox',
+    id: 'mmrs'+drillIterator,
+    value: 'mmrs',
+  });
+  mmrsCheckBox.appendTo('#newDrillDiv'+drillIterator);
+
+  mmrsCheckBox.change(function() { 
+    var isChecked = mmrsCheckBox.prop('checked');
+    console.log("the value is "+isChecked);
+    if(isChecked == true) {
+      var taskDetails = taskpoints[currentTaskPoint];
+      taskDetails["mmrs"+drillIterator] = "Yes";
+    }
+    else {
+      var taskDetails = taskpoints[currentTaskPoint];
+      if(taskDetails["mmrs"+drillIterator] && taskDetails["mmrs"+drillIterator]!=undefined) {
+        delete taskDetails["mmrs"+drillIterator];
+      }
+    }
+  });
+
+  jQuery('<label/>',{
+  text:'MMRS'
+  }).appendTo('#newDrillDiv'+drillIterator);
+
+  jQuery('<br/>',{}).appendTo("#newDrillDiv"+drillIterator);
+
+
   $("#newDrillDiv"+drillIterator).append("<span class='drillClose' id='drillClose"+drillIterator+"''>X</span>");
 
   $("#drillClose"+drillIterator).click(function( event ){
@@ -224,12 +304,6 @@ function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operat
       drillCount--;
       $("#drillCount").val(drillCount);         
   });
-
-  jQuery('<label/>',{
-  text:'Take picture'
-  }).appendTo('#newDrillDiv'+drillIterator);
-
-  jQuery('<br/>',{}).appendTo("#newDrillDiv"+drillIterator);
 
   var drillSaveCheckBox = jQuery('<input/>', {
   type:'checkbox',
@@ -267,6 +341,22 @@ function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operat
     drillSaveImageCheckBox.removeAttr('checked');
   }
 
+  if(operationDrillImagePanoramaValue == "Yes") {
+    imagePanoramaCheckBox.attr('checked','');
+  }
+  else {
+    imagePanoramaCheckBox.removeAttr('checked');
+  }
+
+ if(operationDrillMmrsValue == "Yes") {
+    mmrsCheckBox.attr('checked','');
+  }
+  else {
+    mmrsCheckBox.removeAttr('checked');
+  }
+
+  //todo - if necessary, add default value setting to mmrs and panorama in future
+
   jQuery('<label/>',{
   text:'Save sample'
   }).appendTo('#newDrillDiv'+drillIterator);
@@ -300,6 +390,12 @@ function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operat
    }
    if(drillSaveImageCheckBox.attr('checked')) {
     taskDetails["drillSaveImage"+drillIterator] = "Yes";
+   }
+   if(mmrsCheckBox.attr('checked')) {
+    taskDetails["mmrs"+drillIterator] = "Yes";
+   }
+   if(imagePanoramaCheckBox.attr('checked')) {
+    taskDetails["imagePanorama"+drillIterator] = "Yes";
    }
    taskDetails['drillCount'] = $("#drillCount").val();
    taskDetails['drillIterator'] = $("#drillIterator").val();
@@ -561,6 +657,13 @@ function constructDrillDiv(currentTaskpoint,selectedOption,operationDrillValue,o
       if(taskDetails["drillSaveImage"+drillIterator] && taskDetails["drillSaveImage"+drillIterator] != undefined) {
         delete taskDetails["drillSaveImage"+drillIterator];
       }
+
+      if(taskDetails["imagePanorama"+drillIterator] && taskDetails["imagePanorama"+drillIterator] != undefined) {
+        delete taskDetails["imagePanorama"+drillIterator];
+      }
+      if(taskDetails["mmrs"+drillIterator] && taskDetails["mmrs"+drillIterator] != undefined) {
+        delete taskDetails["mmrs"+drillIterator];
+      }
     }
     
     $('<option>').val('Drill').text('Drill').appendTo('#selectOperation');
@@ -588,7 +691,7 @@ function constructDrillDiv(currentTaskpoint,selectedOption,operationDrillValue,o
     drillCount = $("#drillCount").val();
 
     //todo - change to default values
-    addDrillDiv(currentTaskpoint,drillIterator,drillCount,operationDrillDefault,operationDrillSaveDefault,operationDrillSaveImageDefault);
+    addDrillDiv(currentTaskpoint,drillIterator,drillCount,operationDrillDefault,operationDrillSaveDefault,operationDrillSaveImageDefault,operationDrillImagePanoramaValueDefault,operationDrillMmrsValueDefault);
   });
 
   var inputDiv = jQuery('<div></div>').hide().append(addButton);

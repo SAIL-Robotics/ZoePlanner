@@ -417,9 +417,9 @@ function initializeOperationDiv(taskpoints) {
   var operationArray = [
   {val : 'Drill', text: 'Drill'},
   {val : 'BUF', text: 'BUF'},
-  {val : 'MMRS', text: 'MMRS'},
+  //{val : 'MMRS', text: 'MMRS'},
   {val : 'Science Image', text: 'Science Image'},
-  {val : 'Image Panorama', text: 'Image Panorama'},
+  //{val : 'Image Panorama', text: 'Image Panorama'},
   {val : 'Spectra Panorama', text: 'Spectra Panorama'},
   {val : 'Precise Move', text: 'Precise Move'},
   {val : 'Smart Target', text: 'Smart Target'}
