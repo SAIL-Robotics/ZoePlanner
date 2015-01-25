@@ -726,10 +726,44 @@ function placeMarker(latitude,longitude,backEndJson) {
            markerNameValue = operationMarkerNameDefault+"-"+markerCount;          
 
          }
-         taskDetails.markerName = markerNameValue;       
-         markerCount = parseInt(markerCount)+1;
-         $('#markerCount').val(markerCount);
-         //taskpoints.push(new google.maps.LatLng(latitude,longitude));
+         // taskDetails.markerName = markerNameValue;       
+         // markerCount = parseInt(markerCount)+1;
+         // $('#markerCount').val(markerCount);
+
+
+         //////////////////////////////todo - check /////////////////////////////////////////////
+         ////////////////////////////////////////////////////////////////////////////////////////
+         
+         var iteratorFlag = false;
+          for(taskDetailsIterator in taskpoints) {
+              if(taskpoints[taskDetailsIterator].markerName && taskpoints[taskDetailsIterator].markerName != undefined) {
+                var markerName = taskpoints[taskDetailsIterator].markerName;
+                if(markerName == markerNameValue) {
+                  //not unique
+                  while(markerName == markerNameValue) {
+                      var markerCount = $('#markerCount').val();
+                       if(operationMarkerNameDefault == undefined || operationMarkerNameDefault.trim() == "") {           
+                         markerNameValue = "Location"+"-"+markerCount; 
+                       } else {
+                         markerNameValue = operationMarkerNameDefault+"-"+markerCount;          
+                       }   
+                       console.log("*** inside while loop"+markerCount);
+                       markerCount = parseInt(markerCount)+1;
+                       $('#markerCount').val(markerCount);
+                       iteratorFlag = true;
+                    }
+                  }
+              } 
+            }
+            
+            taskDetails.markerName = markerNameValue;  
+            if(iteratorFlag == false) {
+              markerCount = parseInt(markerCount)+1;
+              $('#markerCount').val(markerCount);   
+            }                
+
+         ////////////////////////////////////////////////////////////////////////////////////////
+
          taskpoints.push(taskDetails);
         } 
           count++;
