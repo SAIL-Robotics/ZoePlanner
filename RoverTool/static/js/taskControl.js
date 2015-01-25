@@ -625,9 +625,10 @@ function constructMmrsDiv(currentTaskpoint,selectedOption,operationMmrsExposureV
 }//End of constructMmrsDiv
 
 //******************************************************************************************************
-//constructDrillDiv - To construct div for BUF
+//constructDrillDiv - To construct div for drill
 function constructDrillDiv(currentTaskpoint,selectedOption,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue) {
 
+  console.log("constructing drill div");
   console.log("sel "+selectedOption);
 
   var groupAnchor = jQuery('<a>', {

@@ -9,6 +9,7 @@ var markerchanged;
 var eee;
 var locked = false;
 var lines = [];
+var allMarkers = [];
 
 //******************************************************************************************************
 //setTextState - to set the task fields to be disabled/not based on lock/unlock state
@@ -494,7 +495,8 @@ var task = []
 }
 
 function populateTemplateDetails(taskDetails) {
-  
+
+  hh = taskDetails;
   var currentTaskpoint;
   var latitudeValue = document.getElementById("lat").value;
   var longitudeValue = document.getElementById("lng").value;
@@ -509,6 +511,7 @@ function populateTemplateDetails(taskDetails) {
   var lng = taskpoints[currentTaskpoint].lng;
 
   taskpoints[currentTaskpoint] = {};
+  taskpoints[currentTaskpoint].markerName = $('#markerName').val();
   taskpoints[currentTaskpoint].lat = lat;
   taskpoints[currentTaskpoint].lng = lng;
   
@@ -516,6 +519,27 @@ function populateTemplateDetails(taskDetails) {
 
     //todo
     //if(taskDetails[i]['drillValue'])
+    var occured = 0;
+    var drillCount = parseInt(taskDetails[i].drillIterator);
+    $("#drillIterator").val(taskDetails[i].drillIterator);
+    $("#drillCount").val(taskDetails[i].drillCount);
+    for(k=0;k<drillCount;k++) {
+      
+      var drillValue = taskDetails[i]['drillValue'+k];
+      if(drillValue && drillValue!=undefined ) {
+        occured++;
+        var drillSaveValue = taskDetails[i]['drillSave'+k];
+        var drillSaveImageValue = taskDetails[i]['drillSaveImage'+k];
+        var drillImagePanoramaValue = taskDetails[i]['imagePanorama'+k];
+        var drillMmrsValue = taskDetails[i]['mmrs'+k];
+        console.log("the occured is"+occured);
+        if(occured == 1) { //This should happen only once
+
+            constructDrillDiv(currentTaskpoint,"Drill",drillValue,drillSaveValue,drillSaveImageValue); 
+          }   
+        makeDrillDivs(currentTaskpoint,k,drillValue,drillSaveValue,drillSaveImageValue,drillImagePanoramaValue,drillMmrsValue);
+      }
+    }
    
     if(taskDetails[i]['bufValue'] && taskDetails[i]['bufValue']!=undefined) {
       
@@ -706,6 +730,7 @@ function placeMarker(latitude,longitude,backEndJson) {
           title: "Lat : "+latitude+" Long : "+longitude,
           draggable:true
       });
+      allMarkers.push(marker);
       // map.panTo(marker.getPosition());
        //console.log("getPos" +marker.getPosition());
        var taskDetails = {};
@@ -781,10 +806,12 @@ function placeMarker(latitude,longitude,backEndJson) {
           if($('.row-task-offcanvas').hasClass("taskappear")) {
             $('.row-task-offcanvas').removeClass("taskappear");
             $('.row-task-offcanvas').addClass("taskdisappear");
+            //marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
           }
           else if($('.row-task-offcanvas').hasClass("taskdisappear")) {
             $('.row-task-offcanvas').removeClass("taskdisappear");
             $('.row-task-offcanvas').addClass("taskappear");
+             marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
           }
           $('.task-group-item').attr('tabindex', '');
           
@@ -795,6 +822,7 @@ function placeMarker(latitude,longitude,backEndJson) {
   }); //event handler for single click
 
     google.maps.event.addListener(marker, 'rightclick', function(event) {
+      marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
       if(locked == false)
       {
           bootbox.dialog({
@@ -939,6 +967,9 @@ function placeMarker(latitude,longitude,backEndJson) {
 //******************************************************************************************************
 //drawLine - Function to draw the line between the markers that are placed
 function drawline() {
+  for(var i=0;i<allMarkers.length;i++) {
+     allMarkers[i].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+  }
   for(var i = 0;i<lines.length;i++)   {
       lines[i].setMap(null);
   }
