@@ -65,7 +65,7 @@
           </button>
         </li>
         <li> 
-          <button id = "map-reset" type="button" class="btn btn-primary btn-sm saveBtn" onclick = "clearMap();">
+          <button id = "map-reset" type="button" class="btn btn-primary btn-large saveBtn" onclick = "clearMap();">
             Reset Map
           </button>
         </li>
@@ -169,7 +169,7 @@
 
         <!-- //////////////////////////////////////////////////TASKPANE END////////////////////////////////////////////// -->
 
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -177,7 +177,7 @@
         <h4 class="modal-title" id="myModalLabel">New Plan</h4>
       </div>
       <div class="modal-body">
-       <input type="text" class="form-control" placeholder="Plan name..." id = "planName">
+       <input type="text" class="form-control" placeholder="Plan name..." id = "planName" autofocus = "autofocus">
        <p id="planNameError" class="err"></p>
        <textarea rows = "5" cols = "10" class="form-control" placeholder="Description...(optional)" id = "planDesc"></textarea><br>
        Execution Date : <input type="text" id="executionDate" placeholder="(mm/DD/yyyy) format">

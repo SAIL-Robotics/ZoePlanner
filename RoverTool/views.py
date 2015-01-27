@@ -76,7 +76,7 @@ def pushKmlToMongo():
     db = connection["rover"]
     collection = db["siteInfo"]
 
-    filename = "/home/arjun/aish.kml"
+    filename = "siteInformation.kml"
 
     #WARNING : DELETING ALL RECORD
     collection.remove({})
