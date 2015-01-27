@@ -1,5 +1,8 @@
 Django==1.7
 argparse==1.2.1
+gunicorn==19.1.1
+lxml==3.4.0
+pykml==0.1.0
 pymongo==2.7.2
-simplejson==3.6.3
+simplekml==1.2.3
 wsgiref==0.1.2
