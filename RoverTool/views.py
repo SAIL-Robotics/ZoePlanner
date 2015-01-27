@@ -11,11 +11,7 @@ import os
 import commands
 import cgi, cgitb
 import re
-#from lxml import etree
-#from pykml.parser import Schema
-#from pykml.factory import KML_ElementMaker as KML
-#from pykml.factory import GX_ElementMaker as GX
-#import simplekml
+import simplekml
 
 database_name = "rover"
 collection_name = "plans"
@@ -242,9 +238,15 @@ def saveToDB(plan_name, plan_name_update, plan_desc, markers,plan_date):
 
     db = connection[database_name]
     collection = db[collection_name]
-    
+    print plan_name
+    if plan_name == "":
+        plan_name = plan_name_update
+
+    print "validate ", validatePlanName(plan_name)['count']
+
     if validatePlanName(plan_name_update)['count'] == 0:
-        plan = {"planName" : plan_name, "planDescription" : plan_desc, "timeStamp" : time, "markers" : markers, "planDate" : plan_date}
+        print "inside save"
+        plan = {"planName" : plan_name, "planDescription" : plan_desc, "timeStamp" : time, "markers" : markers, "planDate" : plan_date, "deleted" : 0}
         collection.save(plan)
     else:
         print "update"
@@ -269,7 +271,7 @@ def update_plan(plan_name, plan_desc, markers):
     collection = db[collection_name]
     print plan_name
     print markers
-    markersCursor = collection.update({'planName' : plan_name}, {'$set' : {'markers' : markers}})
+    markersCursor = collection.update({'planName' : plan_name, 'deleted' : 0}, {'$set' : {'markers' : markers}})
 
 #getting all the markers information from MongoDB
 def getMarker(plan_name):    
@@ -278,7 +280,7 @@ def getMarker(plan_name):
     db = connection[database_name]
     collection = db[collection_name]
 
-    markersCursor = collection.find_one({'planName' : plan_name}, {'_id':0, 'markers':1})
+    markersCursor = collection.find_one({'planName' : plan_name, 'deleted' : 0}, {'_id':0, 'markers':1})
     print markersCursor['markers']
 
     return markersCursor['markers']
@@ -291,7 +293,7 @@ def duplicatePlan(plan_name, new_plan_name, plan_desc):
 
     db = connection[database_name]
     collection = db[collection_name]
-    markersCursor = collection.find_one({'planName' : plan_name}, {'_id':0})
+    markersCursor = collection.find_one({'planName' : plan_name, 'deleted' : 0}, {'_id':0})
     markersCursor['planName'] = new_plan_name
     markersCursor['planDescription'] = plan_desc
     markersCursor['timeStamp'] = time
@@ -303,14 +305,14 @@ def renamePlan(plan_name, new_plan_name):
 
     db = connection[database_name]
     collection = db[collection_name]
-    markersCursor = collection.update({'planName' : plan_name}, {'$set' : {'planName' : new_plan_name}})
+    markersCursor = collection.update({'planName' : plan_name, 'deleted' : 0}, {'$set' : {'planName' : new_plan_name}})
 
 def deletePlan(plan_name):
     connection = Connection()
 
     db = connection[database_name]
     collection = db[collection_name]
-    markersCursor = collection.update({'planName' : plan_name}, {'$set' : {'deleted' : 1}})
+    markersCursor = collection.update({'planName' : plan_name, 'deleted' : 0}, {'$set' : {'deleted' : 1}})
     #collection.remove({'planName' : plan_name});
 
 def delete_plan_forever(plan_name):
@@ -318,23 +320,45 @@ def delete_plan_forever(plan_name):
 
     db = connection[database_name]
     collection = db[collection_name]
-    collection.remove({'planName' : plan_name});    
+    collection.remove({'planName' : plan_name, 'deleted' : 1});    
 
 def recover_plan(plan_name):
     connection = Connection()
 
     db = connection[database_name]
     collection = db[collection_name]
-    markersCursor = collection.update({'planName' : plan_name}, {'$set' : {'deleted' : 0}})
+    markersCursor = collection.update({'planName' : plan_name, 'deleted' : 1}, {'$set' : {'deleted' : 0}})
 
 def validatePlanName(plan_name):
+    data = {}
+    connection = Connection()
+    flag = 0
+    db = connection[database_name]
+    collection = db[collection_name]
+
+    active_plan = collection.find({"planName": plan_name, 'deleted' : 0}).count()
+    trash_plan = collection.find({"planName": plan_name, "deleted" : 1}).count()
+
+    data['count'] = collection.find({"planName": plan_name, 'deleted' : 0}).count()
+
+    if trash_plan > 0 and active_plan > 0:
+        data['count'] = 1        
+        print "hereeee"
+
+    if trash_plan > 0 and active_plan == 0:
+        data['count'] = 0
+        print "ingathaan"
+
+    return data
+
+def is_deleted_plan(plan_name):
     data = {}
     connection = Connection()
 
     db = connection[database_name]
     collection = db[collection_name]
 
-    data['count'] = collection.find({"planName": plan_name}).count()
+    data['count'] = collection.find({"planName": plan_name, "deleted" : 1}).count()
 
     return data
 
@@ -354,7 +378,7 @@ def get_plan_info(plan_name):
     db = connection[database_name]
     collection = db[collection_name]
 
-    cursor = collection.find_one({"planName": plan_name},{"_id" : 0, "planDescription" : 1, "timeStamp" : 1, "planDate" : 1})
+    cursor = collection.find_one({"planName": plan_name, 'deleted' : 0},{"_id" : 0, "planDescription" : 1, "timeStamp" : 1, "planDate" : 1})
 
     return cursor
 
@@ -451,7 +475,7 @@ def get_plan_detail():
     for record in planListCursor:
         planname_array.append(record['planName'])
 
-        markersCursor = collection.find_one({'planName' : record['planName']}, {'_id':0, 'markers':1})
+        markersCursor = collection.find_one({'planName' : record['planName'], 'deleted' : 0}, {'_id':0, 'markers':1})
         tot_markers.append(len(markersCursor['markers']))
 
     data['planName'] = planname_array

@@ -4,9 +4,6 @@ var eve;
 
 $(document).ready(function () {
 
-
-
-
 /****************************************************Populate plan pane once the page get loaded********************************************************/
 $.ajax({
          type:"POST",
@@ -226,8 +223,7 @@ document.getElementById('close').onclick = function(){
     if($('#planName').val().trim().length === 0) {
        $('#planNameError').html("<span class=\"label label-danger\">Plan name cannot be empty!</span>");
     }
-    
-  
+      
     else if($('#planName').val().length > 0 )
     {
 
