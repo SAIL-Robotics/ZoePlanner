@@ -366,12 +366,55 @@ $("#renamePlan").click(function(){
             $('#planNameDisplay').text($('#planRename').val());
           } 
           else{
-            $('#planNameError').html("<span class=\"label label-danger\">There exists a plan by the same name. </span>");
+            $('#planNameErr').html("<span class=\"label label-danger\">There exists a plan by the same name. </span>");
           }
        }
       });
     }
   });
+
+/************************************* Create New template *******************************************/
+
+$("#templateNew").click(function(){
+
+    if($('#templateName').val().trim().length === 0) {
+       $('#templateNameErr').html("<span class=\"label label-danger\">Template name cannot be empty!</span>");
+    }
+    else if($('#templateName').val().length > 0 )
+    {
+      $.ajax({                              //ajax call for validating if planname already exist
+       type:"POST",
+       url:"/DBOperation/",
+       data: {
+              'template_name': $('#templateName').val().trim(),   
+              'operation': 'validateTemplateName',
+              },
+       success: function(response){
+          if(response.count == 0){
+            $.ajax({
+             type:"POST",
+             url:"/DBOperation/",
+             data: {
+                    'markers': JSON.stringify(templateTasks),    //constains lat, lon
+                    'name':$('#templateName').val().trim(),
+                    'operation': 'createTemplate',
+                    },
+             success: function(data){
+                 templateTasks = {}
+                 toastr.options.positionClass ="toast-bottom-right";
+                 toastr.success('Template Created','');
+             }
+          });
+            $('#templateModal').modal('hide')
+          } 
+          else{
+            $('#templateNameErr').html("<span class=\"label label-danger\">There exists a template by the same name. </span>");
+          }
+       }
+      });
+    }
+  });
+/****************************************************************************************************************/
 
 /****************************************************Plan Reset Icon********************************************************/
 //Retrieves all plan names from DB and populate it
@@ -622,6 +665,6 @@ function populatePlanTrash(response)
   $("#planTrashDiv").empty()
   for(i = 0; i < response.planName.length; i++)
   {
-    $("#planTrashDiv").append('<div href="#" class="list-group-item clearfix planTrashClass">'+ response.planName[i] +'<span class="pull-right">  <button class="btn btn-xs btn-info trash" id='+response.planName[i]+'> <span class="glyphicon glyphicon-trash trash"></span> </button>  <button class="btn btn-xs btn-info recover" id='+response.planName[i]+'> <span class="glyphicon glyphicon-log-in recover"></span> </button> </span> </span></div>'); 
+    $("#planTrashDiv").append('<div href="#" class="list-group-item clearfix planTrashClass">'+ response.planName[i] +'<span class="pull-right">  <button class="btn btn-xs btn-info trash" data-toggle="tooltip" data-placement="bottom" title="Delete permanently" id='+response.planName[i]+'> <span class="glyphicon glyphicon-trash trash"></span> </button>  <button class="btn btn-xs btn-info recover" data-toggle="tooltip" data-placement="bottom" title="Restore plan " id='+response.planName[i]+'> <span class="glyphicon glyphicon-log-in recover"></span> </button> </span> </span></div>'); 
   }
 }

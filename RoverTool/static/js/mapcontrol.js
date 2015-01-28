@@ -1,5 +1,6 @@
 var map;
 var taskpoints=[]; 
+var templateTasks = {}
 var count=0;
 var lattitude;
 var longitude;
@@ -806,7 +807,7 @@ function placeMarker(latitude,longitude,backEndJson) {
           if($('.row-task-offcanvas').hasClass("taskappear")) {
             $('.row-task-offcanvas').removeClass("taskappear");
             $('.row-task-offcanvas').addClass("taskdisappear");
-            //marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
           }
           else if($('.row-task-offcanvas').hasClass("taskdisappear")) {
             $('.row-task-offcanvas').removeClass("taskdisappear");
@@ -892,7 +893,9 @@ function placeMarker(latitude,longitude,backEndJson) {
               {
                   markerchanged = i;
               }
-            }//for    
+            }//for 
+      marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+
       }
       else
       {
@@ -902,7 +905,7 @@ function placeMarker(latitude,longitude,backEndJson) {
 
     google.maps.event.addListener(marker, 'drag', function(event) {
       if(locked == false)
-      {          
+      {   
           marker.title = "Lat : "+marker.position.lat()+" Long : "+marker.position.lng();
           var taskDetails1 = {};
                   taskDetails1.lat = marker.position.lat();
@@ -921,7 +924,7 @@ function placeMarker(latitude,longitude,backEndJson) {
           //taskpoints[markerchanged]=taskDetails1;
           taskpoints[markerchanged].lat = marker.position.lat();
           taskpoints[markerchanged].lng = marker.position.lng();
-
+          marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');       
           drawline();
       }
       else
@@ -934,7 +937,7 @@ function placeMarker(latitude,longitude,backEndJson) {
     google.maps.event.addListener(marker, 'dragend', function(event) {
       if(locked == false)
       {
-        
+         
          marker.title = "Lat : "+marker.position.lat()+" Long : "+marker.position.lng();
          var taskDetails1 = {};
          taskDetails1.lat = marker.position.lat();
@@ -952,7 +955,7 @@ function placeMarker(latitude,longitude,backEndJson) {
           }
           taskpoints[markerchanged].lat = marker.position.lat();
           taskpoints[markerchanged].lng = marker.position.lng();
-         
+         marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
          drawline(); 
       }                  
       else
@@ -1123,19 +1126,18 @@ function lockToggleButtonBlink()
  google.maps.event.addDomListener(window, 'load', initialize);
  
 function createTemplate(){
-  var tasks = {}
   var flag = false;
     var latitudeValue = document.getElementById("lat").value;
       var longitudeValue = document.getElementById("lng").value;  
     for(taskDetailsIterator in taskpoints) {  
     if(taskpoints[taskDetailsIterator].lat == latitudeValue && taskpoints[taskDetailsIterator].lng == longitudeValue) {
-      tasks = taskpoints[taskDetailsIterator];
+      templateTasks = taskpoints[taskDetailsIterator];
       }
     }
-    if(Object.keys(tasks).length <= 3){ // tasks should have other than the three keys (lat,lng,markername) to create a template
+    if(Object.keys(templateTasks).length <= 3){ // tasks should have other than the three keys (lat,lng,markername) to create a template
    
        toastr.options.positionClass ="toast-bottom-right";                                        
-       toastr.error('Please select operations to create a template',''); 
+       toastr.error('Please add operations to create a template',''); 
                
     }
     else{
@@ -1143,33 +1145,35 @@ function createTemplate(){
     }
 
     if(flag == true){
-      bootbox.prompt("Template Name:", function(result) {                
-  if (result == null || result == "" || result == " " ) {     
-    toastr.options.positionClass ="toast-bottom-right";                                        
-    toastr.error('Please provide a template name','');  
-    flag = false;                            
-  }
-  else{
-    $.ajax({                              //ajax call for validating if template already exist
-       type:"POST",
-       url:"/DBOperation/",
-       data: {
-              'template_name': result,   
-              'operation': 'validateTemplateName',
-              },
-       success: function(response){
-          if(response.count == 0)
-          {
-           saveTemplate(result,tasks)    
-          } 
-          else{
-            toastr.options.positionClass ="toast-bottom-right";                                        
-            toastr.error('Template name already exists','');           
-          }
-       }
-      });
-  } 
-});
+       $('#templateModal').modal('show');
+//       bootbox.prompt("Template Name:", function(result) {                
+//   if (result == "" || result == " " ) {     
+//     toastr.options.positionClass ="toast-bottom-right";                                        
+//     toastr.error('Please provide a template name','');  
+//     flag = false;                            
+//   }
+
+//   else if(result != null)  {
+//     $.ajax({                              //ajax call for validating if template already exist
+//        type:"POST",
+//        url:"/DBOperation/",
+//        data: {
+//               'template_name': result,   
+//               'operation': 'validateTemplateName',
+//               },
+//        success: function(response){
+//           if(response.count == 0)
+//           {
+//            saveTemplate(result,tasks)    
+//           } 
+//           else{
+//             toastr.options.positionClass ="toast-bottom-right";                                        
+//             toastr.error('Template name already exists','');           
+//           }
+//        }
+//       });
+//   } 
+// });
 
     }
 

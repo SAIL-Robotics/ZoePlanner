@@ -55,7 +55,7 @@
         </li>
 
         <li>  
-          <button class="btn btn-primary btn-large createPlan" data-target="#myModal" id="createPlanModal">
+          <button class="btn btn-primary btn-large createPlan" data-target="#myModal" id="createPlanModal" >
               Start Plan 
           </button>
         </li>
@@ -65,7 +65,7 @@
           </button>
         </li>
         <li> 
-          <button id = "map-reset" type="button" class="btn btn-primary btn-large saveBtn" onclick = "clearMap();">
+          <button id = "map-reset" type="button" class="btn btn-primary btn-large saveBtn" onclick = "clearMap();" >
             Reset Map
           </button>
         </li>
@@ -206,6 +206,25 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" id = "renamePlan">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="templateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myRenameModalLabel">Create New Template</h4>
+      </div>
+      <div class="modal-body">
+       <input type="text" class="form-control" placeholder="Template name..." id = "templateName">
+       <p id="templateNameErr" class="err"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id = "templateNew">Proceed</button>
       </div>
     </div>
   </div>
