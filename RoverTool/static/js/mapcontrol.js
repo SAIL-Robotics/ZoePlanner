@@ -124,34 +124,35 @@ function ajaxForLoadingSiteCoords(){
                 'operation': 'loadSiteCoords',  
                 },
          success: function(response){
-          if (response!=undefined)
-          plotCoords(response);
-          res = response
+            if (response!=undefined)
+            {
+              data = plotCoords(response);
+              $('#comment').val(data)
+            }
+
+            
          }
   });
 }
 
 function plotCoords(response){
 
+  var data = "";
   var color=['#FF00EE','#FF0000','#FFFF00','#0000FF','#00FF00','#F0F0F0','#0F0F0F','#0FFFF0']
   for(i=0;i<response.siteName.length;i++)
   {
     var siteBoundaries=[]
+    data = data + response.siteName[i] + "\n" + response.coords[i]+ "\n";
+
     for(j=0;j<response.coords[i].length;j++)
     {
 
        siteBoundaries.push(new google.maps.LatLng(response.coords[i][j].split(",")[0], response.coords[i][j].split(",")[1]));
     }
-    //draw here
     preebb = siteBoundaries;
-    // triangleCoords = [
-    // new google.maps.LatLng(25.774252, -80.190262)];
-    // triangleCoords.push(new google.maps.LatLng(18.466465, -66.118292));
-    // triangleCoords.push(new google.maps.LatLng(32.321384, -64.75737));
-    // triangleCoords.push(new google.maps.LatLng(25.774252, -80.190262));
     drawSite(siteBoundaries,color[i%8])
   }
-
+return data;
 }
 
 function drawSite(siteBoundaries,color) {
@@ -1090,11 +1091,12 @@ function clearMap()
 
 //******************************************************************************************************
 //mapPanToAtacama - Function to pan the map to Atacama
-function mapPanToAtacama()
+function mapPanTo(lat, lon)
 {
-  var ltLg = new google.maps.LatLng(-23.3695439,-69.8597406);
+  var ltLg = new google.maps.LatLng(parseFloat(lat), parseFloat(lon))
   map.panTo(ltLg);
   map.setZoom(mapZoomConstant);
+  //$(".selectedSite").text(name)
 }//mapPanToAtacama
 
 //******************************************************************************************************
@@ -1104,6 +1106,7 @@ function mapPanToPittsburgh()
   var ltLg = new google.maps.LatLng(40.440104, -79.946101);
   map.panTo(ltLg);
   map.setZoom(mapZoomConstant);
+
 }//mapPanToPittsburgh
 
 //******************************************************************************************************

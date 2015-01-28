@@ -4,6 +4,35 @@ var eve;
 
 $(document).ready(function () {
 
+$(document).ajaxStart(function () {
+  $("#floatingCirclesG").show();
+  }).ajaxStop(function () {
+    $("#floatingCirclesG").hide();
+  });
+
+/****************************************************Get configurationkml file data********************************************************/
+$.ajax({
+         type:"POST",
+         url:'/DBOperation/',
+         data: {
+                'operation': 'loadSiteCoords',  
+                },
+         success: function(response){
+            lol = response
+            if (response!=undefined)
+            { 
+              kmldata = ""
+              for(i=0;i<response.siteName.length;i++)
+              {
+                kmldata = kmldata + response.siteName[i] + "\n" + response.coords[i]+ "\n";
+                  //$(".dropdown-menu").append("<li> <a tabindex='-1' onclick='mapPanTo("+response.coords[i][1].split(",")[0]+","+response.coords[i][1].split(",")[1]+","+response.siteName[i]+");'>"+response.siteName[i]+"</a></li>")
+                  $(".dropdown-menu").append("<li> <a tabindex='-1' onclick='mapPanTo("+response.coords[i][1].split(",")[0]+","+response.coords[i][1].split(",")[1]+");'>"+response.siteName[i]+"</a></li>")
+              }
+              $('#comment').val(kmldata)
+            }         
+         }
+  });
+
 /****************************************************Populate plan pane once the page get loaded********************************************************/
 $.ajax({
          type:"POST",

@@ -59,15 +59,21 @@ def administratorControl(request):
     data = []
 
     filedata = request.FILES.get("ipl")
+
+    if request.is_ajax():
+        if request.method == "POST":
+            if request.POST['operation'] == 'getFileContent':
+                data = get_kml_filecontent()
+
+        return HttpResponse(json.dumps(data), content_type = "application/json")                
+    
     if filedata != None:
         if filedata.file: # field really is an upload
             with file("siteInformation.kml", 'w') as outfile:
                 outfile.write(filedata.file.read())
-
-
             pushKmlToMongo()
     return render_to_response('adminPage.html', c, RequestContext(request))
-
+ 
 @csrf_exempt
 def pushKmlToMongo():
     data = {}
@@ -75,7 +81,7 @@ def pushKmlToMongo():
 
     db = connection["rover"]
     collection = db["siteInfo"]
-
+    text_content = ""
     filename = "siteInformation.kml"
 
     #WARNING : DELETING ALL RECORD
@@ -86,6 +92,8 @@ def pushKmlToMongo():
         for line in ins:
             array = []
             data = {}
+            text_content = text_content + line
+            print line
             if re.search(r"^site", line):
                 siteName = line
             else:
@@ -98,6 +106,25 @@ def pushKmlToMongo():
 
             if data != {}:
                 collection.save(data)
+        print text_content
+
+def get_kml_filecontent():
+    data = {}
+    connection = Connection()
+
+    db = connection["rover"]
+    collection = db["siteInfo"]
+    
+    filename = "siteInformation.kml"
+    text_content = ""
+    data = {}
+
+    with open(filename, "r") as ins:
+        for line in ins:
+            text_content = text_content + line
+    
+    data['file'] = text_content
+    return data
 
 def read_site_coords():
     data = {}

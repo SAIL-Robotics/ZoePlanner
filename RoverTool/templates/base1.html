@@ -45,15 +45,34 @@
     </div>
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav navbar-right">
-      <li>  
+        <li>
+          <div id="floatingCirclesG">
+            <div class="f_circleG" id="frotateG_01">
+            </div>
+            <div class="f_circleG" id="frotateG_02">
+            </div>
+            <div class="f_circleG" id="frotateG_03">
+            </div>
+            <div class="f_circleG" id="frotateG_04">
+            </div>
+            <div class="f_circleG" id="frotateG_05">
+            </div>
+            <div class="f_circleG" id="frotateG_06">
+            </div>
+            <div class="f_circleG" id="frotateG_07">
+            </div>
+            <div class="f_circleG" id="frotateG_08">
+            </div>
+          </div>
+        </li>
+        <li>  
           <label id="planNameDisplay" style="color: white;"></label>
         </li>
         <li>
-        <span class="margintop" id = "margintop" style="display:none">
-        <input type="checkbox" name="my-checkbox" id="my-checkbox" data-on-text="lock" data-off-text="unlock">
-        </span>
+          <span class="margintop" id = "margintop" style="display:none">
+          <input type="checkbox" name="my-checkbox" id="my-checkbox" data-on-text="lock" data-off-text="unlock">
+          </span>
         </li>
-
         <li>  
           <button class="btn btn-primary btn-large createPlan" data-target="#myModal" id="createPlanModal" >
               Start Plan 
@@ -83,13 +102,12 @@
           <button class="btn btn-primary btn-large active" onclick="mapPanToPittsburgh();"> Goto Pittsburgh</button>
           &nbsp;&nbsp;&nbsp;&nbsp; -->
           <div class="btn-group">
-            <button class="btn">Take me to</button>
+            <button class="btn selectedSite">Take me to</button>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-              <li> <a tabindex="-1" onclick="mapPanToAtacama();">Atacama</a></li>
-               <li> <a tabindex="-1" onclick="mapPanToPittsburgh();">Pittsburgh</a></li>
+              
             </ul>
           </div>
           <input type="text" class="form-control" placeholder="Latitude ,Longitude" id = "latLngValue">

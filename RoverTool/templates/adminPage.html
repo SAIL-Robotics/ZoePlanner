@@ -44,10 +44,20 @@
         <button type="button" class="btn btn-primary" data-toggle="modal" id = "planTrash">Recover Plan</button>
       </div>
       <div class="adminUploadSiteInfo">
+        
         <form id="uploadFile" method="POST" action="/config/" enctype="multipart/form-data">
-        <input type="file" class="btn" name="ipl" />
-        <input type="submit" class="btn btn-primary" value="Upload" name="uploadFile" />
-      </form>
+          <input type="file" class="btn" name="ipl" />
+          <input type="submit" class="btn btn-primary" value="Upload" name="uploadFile" />
+        </form>
+
+      </div>
+      <div class="container">
+        <form role="form">
+          <div class="form-group">
+            <label for="comment">File Content :</label>
+            <textarea readonly class="form-control" rows="5" id="comment"></textarea>
+          </div>
+        </form>
       </div>
       
 <!--       <form id="upload" method="post" action="upload.php" enctype="multipart/form-data">
