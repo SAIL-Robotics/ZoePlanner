@@ -20,7 +20,8 @@ var operationPreciseMoveDefault;
 var operationSmartTargetDefault; 
 var operationMarkerNameDefault;
 var operationDrillImagePanoramaValueDefault;
-var operationDrillMmrsValueDefault;
+var operationDrillBufValueDefault;
+var operationNavcamValueDefault;
 
 
 //******************************************************************************************************
@@ -65,6 +66,10 @@ function updateDefaultValues(defaultValues) {
       operationSciencePanDefault = defaultValues.operationValue[i]; 
     if(defaultValues.operationName[i] == "markerNameConfig")
       operationMarkerNameDefault = defaultValues.operationValue[i];
+    if(defaultValues.operationName[i] == "drillValueConfig")
+      operationDrillDefault = defaultValues.operationValue[i];
+    if(defaultValues.operationName[i] == "navcamConfig")
+      operationNavcamValueDefault = defaultValues.operationValue[i];
   }
   
 }//updateDefaultValues
@@ -145,7 +150,7 @@ function fillDrill(currentTaskpoint,drillIterator,drillCount,taskDetails) {
           var operationDrillSaveValue = "";
           var operationDrillSaveImageValue = "";
           var operationDrillImagePanoramaValue = "";
-          var operationDrillMmrsValue = "";
+          var operationDrillBufValue = "";
           operationDrillValue = taskDetails["drillValue"+iterator];
           if(taskDetails["drillSave"+iterator] == "Yes") {
             //keep it selected
@@ -161,16 +166,17 @@ function fillDrill(currentTaskpoint,drillIterator,drillCount,taskDetails) {
             operationDrillImagePanoramaValue = taskDetails["imagePanorama"+iterator];
           }
 
-          if(taskDetails["mmrs"+iterator] == "Yes") {
+          if(taskDetails["buf"+iterator] == "Yes") {
             //keep it selected
-            operationDrillMmrsValue = taskDetails["mmrs"+iterator];
+            operationDrillBufValue = taskDetails["buf"+iterator];
           }
+          
           occured++;
           if(occured ==1) { //This should happen only once
             //todo - operationDrillValue keeps repeating next time one person clicks 'Add' button????
             constructDrillDiv(currentTaskpoint,"Drill",operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue); 
           }       
-          makeDrillDivs(currentTaskpoint,iterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillMmrsValue);          
+          makeDrillDivs(currentTaskpoint,iterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillBufValue);          
         
         }
       } 
@@ -179,19 +185,19 @@ function fillDrill(currentTaskpoint,drillIterator,drillCount,taskDetails) {
 
 //******************************************************************************************************
 //addDrillDiv - to add a new drill div
-function addDrillDiv(currentTaskPoint,drillIterator,drillCount,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillMmrsValue,operationDrillImagePanoramaValue,operationDrillMmrsValue) {
+function addDrillDiv(currentTaskPoint,drillIterator,drillCount,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillBufValue) {
   console.log("Calling add drill div");
   drillIterator++;
   drillCount++;
   $("#drillIterator").val(drillIterator);
   $("#drillCount").val(drillCount);
-  makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillMmrsValue);
+  makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillBufValue);
   
 }//addDrillDiv
 
 //******************************************************************************************************
 //makeDrillDivs - to construct html for adding a new drillDiv
-function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillMmrsValue) {
+function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillBufValue) {
   
   console.log("Calling make drill divs with values ");
 
@@ -257,35 +263,34 @@ function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operat
 
   jQuery('<br/>',{}).appendTo("#newDrillDiv"+drillIterator);
 
-  //mmrs
-  var mmrsCheckBox = jQuery('<input/>', {
+  //buf
+  var bufCheckBox = jQuery('<input/>', {
   type:'checkbox',
-    id: 'mmrs'+drillIterator,
-    value: 'mmrs',
+    id: 'buf'+drillIterator,
+    value: 'buf',
   });
-  mmrsCheckBox.appendTo('#newDrillDiv'+drillIterator);
+  bufCheckBox.appendTo('#newDrillDiv'+drillIterator);
 
-  mmrsCheckBox.change(function() { 
-    var isChecked = mmrsCheckBox.prop('checked');
+  bufCheckBox.change(function() { 
+    var isChecked = bufCheckBox.prop('checked');
     console.log("the value is "+isChecked);
     if(isChecked == true) {
       var taskDetails = taskpoints[currentTaskPoint];
-      taskDetails["mmrs"+drillIterator] = "Yes";
+      taskDetails["buf"+drillIterator] = "Yes";
     }
     else {
       var taskDetails = taskpoints[currentTaskPoint];
-      if(taskDetails["mmrs"+drillIterator] && taskDetails["mmrs"+drillIterator]!=undefined) {
-        delete taskDetails["mmrs"+drillIterator];
+      if(taskDetails["buf"+drillIterator] && taskDetails["buf"+drillIterator]!=undefined) {
+        delete taskDetails["buf"+drillIterator];
       }
     }
   });
 
   jQuery('<label/>',{
-  text:'MMRS'
+  text:'BUF'
   }).appendTo('#newDrillDiv'+drillIterator);
 
-  jQuery('<br/>',{}).appendTo("#newDrillDiv"+drillIterator);
-
+   jQuery('<br/>',{}).appendTo("#newDrillDiv"+drillIterator);
 
   $("#newDrillDiv"+drillIterator).append("<span class='drillClose' id='drillClose"+drillIterator+"''>X</span>");
 
@@ -348,20 +353,29 @@ function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operat
     imagePanoramaCheckBox.removeAttr('checked');
   }
 
- if(operationDrillMmrsValue == "Yes") {
-    mmrsCheckBox.attr('checked','');
+ if(operationDrillBufValue == "Yes") {
+    bufCheckBox.attr('checked','');
   }
   else {
-    mmrsCheckBox.removeAttr('checked');
+    bufCheckBox.removeAttr('checked');
   }
 
-  //todo - if necessary, add default value setting to mmrs and panorama in future
+  //todo - if necessary, add default value setting to buf and panorama in future
 
   jQuery('<label/>',{
   text:'Save sample'
   }).appendTo('#newDrillDiv'+drillIterator);
 
   jQuery('<br/>',{}).appendTo("#newDrillDiv"+drillIterator);
+
+  var drillInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'Drill Value&nbsp;'
+  }));
+
+  drillInputLabel.appendTo('#newDrillDiv'+drillIterator);
+  drillInputLabel.show();
 
   var drillInput = jQuery('<input/>', {
   type:'text',
@@ -391,8 +405,8 @@ function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operat
    if(drillSaveImageCheckBox.attr('checked')) {
     taskDetails["drillSaveImage"+drillIterator] = "Yes";
    }
-   if(mmrsCheckBox.attr('checked')) {
-    taskDetails["mmrs"+drillIterator] = "Yes";
+   if(bufCheckBox.attr('checked')) {
+    taskDetails["buf"+drillIterator] = "Yes";
    }
    if(imagePanoramaCheckBox.attr('checked')) {
     taskDetails["imagePanorama"+drillIterator] = "Yes";
@@ -455,6 +469,9 @@ function constructDiv() {
     else if(selectedOption == "Smart Target") {
       constructSmartTargetDiv(currentTaskpoint,selectedOption,operationSmartTargetDefault);
     }// if selection is smart Target
+    else if(selectedOption == "Nav Cam") {
+      constructNavcamDiv(currentTaskpoint,selectedOption,operationNavcamValueDefault);
+    }
   }
 }//end of construct div function
 
@@ -516,6 +533,72 @@ function constructBufDiv(currentTaskpoint,selectedOption,operationBufValue) {
 } //End of constructBufDiv function
 
 
+
+//******************************************************************************************************
+//constructNavcamDiv - To construct div for Nav Cam
+function constructNavcamDiv(currentTaskpoint,selectedOption,operationNavcamValue) {
+  var groupAnchor = jQuery('<a>', {
+  class:'list-group-item task-group-item',
+  }).appendTo('#operationDiv');
+
+  var selectedOptionNew = selectedOption.replace(" ","");
+  groupAnchor.append("<span class='operationClose' id='operationClose"+selectedOptionNew+"'>X</span>");
+
+  $("#operationClose"+selectedOptionNew).click(function( event ){
+    //To remove the entire parent element
+    var removeDiv = event.target;
+    var removeParentDiv = removeDiv.parentElement;
+    var removedId = removeParentDiv.id;
+    removeParentDiv.remove();
+
+    //to remove this from the taskDetails json also 
+    var taskDetails = taskpoints[currentTaskpoint];
+    if(taskDetails["navcamValue"] && taskDetails["navcamValue"] != undefined) {
+      delete taskDetails["navcamValue"];
+    }     
+    $('<option>').val('Nav Cam').text('Nav Cam').appendTo('#selectOperation');
+  });
+
+  var groupSpan = jQuery('<span>', {
+    class:'input-group-addon'
+  }).hide().append(jQuery('<b>',{
+    text:"Nav Cam"
+  }))
+  groupSpan.appendTo(groupAnchor);
+  groupSpan.show();
+
+  // var navCamLabel = jQuery('<span>', {
+  //   class:'textSpan'
+  // }).hide().append(jQuery('<label/>',{
+  //   html:'Nav Cam &nbsp;'
+  // }));
+
+
+
+  var inputDiv = jQuery('<div></div>').hide().append(jQuery('<input/>', {
+  type:'text',
+    id: 'navcamValue',
+    value:operationNavcamValue,
+    class:'form-control taskText',
+    placeholder:'Nav Cam',
+  }))
+
+  inputDiv.focusout(function(){
+    console.log("Focusing nav cam out....");
+    var currentnavcamValue = $('#navcamValue').val();
+    if(taskpoints[currentTaskpoint].navcamValue != currentnavcamValue) {
+      taskpoints[currentTaskpoint].navcamValue = currentnavcamValue;
+    }
+  });
+
+  inputDiv.appendTo(groupSpan);
+  inputDiv.show();
+
+  var taskDetails = taskpoints[currentTaskpoint];
+  taskDetails["navcamValue"] = $('#navcamValue').val(); 
+  $("#selectOperation option[value='"+selectedOption+"']").remove();
+} //End of constructNavcamDiv function
+
 //******************************************************************************************************
 //constructMmrsDiv - To construct div for BUF
 function constructMmrsDiv(currentTaskpoint,selectedOption,operationMmrsExposureValue,operationMmrsAccumulationValue,operationMmrsNumberValue) {
@@ -557,6 +640,11 @@ function constructMmrsDiv(currentTaskpoint,selectedOption,operationMmrsExposureV
   groupSpan.appendTo(groupAnchor);
   groupSpan.show();
 
+   var mmrsExposureInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'Exposure &nbsp;'
+  }));
 
   mmrsExposureInput = jQuery('<input/>', {
   type:'text',
@@ -574,6 +662,12 @@ function constructMmrsDiv(currentTaskpoint,selectedOption,operationMmrsExposureV
     }
   });
 
+  var mmrsAccumulationInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'Accumulation &nbsp;'
+  }));
+
   mmrsAccumulationInput = jQuery('<input/>', {
   type:'text',
     id: 'mmrsAccumulationValue',
@@ -589,6 +683,12 @@ function constructMmrsDiv(currentTaskpoint,selectedOption,operationMmrsExposureV
       taskpoints[currentTaskpoint].mmrsAccumulationValue = currentmmrsAccumulationValue;
     }
   });
+
+  var mmrsNumberInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'Number &nbsp;'
+  }));
 
   mmrsNumberInput = jQuery('<input/>', {
   type:'text',
@@ -606,7 +706,7 @@ function constructMmrsDiv(currentTaskpoint,selectedOption,operationMmrsExposureV
     }
   });
 
-  var inputDiv = jQuery('<div></div>').hide().append(mmrsExposureInput,mmrsAccumulationInput,mmrsNumberInput);
+  var inputDiv = jQuery('<div></div>').hide().append(mmrsExposureInputLabel,mmrsExposureInput,mmrsAccumulationInputLabel,mmrsAccumulationInput,mmrsNumberInputLabel,mmrsNumberInput);
 
   inputDiv.appendTo(groupSpan);
   inputDiv.show();
@@ -615,6 +715,9 @@ function constructMmrsDiv(currentTaskpoint,selectedOption,operationMmrsExposureV
   $("<br/>").insertAfter(mmrsAccumulationInput);
   //mmrsExposureInput.after(br);
   //mmrsAccumulationInput.after(br);
+  mmrsExposureInputLabel.show();
+  mmrsAccumulationInputLabel.show();
+  mmrsNumberInputLabel.show();
 
 
   var taskDetails = taskpoints[currentTaskpoint];
@@ -692,7 +795,7 @@ function constructDrillDiv(currentTaskpoint,selectedOption,operationDrillValue,o
     drillCount = $("#drillCount").val();
 
     //todo - change to default values
-    addDrillDiv(currentTaskpoint,drillIterator,drillCount,operationDrillDefault,operationDrillSaveDefault,operationDrillSaveImageDefault,operationDrillImagePanoramaValueDefault,operationDrillMmrsValueDefault);
+    addDrillDiv(currentTaskpoint,drillIterator,drillCount,operationDrillDefault,operationDrillSaveDefault,operationDrillSaveImageDefault,operationDrillImagePanoramaValueDefault,operationDrillBufValueDefault);
   });
 
   var inputDiv = jQuery('<div></div>').hide().append(addButton);
@@ -776,12 +879,18 @@ function constructScienceImageDiv(currentTaskpoint,selectedOption,operationScien
 
   br = jQuery('<br/>');
 
+  var sciencePanInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'Pan &nbsp;'
+  }));
+
   sciencePanInput = jQuery('<input/>', {
   type:'text',
     id: 'sciencePanValue',
     value:operationSciencePanValue, 
     class:'form-control taskText',
-    placeholder:'Pan',
+    placeholder:'Pan'
   });
 
   sciencePanInput.focusout(function(){
@@ -791,6 +900,12 @@ function constructScienceImageDiv(currentTaskpoint,selectedOption,operationScien
       taskpoints[currentTaskpoint].sciencePanValue = currentsciencePanValue;
     }
   }); 
+
+  var scienceTiltInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'Tilt &nbsp;'
+  }));
 
   scienceTiltInput = jQuery('<input/>', {
   type:'text',
@@ -808,12 +923,14 @@ function constructScienceImageDiv(currentTaskpoint,selectedOption,operationScien
     }
   }); 
 
-  var inputDiv = jQuery('<div></div>').hide().append(sciencePanInput,scienceTiltInput,br);
+  var inputDiv = jQuery('<div></div>').hide().append(sciencePanInputLabel,sciencePanInput,scienceTiltInputLabel,scienceTiltInput,br);
 
   inputDiv.appendTo(groupSpan);
   inputDiv.show();
 
   sciencePanInput.after(br);
+  sciencePanInputLabel.show();
+  scienceTiltInputLabel.show();
 
   var taskDetails = taskpoints[currentTaskpoint];
   taskDetails["sciencePanValue"] = $('#sciencePanValue').val(); 
@@ -868,6 +985,12 @@ function constructImagePanoramaDiv(currentTaskpoint,selectedOption,operationImag
 
   br = jQuery('<br/>');
 
+  var startAzimuthInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'Start Azimuth &nbsp;'
+  }));
+
   startAzimuthInput = jQuery('<input/>', {
   type:'text',
     id: 'imageStartAzimuthValue',
@@ -883,6 +1006,12 @@ function constructImagePanoramaDiv(currentTaskpoint,selectedOption,operationImag
       taskpoints[currentTaskpoint].imageStartAzimuthValue = currentimageStartAzimuthValue;
     }
   }); 
+
+  var endAzimuthInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'End Azimuth &nbsp;'
+  }));
 
   endAzimuthInput = jQuery('<input/>', {
   type:'text',
@@ -900,6 +1029,12 @@ function constructImagePanoramaDiv(currentTaskpoint,selectedOption,operationImag
     }
   }); 
 
+  var startElevationInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'Start Elevation &nbsp;'
+  }));
+
   startElevationInput = jQuery('<input/>', {
   type:'text',
     id: 'imageStartElevationValue',
@@ -915,6 +1050,12 @@ function constructImagePanoramaDiv(currentTaskpoint,selectedOption,operationImag
       taskpoints[currentTaskpoint].imageStartElevationValue = currentimageStartElevationValue;
     }
   }); 
+
+  var endElevationInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'End Elevation &nbsp;'
+  }));
 
   endElevationInput = jQuery('<input/>', {
   type:'text',
@@ -932,12 +1073,21 @@ function constructImagePanoramaDiv(currentTaskpoint,selectedOption,operationImag
     }
   }); 
 
-  var inputDiv = jQuery('<div></div>').hide().append(startAzimuthInput,endAzimuthInput,startElevationInput,endElevationInput);
+  var inputDiv = jQuery('<div></div>').hide().append(startAzimuthInputLabel,startAzimuthInput,endAzimuthInputLabel,endAzimuthInput,startElevationInputLabel,startElevationInput,endElevationInputLabel,endElevationInput);
 
   inputDiv.appendTo(groupSpan);
   inputDiv.show();
 
-  endAzimuthInput.after(br);
+  startAzimuthInputLabel.show();
+  endAzimuthInputLabel.show();
+  startElevationInputLabel.show();
+  endElevationInputLabel.show();
+
+  
+  $("<br/>").insertAfter(startAzimuthInput);
+  $("<br/>").insertAfter(endAzimuthInput);
+  $("<br/>").insertAfter(startElevationInput);
+  $("<br/>").insertAfter(endElevationInput);
 
   var taskDetails = taskpoints[currentTaskpoint];
   taskDetails["imageStartAzimuthValue"] = $('#imageStartAzimuthValue').val(); 
@@ -1002,6 +1152,12 @@ function constructSpectraPanoramaDiv(currentTaskpoint,selectedOption,operationSp
 
   br = document.createElement("br");
 
+  var startAzimuthInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'Start Azimuth &nbsp;'
+  }));
+
   startAzimuthInput = jQuery('<input/>', {
   type:'text',
     id: 'spectraStartAzimuthValue',
@@ -1017,6 +1173,12 @@ function constructSpectraPanoramaDiv(currentTaskpoint,selectedOption,operationSp
       taskpoints[currentTaskpoint].spectraStartAzimuthValue = currentspectraStartAzimuthValue;
     }
   }); 
+
+  var endAzimuthInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'End Azimuth &nbsp;'
+  }));
 
   endAzimuthInput = jQuery('<input/>', {
   type:'text',
@@ -1034,6 +1196,12 @@ function constructSpectraPanoramaDiv(currentTaskpoint,selectedOption,operationSp
     }
   }); 
 
+  var startElevationInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'Start Elevation &nbsp;'
+  }));
+
   startElevationInput = jQuery('<input/>', {
   type:'text',
     id: 'spectraStartElevationValue',
@@ -1050,6 +1218,12 @@ function constructSpectraPanoramaDiv(currentTaskpoint,selectedOption,operationSp
     }
   }); 
 
+  var endElevationInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'End Elevation &nbsp;'
+  }));
+
   endElevationInput = jQuery('<input/>', {
   type:'text',
     id: 'spectraEndElevationValue',
@@ -1065,6 +1239,12 @@ function constructSpectraPanoramaDiv(currentTaskpoint,selectedOption,operationSp
       taskpoints[currentTaskpoint].spectraEndElevationValue = currentspectraEndElevationValue;
     }
   }); 
+
+  var spectraAngularInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'Angular &nbsp;'
+  }));
 
   spectraAngularInput = jQuery('<input/>', {
   type:'text',
@@ -1112,44 +1292,52 @@ function constructSpectraPanoramaDiv(currentTaskpoint,selectedOption,operationSp
     }
   });
 
-  var spectraNavcamRecordCheckBox = jQuery('<input/>',{
-    type:'checkbox',
-    id:'spectraNavcamRecord' 
-  });
-  var spectraNavcamRecordLabel = jQuery('<label/>',{
-    text:'Navcam Record'
-  });
-  if(operationSpectraNavcamRecordValue == "Yes") {
-    spectraNavcamRecordCheckBox.attr('checked','');
-  }
-  else {
-    spectraNavcamRecordCheckBox.removeAttr('checked');
-  }
+  // var spectraNavcamRecordCheckBox = jQuery('<input/>',{
+  //   type:'checkbox',
+  //   id:'spectraNavcamRecord' 
+  // });
+  // var spectraNavcamRecordLabel = jQuery('<label/>',{
+  //   text:'Navcam Record'
+  // });
+  // if(operationSpectraNavcamRecordValue == "Yes") {
+  //   spectraNavcamRecordCheckBox.attr('checked','');
+  // }
+  // else {
+  //   spectraNavcamRecordCheckBox.removeAttr('checked');
+  // }
 
-  spectraNavcamRecordCheckBox.change(function() { 
-    var isChecked = spectraNavcamRecordCheckBox.prop('checked');
-    console.log("the value is "+isChecked);
-    if(isChecked == true) {
-      var taskDetails = taskpoints[currentTaskpoint];
-      taskDetails["spectraNavcamRecord"] = "Yes";
-    }
-    else {
-      var taskDetails = taskpoints[currentTaskpoint];
-      if(taskDetails["spectraNavcamRecord"] && taskDetails["spectraNavcamRecord"]!=undefined) {
-        delete taskDetails["spectraNavcamRecord"];
-      }
-    }
-  });
+  // spectraNavcamRecordCheckBox.change(function() { 
+  //   var isChecked = spectraNavcamRecordCheckBox.prop('checked');
+  //   console.log("the value is "+isChecked);
+  //   if(isChecked == true) {
+  //     var taskDetails = taskpoints[currentTaskpoint];
+  //     taskDetails["spectraNavcamRecord"] = "Yes";
+  //   }
+  //   else {
+  //     var taskDetails = taskpoints[currentTaskpoint];
+  //     if(taskDetails["spectraNavcamRecord"] && taskDetails["spectraNavcamRecord"]!=undefined) {
+  //       delete taskDetails["spectraNavcamRecord"];
+  //     }
+  //   }
+  // });
 
-  var inputDiv = jQuery('<div></div>').hide().append(startAzimuthInput,endAzimuthInput,startElevationInput,endElevationInput,spectraAngularInput,spectraAngularCameraCheckBox,spectraAngularCameraLabel,spectraNavcamRecordCheckBox,spectraNavcamRecordLabel);
+  var inputDiv = jQuery('<div></div>').hide().append(startAzimuthInputLabel,startAzimuthInput,endAzimuthInputLabel,endAzimuthInput,startElevationInputLabel,startElevationInput,endElevationInputLabel,endElevationInput,spectraAngularInputLabel,spectraAngularInput,spectraAngularCameraCheckBox,spectraAngularCameraLabel);//,spectraNavcamRecordCheckBox,spectraNavcamRecordLabel);
 
   inputDiv.appendTo(groupSpan);
   inputDiv.show();
+  startAzimuthInputLabel.show();
+  endAzimuthInputLabel.show();
+  startElevationInputLabel.show();
+  endElevationInputLabel.show();
+  spectraAngularInputLabel.show();
 
   //endAzimuthInput.after(br);
+  $("<br/>").insertAfter(startAzimuthInput);
   $("<br/>").insertAfter(endAzimuthInput);
-  $("<br/>").insertBefore(spectraAngularInput);
-  $("<br/>").insertBefore(spectraNavcamRecordCheckBox);
+  $("<br/>").insertAfter(startElevationInput);
+  $("<br/>").insertAfter(endElevationInput);
+  $("<br/>").insertAfter(spectraAngularInput);
+  //$("<br/>").insertBefore(spectraNavcamRecordCheckBox);
 
   var taskDetails = taskpoints[currentTaskpoint];
   taskDetails["spectraStartAzimuthValue"] = $('#spectraStartAzimuthValue').val(); 
@@ -1160,9 +1348,9 @@ function constructSpectraPanoramaDiv(currentTaskpoint,selectedOption,operationSp
   if(spectraAngularCameraCheckBox.attr('checked')) {
     taskDetails["spectraAngularCamera"] = "Yes";
   }
-  if(spectraNavcamRecordCheckBox.attr('checked')) {
-    taskDetails["spectraNavcamRecord"] = "Yes";
-  }
+  // if(spectraNavcamRecordCheckBox.attr('checked')) {
+  //   taskDetails["spectraNavcamRecord"] = "Yes";
+  // }
 
   $("#selectOperation option[value='"+selectedOption+"']").remove();
 }//End of constructSpectraPanoramaDiv
@@ -1217,6 +1405,12 @@ function constructPreciseMoveDiv(currentTaskpoint,selectedOption,operationPrecis
     placeholder:'Distance',
   });
 
+  var preciseMoveInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'Distance &nbsp;'
+  }));
+
   preciseMoveInput.focusout(function(){
     console.log("Focusing preciseMoveValue out....");
     var currentpreciseMoveValue = $('#preciseMoveValue').val();
@@ -1225,10 +1419,11 @@ function constructPreciseMoveDiv(currentTaskpoint,selectedOption,operationPrecis
     }
   }); 
 
-  var inputDiv = jQuery('<div></div>').hide().append(preciseMoveInput);
+  var inputDiv = jQuery('<div></div>').hide().append(preciseMoveInputLabel,preciseMoveInput);
 
   inputDiv.appendTo(groupSpan);
   inputDiv.show();
+  preciseMoveInputLabel.show();
 
   var taskDetails = taskpoints[currentTaskpoint];
   var preciseMoveValue = $('#preciseMoveValue').val();
@@ -1304,6 +1499,13 @@ function constructSmartTargetDiv(currentTaskpoint,selectedOption,operationSmartT
   var smartTargetLabel = jQuery('<label/>',{
     text:'Smart Target'
   });
+
+  var smartTargetInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'Budget Value &nbsp;'
+  }));
+
   var smartTargetInput = jQuery('<input/>', {
   type:'text',
     id: 'spectraSmartTargetValue',
@@ -1320,10 +1522,11 @@ function constructSmartTargetDiv(currentTaskpoint,selectedOption,operationSmartT
     }
   }); 
 
-  var inputDiv = jQuery('<div></div>').hide().append(smartTargetInput);
+  var inputDiv = jQuery('<div></div>').hide().append(smartTargetInputLabel,smartTargetInput);
 
   inputDiv.appendTo(groupSpan);
   inputDiv.show();
+  smartTargetInputLabel.show();
 
   var taskDetails = taskpoints[currentTaskpoint];
   var spectraSmartTargetValue = $('#spectraSmartTargetValue').val();

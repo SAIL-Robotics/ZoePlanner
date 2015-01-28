@@ -21,9 +21,9 @@ function setTextState(state) {
   "imageEndAzimuthValue","imageStartElevationValue","imageEndElevationValue","spectraStartAzimuthValue",
   "spectraEndAzimuthValue","spectraStartElevationValue","spectraEndElevationValue", "spectraAngularValue", "preciseMoveValue",
   "spectraAngularCamera","spectraNavcamRecord","spectraSmartTargetValue","selectTemplate","selectOperation",
-  "addOperation","createTemplateButton"]
+  "addOperation","createTemplateButton","navcamValue"];
   var taskCloseButtons = ["operationCloseBUF", "operationCloseMMRS","operationCloseScienceImage","operationCloseImagePanorama","operationCloseSpectraPanorama","operationClosePreciseMove",
-  "operationCloseSmartTarget",];
+  "operationCloseSmartTarget","operationCloseNavCam","operationCloseDrill"];
 
   var drillIterator = $("#drillIterator").val(); //drillIterator value
   drillIterator = parseInt(drillIterator);
@@ -47,6 +47,8 @@ function setTextState(state) {
      $("#drillValue"+iterator).attr("disabled",""); 
      $("#drillSave"+iterator).attr("disabled",""); 
      $("#drillSaveImage"+iterator).attr("disabled",""); 
+     $("#imagePanorama"+iterator).attr("disabled",""); 
+     $("#buf"+iterator).attr("disabled",""); 
 
      $("#drillClose"+iterator).removeClass("visibile");
      $("#drillClose"+iterator).addClass("vishide");
@@ -73,6 +75,8 @@ function setTextState(state) {
      $("#drillValue"+iterator).removeAttr("disabled"); 
      $("#drillSave"+iterator).removeAttr("disabled"); 
      $("#drillSaveImage"+iterator).removeAttr("disabled"); 
+     $("#imagePanorama"+iterator).removeAttr("disabled"); 
+     $("#buf"+iterator).removeAttr("disabled"); 
 
      $("#drillClose"+iterator).removeClass("vishide");
      $("#drillClose"+iterator).addClass("visible");
@@ -419,13 +423,14 @@ function initializeOperationDiv(taskpoints) {
 
   var operationArray = [
   {val : 'Drill', text: 'Drill'},
-  {val : 'BUF', text: 'BUF'},
-  //{val : 'MMRS', text: 'MMRS'},
+  //{val : 'BUF', text: 'BUF'},
+  {val : 'MMRS', text: 'MMRS'},
   {val : 'Science Image', text: 'Science Image'},
-  //{val : 'Image Panorama', text: 'Image Panorama'},
+  {val : 'Image Panorama', text: 'Image Panorama'},
   {val : 'Spectra Panorama', text: 'Spectra Panorama'},
   {val : 'Precise Move', text: 'Precise Move'},
-  {val : 'Smart Target', text: 'Smart Target'}
+  {val : 'Smart Target', text: 'Smart Target'},
+  {val : 'Nav Cam', text: 'Nav Cam'},
   ];
 
   $(operationArray).each(function() {
@@ -525,7 +530,7 @@ function populateTemplateDetails(taskDetails) {
     var drillCount = parseInt(taskDetails[i].drillIterator);
     $("#drillIterator").val(taskDetails[i].drillIterator);
     $("#drillCount").val(taskDetails[i].drillCount);
-    for(k=0;k<drillCount;k++) {
+    for(k=0;k<=drillCount;k++) {
       
       var drillValue = taskDetails[i]['drillValue'+k];
       if(drillValue && drillValue!=undefined ) {
@@ -533,13 +538,14 @@ function populateTemplateDetails(taskDetails) {
         var drillSaveValue = taskDetails[i]['drillSave'+k];
         var drillSaveImageValue = taskDetails[i]['drillSaveImage'+k];
         var drillImagePanoramaValue = taskDetails[i]['imagePanorama'+k];
-        var drillMmrsValue = taskDetails[i]['mmrs'+k];
+        var drillBufValue = taskDetails[i]['buf'+k];
+
         console.log("the occured is"+occured);
         if(occured == 1) { //This should happen only once
 
             constructDrillDiv(currentTaskpoint,"Drill",drillValue,drillSaveValue,drillSaveImageValue); 
           }   
-        makeDrillDivs(currentTaskpoint,k,drillValue,drillSaveValue,drillSaveImageValue,drillImagePanoramaValue,drillMmrsValue);
+        makeDrillDivs(currentTaskpoint,k,drillValue,drillSaveValue,drillSaveImageValue,drillImagePanoramaValue,drillBufValue);
       }
     }
    
@@ -603,6 +609,12 @@ function populateTemplateDetails(taskDetails) {
       //remove this from select option
       $("#selectOperation option[value='Precise Move']").remove();
     }
+    if(taskDetails[i]['navcamValue'] && taskDetails[i]['navcamValue']!=undefined) {
+      var navcamValue = taskDetails[i]['navcamValue'];
+      constructNavcamDiv(currentTaskpoint,"Nav Cam",navcamValue);
+      //remove this from select option
+      $("#selectOperation option[value='Nav Cam']").remove();
+    }
   }
   setTextState(locked); //Set the text state accordingly
 }//populateOperationDiv
@@ -625,12 +637,12 @@ function populateOperationDiv(taskpoints) {
      var taskDetails = taskpoints[currentTaskpoint];
     //todo - do for drill also
     initializeDrill();
-    if(taskDetails['bufValue'] && taskDetails['bufValue']!=undefined) {
-      var bufValue = taskDetails['bufValue'];
-      constructBufDiv(currentTaskpoint,"BUF",bufValue);
-      // remove this from the select option
-      $("#selectOperation option[value='BUF']").remove();
-    }
+    // if(taskDetails['bufValue'] && taskDetails['bufValue']!=undefined) {
+    //   var bufValue = taskDetails['bufValue'];
+    //   constructBufDiv(currentTaskpoint,"BUF",bufValue);
+    //   // remove this from the select option
+    //   $("#selectOperation option[value='BUF']").remove();
+    // }
     if(taskDetails['mmrsExposureValue'] && taskDetails['mmrsExposureValue']!=undefined && taskDetails['mmrsAccumulationValue'] && taskDetails['mmrsAccumulationValue']!=undefined && taskDetails['mmrsNumberValue'] && taskDetails['mmrsNumberValue']!=undefined) {
       var mmrsExposureValue = taskDetails['mmrsExposureValue'];
       var mmrsAccumulationValue = taskDetails['mmrsAccumulationValue'];
@@ -684,6 +696,12 @@ function populateOperationDiv(taskpoints) {
       constructPreciseMoveDiv(currentTaskpoint,"Precise Move",preciseMoveValue);
       //remove this from select option
       $("#selectOperation option[value='Precise Move']").remove();
+    }
+    if(taskDetails['navcamValue'] && taskDetails['navcamValue']!=undefined) {
+      var navcamValue = taskDetails['navcamValue'];
+      constructNavcamDiv(currentTaskpoint,"Nav Cam",navcamValue);
+      //remove this from select option
+      $("#selectOperation option[value='Nav Cam']").remove();
     }
   }   
   setTextState(locked); //Set the text state accordingly

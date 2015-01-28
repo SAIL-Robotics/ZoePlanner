@@ -138,3 +138,7 @@
         display:inline-block;
         border-color:black!important;
       }
+      .textSpan{
+        display: inline-block;
+        width: 110px;
+      }

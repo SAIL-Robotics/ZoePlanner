@@ -640,7 +640,10 @@ $("#templateNew").click(function(){
               'Spectra Panorama5': $('#spectraPanoramaConfig5').val(),
               'Precise Move': $('#preciseMoveConfig').val(),
               'Smart Target': $('#smartTargetConfig').val(),
-              'Marker Name': $('#markerNameConfig').val()
+              'Marker Name': $('#markerNameConfig').val(),
+              'Nav Cam' : $('#navcamConfig').val(),
+              'Drill' : $('#drillValueConfig').val()
+
               },
        success: function(response){
            //eve = response;
