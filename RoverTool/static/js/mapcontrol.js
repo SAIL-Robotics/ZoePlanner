@@ -87,6 +87,7 @@ function setTextState(state) {
 //******************************************************************************************************
 //initialize - the function called on first loading the page - userStory1
 function initialize() {
+
     $("[name='my-checkbox']").on('switchChange.bootstrapSwitch', function(event, state) {
       locked = state;
       setTextState(state);
@@ -847,7 +848,7 @@ function placeMarker(latitude,longitude,backEndJson) {
       {
           bootbox.dialog({
               message: "Do you want to duplicate or delete the marker?",
-              title: "Alert box",
+              title: "Duplicate/Delete",
               buttons: {
                 success: {
                   label: "Duplicate",

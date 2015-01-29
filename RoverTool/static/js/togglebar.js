@@ -26,7 +26,7 @@ $.ajax({
               {
                 kmldata = kmldata + response.siteName[i] + "\n" + response.coords[i]+ "\n";
                   //$(".dropdown-menu").append("<li> <a tabindex='-1' onclick='mapPanTo("+response.coords[i][1].split(",")[0]+","+response.coords[i][1].split(",")[1]+","+response.siteName[i]+");'>"+response.siteName[i]+"</a></li>")
-                  $(".dropdown-menu").append("<li> <a tabindex='-1' onclick='mapPanTo("+response.coords[i][1].split(",")[0]+","+response.coords[i][1].split(",")[1]+");'>"+response.siteName[i]+"</a></li>")
+                  $(".custom-site").append("<li> <a tabindex='-1' onclick='mapPanTo("+response.coords[i][1].split(",")[0]+","+response.coords[i][1].split(",")[1]+");'>"+response.siteName[i]+"</a></li>")
               }
               $('#comment').val(kmldata)
             }         
@@ -84,7 +84,10 @@ document.getElementById('close').onclick = function(){
         return false;
 };
 
-
+$('.website-title').click(function () {
+  window.location.reload(); 
+  
+});
 /****************************************************Right Click menu Start********************************************************/
   var $contextMenu = $("#contextMenu");
   
@@ -334,6 +337,27 @@ document.getElementById('close').onclick = function(){
     
   });
 
+/****************************************************Locate button on top********************************************************/
+
+   //"Create Plan" button in base1.html
+  /* reset the data inside create plan modal*/
+  $("#Locate").click(function(){
+    drawMarker();
+    mapPanTo($("#latLngValue").val().split(",")[0], $("#latLngValue").val().split(",")[1]);
+  });
+    
+/****************************************************Reset map Modal********************************************************/
+
+   //"Create Plan" button in base1.html
+  /* reset the data inside create plan modal*/
+  $("#ResetMapModal").click(function(){
+    bootbox.confirm("Are you sure you want to reset map?", function(result) {
+      if(result == true){
+          clearMap();     
+      }
+    });
+  });
+    
 /****************************************************Create Plan Modal********************************************************/
 
    //"Create Plan" button in base1.html
@@ -479,32 +503,50 @@ $("#templateNew").click(function(){
 /****************************************************Click on a Plan to view it********************************************************/
 
   $('#planMenu').on('click', '.abcd', function (event) {
-   var target = event.target || event.srcElement;
-   console.log ( event.currentTarget.firstChild.data ); 
-
-  $('.row-task-offcanvas').removeClass("taskappear");
-  $('.row-task-offcanvas').addClass("taskdisappear");
-
-   $.ajax({
-       type:"POST", 
-       url:"/DBOperation/",
-       data: {
-                'planName': event.currentTarget.firstChild.data,  //plan name
-                'operation': 'getMarkerInfo',
-              },
-       success: function(response){
-                $('#createPlanModal').show();
-                $("#save-button").show();
-                $('#margintop').show();
-                $("[name='my-checkbox']").bootstrapSwitch('state', true);
-                locked = true;
-
-           console.log(response);
-           viewMarkers(response,event.currentTarget.firstChild.data);
-       }
-    });
-
+    var flag = 0
+    if($('#planNameDisplay').text() != "")
+    {
+      bootbox.confirm("You are currently working on the plan - "+$('#planNameDisplay').text()+". Are you sure you want to create a new plan?", function(result) {
+        if(result == true)
+        {
+          viewPlan(event)
+        }
+      });
+    }
+    else
+      {
+        viewPlan(event)
+      }
   });
+
+/****************************************************Click on a Plan to view it********************************************************/  
+      
+  function viewPlan(event)
+  {
+     var target = event.target || event.srcElement;
+     console.log ( event.currentTarget.firstChild.data ); 
+
+     $('.row-task-offcanvas').removeClass("taskappear");
+     $('.row-task-offcanvas').addClass("taskdisappear");
+
+     $.ajax({
+         type:"POST", 
+         url:"/DBOperation/",
+         data: {
+                  'planName': event.currentTarget.firstChild.data,  //plan name
+                  'operation': 'getMarkerInfo',
+                },
+         success: function(response){
+                  $('#createPlanModal').show();
+                  $("#save-button").show();
+                  $('#margintop').show();
+                  $("[name='my-checkbox']").bootstrapSwitch('state', true);
+                  locked = true;
+             viewMarkers(response,event.currentTarget.firstChild.data);
+         }
+     });
+    }
+
 
 /****************************************************Click on a Plan in trash to recover it and delete it forever :'( **********************************************/
 
@@ -564,7 +606,7 @@ $("#templateNew").click(function(){
     $("#planMenu").empty()
     for(i = 0; i < planList.planName.length; i++)
     {
-      if(planList.planName[i].indexOf(input.trim()) != -1)
+      if(planList.planName[i].toLowerCase().indexOf(input.trim().toLowerCase()) != -1)
       {
         $("#planMenu").append('<a href="#" class="list-group-item right-click abcd '+ planList.planName[i] +'">' + planList.planName[i] + '<span class="badge">'+ planList.totalMarkers[i] +'</span> </a>');  
       }
