@@ -6,6 +6,24 @@ $(document).ready(function () {
 toastr.options.closeButton = "true";
 toastr.options.tapToDismiss = "true";
 
+/****************************************************Autofocus textbox in modals********************************************************/
+//function called after modal is loaded
+
+$('#myModal').on('shown.bs.modal', function () {
+    $('#planName').focus();
+});
+
+$('#myRenameModal').on('shown.bs.modal', function () {
+    $('#planRename').focus();
+});
+
+$('#templateModal').on('shown.bs.modal', function () {
+    $('#templateName').focus();
+});
+
+
+
+/****************************************************Show error message hen google map is not loaded********************************************************/
 window.onload = (function(){
     if(window.google == null) //If google map is not loaded properly
     {
@@ -16,12 +34,12 @@ window.onload = (function(){
     
 });
 
+/****************************************************Shows loading icon when ajax call is in the work********************************************************/
 $(document).ajaxStart(function () {
   $("#floatingCirclesG").show();
   }).ajaxStop(function () {
     $("#floatingCirclesG").hide();
   });
-
 /****************************************************Get configurationkml file data********************************************************/
 $.ajax({
          type:"POST",

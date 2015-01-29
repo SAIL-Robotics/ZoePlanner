@@ -760,10 +760,11 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
             //todo - marker name
             console.log("duplicate flag marker.");
             taskpoints = backEndJson;
-            var oldMarkerName = taskpoints[index].markerName;
+            
             newLatitude = marker.position.lat();
-            newLongitude = marker.position.lng();
+           newLongitude = marker.position.lng();
             var backUpLat, backUpLng;
+            var lastMarker = {};
 
                   if(index > -1)
                   {
@@ -771,10 +772,13 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
                     {
                       if(j == taskpoints.length)
                       {
-                        var taskTemp = {};
-                        taskTemp.lat = newLatitude;
-                        taskTemp.lng = newLongitude;
-                        taskpoints.push(taskTemp)
+                        
+                        var lastMarker = $.extend({}, taskpoints[j-1]);
+                        lastMarker.lat = newLatitude;
+                        lastMarker.lng = newLongitude;
+                        lastMarker.markerName = taskpoints[j-1].markerName + "-01";
+                        
+                        taskpoints.push(lastMarker)
                         break;
                       }
                       else
@@ -791,6 +795,18 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
                     }
                   }
             //drawLine();
+            if(index < taskpoints.length - 1){
+              console.log("*************"+taskpoints.length)
+              var tempLat = taskpoints[index].lat;
+              var tempLng = taskpoints[index].lng;
+              taskpoints[index] = $.extend({}, taskpoints[index-1]);
+              taskpoints[index].lat = tempLat;
+              taskpoints[index].lng = tempLng;
+              var oldMarkerName = "";
+              oldMarkerName = taskpoints[index -1].markerName;
+              taskpoints[index].markerName = oldMarkerName + "-01"
+
+            }
 
          }
          else {
