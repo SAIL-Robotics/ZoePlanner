@@ -736,11 +736,11 @@ function ajaxForConfigUpdate() {
 //******************************************************************************************************
 //placeMarker - called to place the markers and associate events based on lat lng value
 //and also update the json correspondingly
-function placeMarker(latitude,longitude,backEndJson) {
+function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
   
   console.log("Map zoom "+mapZoom+" map.getZoom "+map.getZoom());
   if(mapZoom == map.getZoom()){
-    console.log("placing marker"+latitude+" "+longitude);
+    console.log("placing marker"+latitude+" "+longitude+" duplicate position "+index);
 
        var marker = new google.maps.Marker({
           position: new google.maps.LatLng(latitude,longitude),
@@ -749,66 +749,107 @@ function placeMarker(latitude,longitude,backEndJson) {
           draggable:true
       });
       allMarkers.push(marker);
+      console.log("marker is "+marker);
+      eeeee = marker;
       // map.panTo(marker.getPosition());
        //console.log("getPos" +marker.getPosition());
        var taskDetails = {};
 
-       //todo - marker name here.
 
-       if(backEndJson!=null) {
-        taskpoints = backEndJson;
-       }
-       else {
-         taskDetails.lat = latitude;
-         taskDetails.lng = longitude;
-         var markerCount = $('#markerCount').val();
-         var markerNameValue;
-         if(operationMarkerNameDefault == undefined || operationMarkerNameDefault.trim() == "") {           
-           markerNameValue = "Location"+"-"+markerCount; 
-         } else {
-           markerNameValue = operationMarkerNameDefault+"-"+markerCount;          
+       if(duplicateFlag == true ) {
+            //todo - marker name
+            console.log("duplicate flag marker.");
+            taskpoints = backEndJson;
+            var oldMarkerName = taskpoints[index].markerName;
+            newLatitude = marker.position.lat();
+            newLongitude = marker.position.lng();
+            var backUpLat, backUpLng;
 
-         }
-         // taskDetails.markerName = markerNameValue;       
-         // markerCount = parseInt(markerCount)+1;
-         // $('#markerCount').val(markerCount);
+                  if(index > -1)
+                  {
+                    for(j = index; j <= taskpoints.length ; j++)
+                    {
+                      if(j == taskpoints.length)
+                      {
+                        var taskTemp = {};
+                        taskTemp.lat = newLatitude;
+                        taskTemp.lng = newLongitude;
+                        taskpoints.push(taskTemp)
+                        break;
+                      }
+                      else
+                      {
+                        backUpLat = taskpoints[j].lat;
+                        backUpLng = taskpoints[j].lng;  
 
+                        taskpoints[j].lat = newLatitude;
+                        taskpoints[j].lng = newLongitude;
 
-         //////////////////////////////todo - check /////////////////////////////////////////////
-         ////////////////////////////////////////////////////////////////////////////////////////
-         
-         var iteratorFlag = false;
-          for(taskDetailsIterator in taskpoints) {
-              if(taskpoints[taskDetailsIterator].markerName && taskpoints[taskDetailsIterator].markerName != undefined) {
-                var markerName = taskpoints[taskDetailsIterator].markerName;
-                if(markerName == markerNameValue) {
-                  //not unique
-                  while(markerName == markerNameValue) {
-                      var markerCount = $('#markerCount').val();
-                       if(operationMarkerNameDefault == undefined || operationMarkerNameDefault.trim() == "") {           
-                         markerNameValue = "Location"+"-"+markerCount; 
-                       } else {
-                         markerNameValue = operationMarkerNameDefault+"-"+markerCount;          
-                       }   
-                       console.log("*** inside while loop"+markerCount);
-                       markerCount = parseInt(markerCount)+1;
-                       $('#markerCount').val(markerCount);
-                       iteratorFlag = true;
+                        newLatitude = backUpLat;
+                        newLongitude = backUpLng;
+                      }
                     }
                   }
-              } 
+            //drawLine();
+
+         }
+         else {
+             if(backEndJson!=null) {
+              taskpoints = backEndJson;
+             }
+             else {
+             taskDetails.lat = latitude;
+             taskDetails.lng = longitude;
+             var markerCount = $('#markerCount').val();
+             var markerNameValue;
+             if(operationMarkerNameDefault == undefined || operationMarkerNameDefault.trim() == "") {           
+               markerNameValue = "Location"+"-"+markerCount; 
+             } else {
+               markerNameValue = operationMarkerNameDefault+"-"+markerCount;          
+
+             }
+             // taskDetails.markerName = markerNameValue;       
+             // markerCount = parseInt(markerCount)+1;
+             // $('#markerCount').val(markerCount);
+
+
+             //////////////////////////////todo - check /////////////////////////////////////////////
+             ////////////////////////////////////////////////////////////////////////////////////////
+             
+             var iteratorFlag = false;
+              for(taskDetailsIterator in taskpoints) {
+                  if(taskpoints[taskDetailsIterator].markerName && taskpoints[taskDetailsIterator].markerName != undefined) {
+                    var markerName = taskpoints[taskDetailsIterator].markerName;
+                    if(markerName == markerNameValue) {
+                      //not unique
+                      while(markerName == markerNameValue) {
+                          var markerCount = $('#markerCount').val();
+                           if(operationMarkerNameDefault == undefined || operationMarkerNameDefault.trim() == "") {           
+                             markerNameValue = "Location"+"-"+markerCount; 
+                           } else {
+                             markerNameValue = operationMarkerNameDefault+"-"+markerCount;          
+                           }   
+                           console.log("*** inside while loop"+markerCount);
+                           markerCount = parseInt(markerCount)+1;
+                           $('#markerCount').val(markerCount);
+                           iteratorFlag = true;
+                        }
+                      }
+                  } 
+                }
+                
+                taskDetails.markerName = markerNameValue;  
+                if(iteratorFlag == false) {
+                  markerCount = parseInt(markerCount)+1;
+                  $('#markerCount').val(markerCount);   
+                }                
+
+             ////////////////////////////////////////////////////////////////////////////////////////
+
+             taskpoints.push(taskDetails);
             }
-            
-            taskDetails.markerName = markerNameValue;  
-            if(iteratorFlag == false) {
-              markerCount = parseInt(markerCount)+1;
-              $('#markerCount').val(markerCount);   
-            }                
+         }
 
-         ////////////////////////////////////////////////////////////////////////////////////////
-
-         taskpoints.push(taskDetails);
-        } 
           count++;
           if(count>1 ) {
             drawline();
@@ -851,19 +892,61 @@ function placeMarker(latitude,longitude,backEndJson) {
                   label: "Duplicate",
                   className: "btn-success",
                   callback: function() {
-                  var location = new google.maps.LatLng(marker.position.lat() + 0.05,marker.position.lng() + 0.05);
-                  var marker = new google.maps.Marker({
-                  position: location,
-                  map: map,
-                  title: "Lat : "+marker.position.lat() + 0.05+" Long : "+marker.position.lng() + 0.05,
-                  draggable:true,
-                  animation:google.maps.Animation.DROP
-                  });
-                  var taskDetails = {};
-                  taskDetails.lat = marker.position.lat() + 0.05;
-                  taskDetails.lng = marker.position.lng() + 0.05;
-                  taskpoints.push(taskDetails);
-                  drawline();
+                    console.log("blikkkkkkkkkk");
+                    console.log("old lat "+marker.position.lat()+" old lng "+marker.position.lng());
+                    var newLatitude = marker.position.lat() + parseFloat(0.05);
+                    var newLongitude = marker.position.lng() + parseFloat(0.05);
+                    console.log("new lat "+newLatitude+ " new long "+newLongitude);
+                  var selectedMarker={};
+                  selectedMarker.lat=marker.position.lat();
+                  selectedMarker.lng=marker.position.lng();
+                  //var taskDetails = {};
+                  //taskDetails.lat = newMarker.position.lat();
+                  //taskDetails.lng = newMarker.position.lng();
+                  index=-1;
+                  for(i=0;i<taskpoints.length;i++)
+                  {
+                    if(taskpoints[i].lat==selectedMarker.lat && taskpoints[i].lng==selectedMarker.lng)
+                    {
+                      index=i;
+                      break;
+                    }
+                  }
+                   placeMarker(newLatitude,newLongitude,taskpoints,true,index+1);
+
+                 // var backUpLat, backUpLng;
+
+                 //  if(index > -1)
+                 //  {
+                 //    for(j = index+1; j <= taskpoints.length ; j++)
+                 //    {
+                 //      if(j == taskpoints.length)
+                 //      {
+                 //        var taskTemp = {};
+                 //        taskTemp.lat = newLatitude;
+                 //        taskTemp.lng = newLongitude;
+                 //        taskpoints.push(taskTemp)
+                 //        break;
+                 //      }
+                 //      else
+                 //      {
+                 //        backUpLat = taskpoints[j].lat;
+                 //        backUpLng = taskpoints[j].lng;  
+
+                 //        taskpoints[j].lat = newLatitude;
+                 //        taskpoints[j].lng = newLongitude;
+
+                 //        newLatitude = backUpLat;
+                 //        newLongitude = backUpLng;
+                 //      }
+                 //    }
+                 //  }
+                  //taskpoints.pop();
+                  
+                  //placeMarker(taskpoints[index+1].lat,taskpoints[index+1].lng,taskpoints,true,index+1);
+                  //taskpoints.push(taskDetails);
+                  //drawLine();
+
                  
                 }
                 },
@@ -905,6 +988,8 @@ function placeMarker(latitude,longitude,backEndJson) {
     });//event handler for right click
 
     google.maps.event.addListener(marker, 'dragstart', function(event) {
+      pb = marker;
+      he = taskpoints;
       if(locked == false)
       {
           for(i=0;i<taskpoints.length;i++)
@@ -914,6 +999,9 @@ function placeMarker(latitude,longitude,backEndJson) {
                   markerchanged = i;
               }
             }//for 
+            console.log("---->"+markerchanged);
+            //markerchanged+=1;
+     
       marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
 
       }
@@ -931,8 +1019,11 @@ function placeMarker(latitude,longitude,backEndJson) {
                   taskDetails1.lat = marker.position.lat();
                   taskDetails1.lng = marker.position.lng();
 
+          console.log("the marker changed in drag is -------"+markerchanged);
+
           var oldLatitude = taskpoints[markerchanged].lat;
           var oldLongitude = taskpoints[markerchanged].lng;
+
 
           var latitudeValue = $("#lat").val();
           var longitudeValue = $("#lng").val();
@@ -963,6 +1054,9 @@ function placeMarker(latitude,longitude,backEndJson) {
          taskDetails1.lat = marker.position.lat();
          taskDetails1.lng = marker.position.lng();
          //taskpoints[markerchanged]=taskDetails1;
+
+            console.log("the marker changed in drag end is -------"+markerchanged);
+
           var oldLatitude = taskpoints[markerchanged].lat;
           var oldLongitude = taskpoints[markerchanged].lng;
 
