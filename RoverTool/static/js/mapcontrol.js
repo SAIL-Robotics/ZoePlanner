@@ -21,7 +21,7 @@ function setTextState(state) {
   "imageEndAzimuthValue","imageStartElevationValue","imageEndElevationValue","spectraStartAzimuthValue",
   "spectraEndAzimuthValue","spectraStartElevationValue","spectraEndElevationValue", "spectraAngularValue", "preciseMoveValue",
   "spectraAngularCamera","spectraNavcamRecord","spectraSmartTargetValue","selectTemplate","selectOperation",
-  "addOperation","createTemplateButton","navcamValue"];
+  "addOperation","createTemplateButton","navcamValue","markerName"];
   var taskCloseButtons = ["operationCloseBUF", "operationCloseMMRS","operationCloseScienceImage","operationCloseImagePanorama","operationCloseSpectraPanorama","operationClosePreciseMove",
   "operationCloseSmartTarget","operationCloseNavCam","operationCloseDrill"];
 
@@ -47,7 +47,6 @@ function setTextState(state) {
      $("#drillValue"+iterator).attr("disabled",""); 
      $("#drillSave"+iterator).attr("disabled",""); 
      $("#drillSaveImage"+iterator).attr("disabled",""); 
-     $("#imagePanorama"+iterator).attr("disabled",""); 
      $("#buf"+iterator).attr("disabled",""); 
 
      $("#drillClose"+iterator).removeClass("visibile");
@@ -75,7 +74,6 @@ function setTextState(state) {
      $("#drillValue"+iterator).removeAttr("disabled"); 
      $("#drillSave"+iterator).removeAttr("disabled"); 
      $("#drillSaveImage"+iterator).removeAttr("disabled"); 
-     $("#imagePanorama"+iterator).removeAttr("disabled"); 
      $("#buf"+iterator).removeAttr("disabled"); 
 
      $("#drillClose"+iterator).removeClass("vishide");
@@ -538,7 +536,6 @@ function populateTemplateDetails(taskDetails) {
         occured++;
         var drillSaveValue = taskDetails[i]['drillSave'+k];
         var drillSaveImageValue = taskDetails[i]['drillSaveImage'+k];
-        var drillImagePanoramaValue = taskDetails[i]['imagePanorama'+k];
         var drillBufValue = taskDetails[i]['buf'+k];
 
         console.log("the occured is"+occured);
@@ -546,7 +543,7 @@ function populateTemplateDetails(taskDetails) {
 
             constructDrillDiv(currentTaskpoint,"Drill",drillValue,drillSaveValue,drillSaveImageValue); 
           }   
-        makeDrillDivs(currentTaskpoint,k,drillValue,drillSaveValue,drillSaveImageValue,drillImagePanoramaValue,drillBufValue);
+        makeDrillDivs(currentTaskpoint,k,drillValue,drillSaveValue,drillSaveImageValue,drillBufValue);
       }
     }
    
@@ -888,6 +885,9 @@ function placeMarker(latitude,longitude,backEndJson) {
                           taskpoints.pop();
                           console.log("Taskpoints "+taskpoints);
                           drawline();
+
+                          $('.row-task-offcanvas').removeClass("taskappear");
+                          $('.row-task-offcanvas').addClass("taskdisappear");
 
                           toastr.options.positionClass ="toast-bottom-right";
                           toastr.success('Marker deleted!','');

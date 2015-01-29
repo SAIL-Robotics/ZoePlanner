@@ -92,9 +92,13 @@ function removeFromTaskDetails(removedId) {
       if(removeTaskDetails["drillSave"+drillIndex]) {
         delete removeTaskDetails["drillSave"+drillIndex];
       }
+       if(removeTaskDetails["buf"+drillIndex]) {
+        delete removeTaskDetails["buf"+drillIndex];
+      } 
       if(removeTaskDetails["drillSaveImage"+drillIndex]) {
         delete removeTaskDetails["drillSaveImage"+drillIndex];
       } //To delete the three keys from the json if they exist
+
     }
   }
 }//removeFromTaskDetails
@@ -149,7 +153,6 @@ function fillDrill(currentTaskpoint,drillIterator,drillCount,taskDetails) {
           var operationDrillValue = "";
           var operationDrillSaveValue = "";
           var operationDrillSaveImageValue = "";
-          var operationDrillImagePanoramaValue = "";
           var operationDrillBufValue = "";
           operationDrillValue = taskDetails["drillValue"+iterator];
           if(taskDetails["drillSave"+iterator] == "Yes") {
@@ -159,11 +162,6 @@ function fillDrill(currentTaskpoint,drillIterator,drillCount,taskDetails) {
           if(taskDetails["drillSaveImage"+iterator] == "Yes") {
             //keep it selected
             operationDrillSaveImageValue = taskDetails["drillSaveImage"+iterator];
-          }
-
-          if(taskDetails["imagePanorama"+iterator] == "Yes") {
-            //keep it selected
-            operationDrillImagePanoramaValue = taskDetails["imagePanorama"+iterator];
           }
 
           if(taskDetails["buf"+iterator] == "Yes") {
@@ -176,7 +174,7 @@ function fillDrill(currentTaskpoint,drillIterator,drillCount,taskDetails) {
             //todo - operationDrillValue keeps repeating next time one person clicks 'Add' button????
             constructDrillDiv(currentTaskpoint,"Drill",operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue); 
           }       
-          makeDrillDivs(currentTaskpoint,iterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillBufValue);          
+          makeDrillDivs(currentTaskpoint,iterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillBufValue);          
         
         }
       } 
@@ -185,19 +183,19 @@ function fillDrill(currentTaskpoint,drillIterator,drillCount,taskDetails) {
 
 //******************************************************************************************************
 //addDrillDiv - to add a new drill div
-function addDrillDiv(currentTaskPoint,drillIterator,drillCount,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillBufValue) {
+function addDrillDiv(currentTaskPoint,drillIterator,drillCount,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillBufValue) {
   console.log("Calling add drill div");
   drillIterator++;
   drillCount++;
   $("#drillIterator").val(drillIterator);
   $("#drillCount").val(drillCount);
-  makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillBufValue);
+  makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillBufValue);
   
 }//addDrillDiv
 
 //******************************************************************************************************
 //makeDrillDivs - to construct html for adding a new drillDiv
-function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillImagePanoramaValue,operationDrillBufValue) {
+function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operationDrillSaveValue,operationDrillSaveImageValue,operationDrillBufValue) {
   
   console.log("Calling make drill divs with values ");
 
@@ -235,33 +233,33 @@ function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operat
   jQuery('<br/>',{}).appendTo("#newDrillDiv"+drillIterator);
 
   //Image panorama
-  var imagePanoramaCheckBox = jQuery('<input/>', {
-  type:'checkbox',
-    id: 'imagePanorama'+drillIterator,
-    value: 'imagePanorama',
-  });
-  imagePanoramaCheckBox.appendTo('#newDrillDiv'+drillIterator);
+  // var imagePanoramaCheckBox = jQuery('<input/>', {
+  // type:'checkbox',
+  //   id: 'imagePanorama'+drillIterator,
+  //   value: 'imagePanorama',
+  // });
+  // imagePanoramaCheckBox.appendTo('#newDrillDiv'+drillIterator);
 
-  imagePanoramaCheckBox.change(function() { 
-    var isChecked = imagePanoramaCheckBox.prop('checked');
-    console.log("the value is "+isChecked);
-    if(isChecked == true) {
-      var taskDetails = taskpoints[currentTaskPoint];
-      taskDetails["imagePanorama"+drillIterator] = "Yes";
-    }
-    else {
-      var taskDetails = taskpoints[currentTaskPoint];
-      if(taskDetails["imagePanorama"+drillIterator] && taskDetails["imagePanorama"+drillIterator]!=undefined) {
-        delete taskDetails["imagePanorama"+drillIterator];
-      }
-    }
-  });
+  // imagePanoramaCheckBox.change(function() { 
+  //   var isChecked = imagePanoramaCheckBox.prop('checked');
+  //   console.log("the value is "+isChecked);
+  //   if(isChecked == true) {
+  //     var taskDetails = taskpoints[currentTaskPoint];
+  //     taskDetails["imagePanorama"+drillIterator] = "Yes";
+  //   }
+  //   else {
+  //     var taskDetails = taskpoints[currentTaskPoint];
+  //     if(taskDetails["imagePanorama"+drillIterator] && taskDetails["imagePanorama"+drillIterator]!=undefined) {
+  //       delete taskDetails["imagePanorama"+drillIterator];
+  //     }
+  //   }
+  // });
 
-  jQuery('<label/>',{
-  text:'Image Panorama'
-  }).appendTo('#newDrillDiv'+drillIterator);
+  // jQuery('<label/>',{
+  // text:'Image Panorama'
+  // }).appendTo('#newDrillDiv'+drillIterator);
 
-  jQuery('<br/>',{}).appendTo("#newDrillDiv"+drillIterator);
+  // jQuery('<br/>',{}).appendTo("#newDrillDiv"+drillIterator);
 
   //buf
   var bufCheckBox = jQuery('<input/>', {
@@ -346,13 +344,6 @@ function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operat
     drillSaveImageCheckBox.removeAttr('checked');
   }
 
-  if(operationDrillImagePanoramaValue == "Yes") {
-    imagePanoramaCheckBox.attr('checked','');
-  }
-  else {
-    imagePanoramaCheckBox.removeAttr('checked');
-  }
-
  if(operationDrillBufValue == "Yes") {
     bufCheckBox.attr('checked','');
   }
@@ -408,9 +399,7 @@ function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operat
    if(bufCheckBox.attr('checked')) {
     taskDetails["buf"+drillIterator] = "Yes";
    }
-   if(imagePanoramaCheckBox.attr('checked')) {
-    taskDetails["imagePanorama"+drillIterator] = "Yes";
-   }
+
    taskDetails['drillCount'] = $("#drillCount").val();
    taskDetails['drillIterator'] = $("#drillIterator").val();
 
@@ -751,22 +740,19 @@ function constructDrillDiv(currentTaskpoint,selectedOption,operationDrillValue,o
     //to remove this from the taskDetails json also 
     var taskDetails = taskpoints[currentTaskpoint];
     var drillCount = $("#drillCount").val();
-    for(drillIterator=0;drillIterator<=drillCount;drillIterator++) {
-      if(taskDetails["drillValue"+drillIterator] && taskDetails["drillValue"+drillIterator] != undefined) {
-        delete taskDetails["drillValue"+drillIterator];
+    var drillIterator = $("#drillIterator").val();
+    for(iterator=0;iterator<=drillIterator;iterator++) {
+      if(taskDetails["drillValue"+iterator] && taskDetails["drillValue"+iterator] != undefined) {
+        delete taskDetails["drillValue"+iterator];
       }
-      if(taskDetails["drillSave"+drillIterator] && taskDetails["drillSave"+drillIterator] != undefined) {
-        delete taskDetails["drillSave"+drillIterator];
+      if(taskDetails["drillSave"+iterator] && taskDetails["drillSave"+iterator] != undefined) {
+        delete taskDetails["drillSave"+iterator];
       }
-      if(taskDetails["drillSaveImage"+drillIterator] && taskDetails["drillSaveImage"+drillIterator] != undefined) {
-        delete taskDetails["drillSaveImage"+drillIterator];
+      if(taskDetails["drillSaveImage"+iterator] && taskDetails["drillSaveImage"+iterator] != undefined) {
+        delete taskDetails["drillSaveImage"+iterator];
       }
-
-      if(taskDetails["imagePanorama"+drillIterator] && taskDetails["imagePanorama"+drillIterator] != undefined) {
-        delete taskDetails["imagePanorama"+drillIterator];
-      }
-      if(taskDetails["mmrs"+drillIterator] && taskDetails["mmrs"+drillIterator] != undefined) {
-        delete taskDetails["mmrs"+drillIterator];
+      if(taskDetails["buf"+iterator] && taskDetails["buf"+iterator] != undefined) {
+        delete taskDetails["buf"+iterator];
       }
     }
     
@@ -795,7 +781,7 @@ function constructDrillDiv(currentTaskpoint,selectedOption,operationDrillValue,o
     drillCount = $("#drillCount").val();
 
     //todo - change to default values
-    addDrillDiv(currentTaskpoint,drillIterator,drillCount,operationDrillDefault,operationDrillSaveDefault,operationDrillSaveImageDefault,operationDrillImagePanoramaValueDefault,operationDrillBufValueDefault);
+    addDrillDiv(currentTaskpoint,drillIterator,drillCount,operationDrillDefault,operationDrillSaveDefault,operationDrillSaveImageDefault,operationDrillBufValueDefault);
   });
 
   var inputDiv = jQuery('<div></div>').hide().append(addButton);
