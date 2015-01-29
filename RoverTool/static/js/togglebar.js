@@ -3,6 +3,18 @@ var planTitle;
 var eve;
 
 $(document).ready(function () {
+toastr.options.closeButton = "true";
+toastr.options.tapToDismiss = "true";
+
+window.onload = (function(){
+    if(window.google == null) //If google map is not loaded properly
+    {
+      console.log("RETRY")     
+      toastr.options.positionClass ="toast-top-center";
+      toastr.error('Google Map not loaded, refresh the page','');
+    }
+    
+});
 
 $(document).ajaxStart(function () {
   $("#floatingCirclesG").show();
@@ -86,7 +98,7 @@ document.getElementById('close').onclick = function(){
 
 $('.website-title').click(function () {
   window.location.reload(); 
-  
+
 });
 /****************************************************Right Click menu Start********************************************************/
   var $contextMenu = $("#contextMenu");
@@ -342,8 +354,11 @@ $('.website-title').click(function () {
    //"Create Plan" button in base1.html
   /* reset the data inside create plan modal*/
   $("#Locate").click(function(){
-    drawMarker();
-    mapPanTo($("#latLngValue").val().split(",")[0], $("#latLngValue").val().split(",")[1]);
+    if($("#latLngValue").val() != "")
+    {
+      drawMarker();
+      mapPanTo($("#latLngValue").val().split(",")[0], $("#latLngValue").val().split(",")[1]);
+    }
   });
     
 /****************************************************Reset map Modal********************************************************/
@@ -416,7 +431,11 @@ $("#renamePlan").click(function(){
                }
               });          
             $('#myRenameModal').modal('hide')
-            $('#planNameDisplay').text($('#planRename').val());
+            if($('#contextMenu').attr("name") == $('#planNameDisplay').text())
+            {
+              $('#planNameDisplay').text($('#planRename').val());  
+            }
+            
           } 
           else{
             $('#planNameErr').html("<span class=\"label label-danger\">There exists a plan by the same name. </span>");
@@ -504,7 +523,7 @@ $("#templateNew").click(function(){
 
   $('#planMenu').on('click', '.abcd', function (event) {
     var flag = 0
-    if($('#planNameDisplay').text() != "")
+    if($('#planNameDisplay').text() != "" && $('#planNameDisplay').text() != event.currentTarget.firstChild.data)
     {
       bootbox.confirm("You are currently working on the plan - "+$('#planNameDisplay').text()+". Are you sure you want to create a new plan?", function(result) {
         if(result == true)
