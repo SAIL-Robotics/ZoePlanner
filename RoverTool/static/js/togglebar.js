@@ -59,30 +59,8 @@ $.ajax({
                   //$(".dropdown-menu").append("<li> <a tabindex='-1' onclick='mapPanTo("+response.coords[i][1].split(",")[0]+","+response.coords[i][1].split(",")[1]+","+response.siteName[i]+");'>"+response.siteName[i]+"</a></li>")
                   $(".custom-site").append("<li> <a tabindex='-1' onclick='mapPanTo("+response.coords[i][1].split(",")[0]+","+response.coords[i][1].split(",")[1]+");'>"+response.siteName[i]+"</a></li>")
               }
-              $('#comment').val(kmldata)
             }         
          }
-  });
-
-/****************************************************remove configurationkml file data********************************************************/
- $("#remove_sites").click(function(){
-    bootbox.confirm("Are you sure you want to remove all the sites from the map?", function(result) {
-      if(result == true){
-          $.ajax({
-         type:"POST",
-         url:'/DBOperation/',
-         data: {
-                'operation': 'removeContent',  
-                },
-         success: function(response){
-            if (response!=undefined)
-            { 
-              $('#comment').val('')
-            }         
-         }
-        });
-      }
-    });
   });
 
 /****************************************************Populate plan pane once the page get loaded********************************************************/
