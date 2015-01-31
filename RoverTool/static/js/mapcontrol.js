@@ -48,6 +48,7 @@ function setTextState(state) {
      $("#drillSave"+iterator).attr("disabled",""); 
      $("#drillSaveImage"+iterator).attr("disabled",""); 
      $("#buf"+iterator).attr("disabled",""); 
+     $("#mmrs"+iterator).attr("disabled",""); 
 
      $("#drillClose"+iterator).removeClass("visibile");
      $("#drillClose"+iterator).addClass("vishide");
@@ -75,6 +76,7 @@ function setTextState(state) {
      $("#drillSave"+iterator).removeAttr("disabled"); 
      $("#drillSaveImage"+iterator).removeAttr("disabled"); 
      $("#buf"+iterator).removeAttr("disabled"); 
+     $("#mmrs"+iterator).removeAttr("disabled",""); 
 
      $("#drillClose"+iterator).removeClass("vishide");
      $("#drillClose"+iterator).addClass("visible");
@@ -423,7 +425,7 @@ function initializeOperationDiv(taskpoints) {
   var operationArray = [
   {val : 'Drill', text: 'Drill'},
   //{val : 'BUF', text: 'BUF'},
-  {val : 'MMRS', text: 'MMRS'},
+  //{val : 'MMRS', text: 'MMRS'},
   {val : 'Science Image', text: 'Science Image'},
   {val : 'Image Panorama', text: 'Image Panorama'},
   {val : 'Spectra Panorama', text: 'Spectra Panorama'},
@@ -537,13 +539,14 @@ function populateTemplateDetails(taskDetails) {
         var drillSaveValue = taskDetails[i]['drillSave'+k];
         var drillSaveImageValue = taskDetails[i]['drillSaveImage'+k];
         var drillBufValue = taskDetails[i]['buf'+k];
+        var drillMmrsValue = taskDetails[i]['mmrs'+k];
 
         console.log("the occured is"+occured);
         if(occured == 1) { //This should happen only once
 
             constructDrillDiv(currentTaskpoint,"Drill",drillValue,drillSaveValue,drillSaveImageValue); 
           }   
-        makeDrillDivs(currentTaskpoint,k,drillValue,drillSaveValue,drillSaveImageValue,drillBufValue);
+        makeDrillDivs(currentTaskpoint,k,drillValue,drillSaveValue,drillSaveImageValue,drillBufValue,drillMmrsValue);
       }
     }
    
