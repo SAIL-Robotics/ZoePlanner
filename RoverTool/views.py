@@ -64,6 +64,8 @@ def administratorControl(request):
         if request.method == "POST":
             if request.POST['operation'] == 'getFileContent':
                 data = get_kml_filecontent()
+            if request.POST['operation'] == 'removeContent':
+                data = remove_kml_filecontent()
 
         return HttpResponse(json.dumps(data), content_type = "application/json")                
     
@@ -125,6 +127,15 @@ def get_kml_filecontent():
     
     data['file'] = text_content
     return data
+
+def remove_kml_filecontent():
+    connection = Connection()
+
+    db = connection["rover"]
+    collection = db["siteInfo"]
+
+    #WARNING : DELETING ALL RECORD
+    collection.remove({})
 
 def read_site_coords():
     data = {}
@@ -499,7 +510,8 @@ def get_plan_detail():
     connection = Connection()
     db = connection[database_name]
     collection = db[collection_name]
-    planListCursor = collection.find({'deleted' : {"$ne" : 1}},{'_id' : 0, 'planName' : 1})
+    # sort the list in desc order based on timestamp that embeded with object id - _id
+    planListCursor = collection.find({'deleted' : {"$ne" : 1}},{'_id' : 0, 'planName' : 1}).sort('_id', -1)
 
     for record in planListCursor:
         planname_array.append(record['planName'])

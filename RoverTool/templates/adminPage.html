@@ -15,17 +15,12 @@
 
     <!-- Custom styles for this template -->
     <link href="/static/css/dashboard1.css" rel="stylesheet">
-    <link href="/static/css/mapstyle.css" rel="stylesheet">
     <link href="/static/css/toastr.css" rel="stylesheet">
     <link href="/static/css/bootstrap-switch.css" rel="stylesheet">
 
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/bootstrap-switch.js"></script>
-    <script src="/static/js/toastr.js"></script>
-  
-    
-    <script src="/static/js/FileSaver.js"></script>
-    
+    <script src="/static/js/toastr.js"></script>    
   </head>
 
   <body>
@@ -49,7 +44,7 @@
           <input type="file" class="btn" name="ipl" />
           <input type="submit" class="btn btn-primary" value="Upload" name="uploadFile" />
         </form>
-
+        <button type="button" class="btn btn-primary" data-toggle="modal" id = "remove_sites">Remove Sites</button>
       </div>
       <div class="container">
         <form role="form">
@@ -218,10 +213,5 @@
   </body>
    <!-- Placed at the end of the document so the pages load faster -->
     <script src="/static/js/bootstrap.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
     <script src="/static/js/togglebar.js"></script>
-    <script src="/static/js/taskControl.js"></script>
-   
-
-    
   </html>

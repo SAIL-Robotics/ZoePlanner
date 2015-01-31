@@ -40,6 +40,7 @@ $(document).ajaxStart(function () {
   }).ajaxStop(function () {
     $("#floatingCirclesG").hide();
   });
+
 /****************************************************Get configurationkml file data********************************************************/
 $.ajax({
          type:"POST",
@@ -61,6 +62,27 @@ $.ajax({
               $('#comment').val(kmldata)
             }         
          }
+  });
+
+/****************************************************remove configurationkml file data********************************************************/
+ $("#remove_sites").click(function(){
+    bootbox.confirm("Are you sure you want to remove all the sites from the map?", function(result) {
+      if(result == true){
+          $.ajax({
+         type:"POST",
+         url:'/DBOperation/',
+         data: {
+                'operation': 'removeContent',  
+                },
+         success: function(response){
+            if (response!=undefined)
+            { 
+              $('#comment').val('')
+            }         
+         }
+        });
+      }
+    });
   });
 
 /****************************************************Populate plan pane once the page get loaded********************************************************/
