@@ -428,7 +428,7 @@ function initializeOperationDiv(taskpoints) {
   //{val : 'MMRS', text: 'MMRS'},
   {val : 'Science Image', text: 'Science Image'},
   {val : 'Image Panorama', text: 'Image Panorama'},
-  {val : 'Spectra Panorama', text: 'Spectra Panorama'},
+  {val : 'Spectra Panorama', text: 'Spectral Panorama'},
   {val : 'Precise Move', text: 'Precise Move'},
   {val : 'Smart Target', text: 'Smart Target'},
   {val : 'Nav Cam', text: 'Nav Cam'},
@@ -1338,5 +1338,4 @@ function saveTemplate(result,tasks){
       });
   } 
  
-
 

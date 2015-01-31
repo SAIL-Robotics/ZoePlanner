@@ -409,7 +409,7 @@ function makeDrillDivs(currentTaskPoint,drillIterator,operationDrillValue,operat
   var drillInputLabel = jQuery('<span>', {
     class:'textSpan'
   }).hide().append(jQuery('<label/>',{
-    html:'Drill Value&nbsp;'
+    html:'Depth(in cms)&nbsp;'
   }));
 
   drillInputLabel.appendTo('#newDrillDiv'+drillIterator);
@@ -601,20 +601,19 @@ function constructNavcamDiv(currentTaskpoint,selectedOption,operationNavcamValue
   var groupSpan = jQuery('<span>', {
     class:'input-group-addon'
   }).hide().append(jQuery('<b>',{
-    text:"Nav Cam"
+    text:"Record Navigation Camera Images"
   }))
   groupSpan.appendTo(groupAnchor);
   groupSpan.show();
 
-  // var navCamLabel = jQuery('<span>', {
-  //   class:'textSpan'
-  // }).hide().append(jQuery('<label/>',{
-  //   html:'Nav Cam &nbsp;'
-  // }));
+   var navCamLabel = jQuery('<span>', {
+     class:'textSpan'
+   }).hide().append(jQuery('<label/>',{
+     html:'Budget(0-1) &nbsp;'
+   }));
 
 
-
-  var inputDiv = jQuery('<div></div>').hide().append(jQuery('<input/>', {
+  var inputDiv = jQuery('<div></div>').hide().append(navCamLabel,jQuery('<input/>', {
   type:'text',
     id: 'navcamValue',
     value:operationNavcamValue,
@@ -632,6 +631,7 @@ function constructNavcamDiv(currentTaskpoint,selectedOption,operationNavcamValue
 
   inputDiv.appendTo(groupSpan);
   inputDiv.show();
+  navCamLabel.show();
 
   var taskDetails = taskpoints[currentTaskpoint];
   taskDetails["navcamValue"] = $('#navcamValue').val(); 
@@ -1175,13 +1175,13 @@ function constructSpectraPanoramaDiv(currentTaskpoint,selectedOption,operationSp
     if(taskDetails["spectraNavcamRecord"] && taskDetails["spectraNavcamRecord"] != undefined) {
       delete taskDetails["spectraNavcamRecord"];
     }   
-    $('<option>').val('Spectra Panorama').text('Spectra Panorama').appendTo('#selectOperation');
+    $('<option>').val('Spectra Panorama').text('Spectral Panorama').appendTo('#selectOperation');
   });
 
   var groupSpan = jQuery('<span>', {
     class:'input-group-addon'
   }).hide().append(jQuery('<b>',{
-    text:"Spectra Panorama"
+    text:"Spectral Panorama"
   }))
   groupSpan.appendTo(groupAnchor);
   groupSpan.show();
@@ -1279,7 +1279,7 @@ function constructSpectraPanoramaDiv(currentTaskpoint,selectedOption,operationSp
   var spectraAngularInputLabel = jQuery('<span>', {
     class:'textSpan'
   }).hide().append(jQuery('<label/>',{
-    html:'Angular &nbsp;'
+    html:'Angular Step <br/> (in deg) &nbsp;'
   }));
 
   spectraAngularInput = jQuery('<input/>', {
@@ -1309,7 +1309,7 @@ function constructSpectraPanoramaDiv(currentTaskpoint,selectedOption,operationSp
     spectraAngularCameraCheckBox.removeAttr('checked');
   }
   var spectraAngularCameraLabel = jQuery('<label/>',{
-    text:'With Camera'
+    text:'Save Camera Images'
   });
 
   spectraAngularCameraCheckBox.change(function() { 
@@ -1502,7 +1502,7 @@ function constructSmartTargetDiv(currentTaskpoint,selectedOption,operationSmartT
   var groupSpan = jQuery('<span>', {
     class:'input-group-addon'
   }).hide().append(jQuery('<b>',{
-    text:"Smart Target"
+    text:"Autonomous Science Navigation"
   }))
   groupSpan.appendTo(groupAnchor);
   groupSpan.show();
@@ -1533,13 +1533,13 @@ function constructSmartTargetDiv(currentTaskpoint,selectedOption,operationSmartT
   // });
   
   var smartTargetLabel = jQuery('<label/>',{
-    text:'Smart Target'
+    text:'Autonomous Science Navigation'
   });
 
   var smartTargetInputLabel = jQuery('<span>', {
     class:'textSpan'
   }).hide().append(jQuery('<label/>',{
-    html:'Budget Value &nbsp;'
+    html:'Budget(%) &nbsp;'
   }));
 
   var smartTargetInput = jQuery('<input/>', {
