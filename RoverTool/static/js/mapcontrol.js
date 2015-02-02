@@ -761,11 +761,12 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
 
        if(duplicateFlag == true ) {
             //todo - marker name
-            console.log("duplicate flag marker.");
+            console.log("duplicate flag marker123333");
             taskpoints = backEndJson;
             
             newLatitude = marker.position.lat();
            newLongitude = marker.position.lng();
+           newOpr = {};
             var backUpLat, backUpLng;
             var lastMarker = {};
 
@@ -775,42 +776,63 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
                     {
                       if(j == taskpoints.length)
                       {
-                        
-                        var lastMarker = $.extend({}, taskpoints[j-1]);
+                        var lastMarker = newOpr;
                         lastMarker.lat = newLatitude;
                         lastMarker.lng = newLongitude;
-                        lastMarker.markerName = taskpoints[j-1].markerName + "-01";
+                        //lastMarker.markerName = taskpoints[j-1].markerName + "-01";
                         
                         taskpoints.push(lastMarker)
                         break;
                       }
                       else
                       {
+                        backUpOpr = $.extend({}, taskpoints[j]);
                         backUpLat = taskpoints[j].lat;
                         backUpLng = taskpoints[j].lng;  
 
+                        taskpoints[j] = newOpr;
                         taskpoints[j].lat = newLatitude;
                         taskpoints[j].lng = newLongitude;
 
+
                         newLatitude = backUpLat;
                         newLongitude = backUpLng;
+                        newOpr = backUpOpr;
                       }
                     }
+
+
+                    console.log("*************"+index)
+                    var tempLat = taskpoints[index].lat;
+                    var tempLng = taskpoints[index].lng;
+                    taskpoints[index] = $.extend({}, taskpoints[index-1]);
+                    taskpoints[index].lat = tempLat;
+                    taskpoints[index].lng = tempLng;
+                    oldMarkerName = "";
+                    oldMarkerName = taskpoints[index -1].markerName;
+
+                    var origMarker = oldMarkerName.split("-dup")[0];
+                    var hiddenDupFieldName = origMarker+"dupCount";
+                    var numDup = $("#"+hiddenDupFieldName).val();
+
+                    if(numDup != undefined)
+                    {
+                      var newDupCount = numDup.split("-dup")[1];
+                      var newDupName = oldMarkerName.split("-dup")[0] + "-dup" + (parseInt(newDupCount)+1);
+                      taskpoints[index].markerName = newDupName;
+                      $("#"+hiddenDupFieldName).val(newDupName);
+                    }
+                    else
+                    {
+                     taskpoints[index].markerName = oldMarkerName + "-dup1";
+                     $('<input>').attr({
+                        type: 'hidden',
+                        id: oldMarkerName+"dupCount",
+                        value:oldMarkerName+"-dup1",
+                    }).insertAfter('#drillIterator');
+                    }
+                      
                   }
-            //drawLine();
-            if(index < taskpoints.length - 1){
-              console.log("*************"+taskpoints.length)
-              var tempLat = taskpoints[index].lat;
-              var tempLng = taskpoints[index].lng;
-              taskpoints[index] = $.extend({}, taskpoints[index-1]);
-              taskpoints[index].lat = tempLat;
-              taskpoints[index].lng = tempLng;
-              var oldMarkerName = "";
-              oldMarkerName = taskpoints[index -1].markerName;
-              taskpoints[index].markerName = oldMarkerName + "-01"
-
-            }
-
          }
          else {
              if(backEndJson!=null) {
