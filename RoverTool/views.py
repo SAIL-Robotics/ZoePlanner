@@ -624,7 +624,7 @@ def export_kml(plan_name):
     cursor = ast.literal_eval(json.dumps(cursor))   #removing unicode 'u' from the json
     #fld = KML.Folder()
     for marker in cursor['markers']:
-        s_kml.newpoint(name="Marker", description=str(marker).strip('{}'),
+        s_kml.newpoint(name=marker['markerName'], description=str(marker).strip('{}'),
                    coords=[(float(marker['lng']),float(marker['lat']),0)])
         print marker['lng'],marker['lat']
     return s_kml.kml()
