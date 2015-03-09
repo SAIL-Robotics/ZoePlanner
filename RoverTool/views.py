@@ -222,6 +222,9 @@ def DBOperation(request):
             elif request.POST['operation'] == 'downloadAsKML':
                 plan_name = request.POST['planName']
                 data = export_kml(plan_name)
+            elif request.POST['operation'] == 'downloadAsOS':
+                plan_name = request.POST['planName']
+                data = export_os(plan_name)
             elif request.POST['operation'] == 'getPlanList':
                 data = get_plan_detail()
             elif request.POST['operation'] == 'getDeletedPlanList':
@@ -628,3 +631,59 @@ def export_kml(plan_name):
                    coords=[(float(marker['lng']),float(marker['lat']),0)])
         print marker['lng'],marker['lat']
     return s_kml.kml()
+
+def export_os(plan_name):
+
+    connection = Connection()
+    db = connection['rover']
+    collection = db['plans']
+
+    cursor = collection.find_one({'planName' : plan_name}, {'_id' : 0})
+    cursor = ast.literal_eval(json.dumps(cursor))   #removing unicode 'u' from the json
+    #fld = KML.Folder()
+
+    operationSetMaster = {}
+    count = 0
+
+    for marker in cursor['markers']:
+        operationSet = {}
+        operationSet['ll'] = "ll",marker['lat'],marker['lng'],marker['markerName']
+        for key in marker.keys():
+            if key == "spectraSmartTargetValue":
+                operationSet['sotf'] = "sotf",marker['lat'],marker['lng'],marker['spectraSmartTargetValue'],marker['markerName']
+            if key == "imageStartAzimuthValue":
+                operationSet['panorama'] = "panorama", marker['imageStartAzimuthValue'], marker['imageEndAzimuthValue'],  marker['imageStartElevationValue'],  marker['imageEndElevationValue']
+            if key == "spectraStartAzimuthValue":
+                if marker["spectraAngularCamera"] == "Yes":
+                    flag = 1
+                else:
+                    flag = 0
+                operationSet['spanorama'] = "spanorama", marker['spectraStartAzimuthValue'], marker['spectraEndAzimuthValue'], marker['spectraStartElevationValue'], marker['spectraEndElevationValue'], marker['spectraAngularValue'], flag
+            if key == "preciseMoveValue":
+                operationSet['drive'] = "drive", marker['preciseMoveValue']
+            if key == "navcamValue":
+                operationSet['navcamsave'] = "navcamsave", marker['navcamValue']
+            if key == "sciencePanValue":
+                operationSet['scienceimage'] = "scienceimage", marker['sciencePanValue'], marker['scienceTiltValue']
+            if re.search("drillValue.", key):
+                drillNumber = key.split("drillValue")[1]
+                nexusvalue= "0"
+                nexussample= "0"
+                nexusmmrs= "0"
+                nexusbuf= "0"
+                nexuspicture = "0"
+                for drillkey in marker.keys():
+                    if drillkey == "buf"+drillNumber:
+                        nexusbuf = 1
+                    if drillkey == "mmrs"+drillNumber:
+                        nexusmmrs = 1
+                    if drillkey == "drillSaveImage"+drillNumber:
+                        nexuspicture = 1
+                    if drillkey == "drillSave"+drillNumber:
+                        nexussample = 1
+                    if drillkey == "drillValue"+drillNumber:
+                        nexusvalue = marker["drillValue"+drillNumber] 
+                operationSet['drill'+drillNumber] = 'drill', marker['markerName'], nexusvalue, nexussample, nexusmmrs, nexusbuf, nexuspicture
+        operationSetMaster[count] = operationSet
+        count = count + 1
+    return operationSetMaster

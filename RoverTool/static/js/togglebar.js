@@ -215,6 +215,26 @@ $('.website-title').click(function () {
          }
       });
     }
+
+    if(e.currentTarget.firstChild.data == "Download Operation Set"){
+
+      $.ajax({
+         type:"POST",
+         url:"/DBOperation/",
+         data: {
+                'planName': $('#contextMenu').attr("name"),
+                'operation': 'downloadAsOS',  //OS - operation set
+                },
+         success: function(response){
+                console.log(response)
+                global = response
+                createBlob(response)
+                var blob = new Blob([createBlob(response)], {type: "text/plain;charset=utf-8"});
+                saveAs(blob, $('#contextMenu').attr("name")+".txt");  // (content, filename) download as a KML file
+         }
+      });
+    }
+
     $contextMenu.hide();
   });
 
@@ -251,7 +271,7 @@ $('.website-title').click(function () {
          type:"POST",
          url:"/DBOperation/",
          data: {
-                'markers': JSON.stringify(taskpoints),    //constains lat, lon
+                'markers': JSON.stringify(taskpoints),    //contains lat, lon
                 'planName': $('#planName').val().trim(),  //plan name
                 'planNameUpdate': $('#planNameDisplay').text().trim(),
                 'planDesc': $('#planDesc').val().trim(),
@@ -260,6 +280,7 @@ $('.website-title').click(function () {
                 },
          success: function(response){
              populatePlan(response)
+             res = response
          }
       });
      // $("#save-button").hide();
@@ -778,4 +799,33 @@ function populatePlanTrash(response)
   {
     $("#planTrashDiv").append('<div href="#" class="list-group-item clearfix planTrashClass">'+ response.planName[i] +'<span class="pull-right">  <button class="btn btn-xs btn-info trash" data-toggle="tooltip" data-placement="bottom" title="Delete permanently" id='+response.planName[i]+'> <span class="glyphicon glyphicon-trash trash"></span> </button>  <button class="btn btn-xs btn-info recover" data-toggle="tooltip" data-placement="bottom" title="Restore plan " id='+response.planName[i]+'> <span class="glyphicon glyphicon-log-in recover"></span> </button> </span> </span></div>'); 
   }
+}
+
+/****************************************************Operation set blob generation from 'response'********************************************************/
+
+function createBlob(response)
+{
+  var documentValue = ""
+  var operations = ['ll', 'sotf', 'drill', 'panorama', 'spanorama', 'drive', 'navcamsave', 'scienceimage']
+  var drillNum = ""
+
+  for(i = 0; i < Object.keys(response).length; i++)
+  {
+    for(j=0; j < operations.length ; j++)
+    {
+      if(response[i][operations[j]] != undefined)
+      {
+        documentValue+= response[i][operations[j]] + "\n"
+      }
+    }
+    for (var key in response[i]) 
+    {
+      if(key.indexOf("drill") > -1)
+      {
+        drillNum = key.split("drill")[1]
+        documentValue+= response[i]["drill"+drillNum] + "\n"
+      }
+    }
+  }
+  return documentValue
 }
