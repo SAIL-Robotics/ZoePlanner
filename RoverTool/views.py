@@ -654,7 +654,7 @@ def export_os(plan_name):
             if key == "imageStartAzimuthValue":
                 operationSet['panorama'] = "panorama", marker['imageStartAzimuthValue'], marker['imageEndAzimuthValue'],  marker['imageStartElevationValue'],  marker['imageEndElevationValue']
             if key == "spectraStartAzimuthValue":
-                if marker["spectraAngularCamera"] == "Yes":
+                if marker.has_key("spectraAngularCamera"):
                     flag = 1
                 else:
                     flag = 0

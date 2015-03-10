@@ -827,5 +827,6 @@ function createBlob(response)
       }
     }
   }
+  documentValue = documentValue.replace(/,/g, " ")
   return documentValue
 }
