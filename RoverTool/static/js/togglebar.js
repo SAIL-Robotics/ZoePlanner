@@ -27,7 +27,7 @@ $('#templateModal').on('shown.bs.modal', function () {
 window.onload = (function(){
     if(window.google == null) //If google map is not loaded properly
     {
-      console.log("RETRY")     
+      //console.log("RETRY")     
       toastr.options.positionClass ="toast-top-center";
       toastr.error('Google Map not loaded, refresh the page','');
     }
@@ -95,7 +95,7 @@ $(document).click(function () {
   });
 
 $(document.body).on('click', 'button', function() {
-    //console.log('button ' + this.class + ' clicked');
+    ////console.log('button ' + this.class + ' clicked');
 });
 
 $('body').on('click', function (e) {
@@ -134,7 +134,7 @@ $('.website-title').click(function () {
   
   $contextMenu.on("click", "a", function(e) {
     if(e.currentTarget.firstChild.data == "Delete Plan"){
-      console.log($('#contextMenu').attr("name"));
+      //console.log($('#contextMenu').attr("name"));
       bootbox.confirm("Are you sure you want to delete " + $('#contextMenu').attr("name") + "?", function(result) {
         if(result == true){
           $.ajax({
@@ -226,11 +226,11 @@ $('.website-title').click(function () {
                 'operation': 'downloadAsOS',  //OS - operation set
                 },
          success: function(response){
-                console.log(response)
+                //console.log(response)
                 global = response
                 createBlob(response)
                 var blob = new Blob([createBlob(response)], {type: "text/plain;charset=utf-8"});
-                saveAs(blob, $('#contextMenu').attr("name")+".txt");  // (content, filename) download as a KML file
+                saveAs(blob, $('#contextMenu').attr("name")+"_operation_set.txt");  // (content, filename) download as a KML file
          }
       });
     }
@@ -250,7 +250,7 @@ $('.website-title').click(function () {
     } else {
       $('.plan-group-item').attr('tabindex', '');
     }
-    $('.row-plan-offcanvas').toggleClass('active');
+    //$('.row-plan-offcanvas').toggleClass('active');
     $('.row-task-offcanvas').toggleClass('taskactive');
   });
 
@@ -266,7 +266,7 @@ $('.website-title').click(function () {
     }
     else
     {
-      console.log($('#planName').val().trim())
+      //console.log($('#planName').val().trim())
       $.ajax({
          type:"POST",
          url:"/DBOperation/",
@@ -285,7 +285,7 @@ $('.website-title').click(function () {
       });
      // $("#save-button").hide();
       //$('#planNameDisplay').text("");
-      $('.row-plan-offcanvas').toggleClass('active');
+      //$('.row-plan-offcanvas').toggleClass('active');
       $('.row-task-offcanvas').toggleClass('taskactive');
       toastr.options.positionClass ="toast-bottom-right";
       toastr.success('Plan Saved Successfully!','');
@@ -344,7 +344,7 @@ $('.website-title').click(function () {
               {
                 if($("#createPlan").attr("name") === "duplicate")                  //ajax call for duplicate plan
                 {
-                  console.log($('#planName').val().trim())
+                  //console.log($('#planName').val().trim())
 
                   $.ajax({
                      type:"POST",
@@ -372,7 +372,7 @@ $('.website-title').click(function () {
                   $("#save-button").show();
                   $('#markerCount').val("1");
                   $('.plan-group-item').attr('tabindex', '-1');
-                  $('.row-plan-offcanvas').toggleClass('active');
+                  //$('.row-plan-offcanvas').toggleClass('active');
                   $('.row-task-offcanvas').toggleClass('taskactive');
                 }             
                 $('#myModal').modal('hide')
@@ -564,7 +564,7 @@ $("#templateNew").click(function(){
     var flag = 0
     if($('#planNameDisplay').text() != "" && $('#planNameDisplay').text() != event.currentTarget.firstChild.data)
     {
-      bootbox.confirm("You are currently working on the plan - "+$('#planNameDisplay').text()+". Are you sure you want to create a new plan?", function(result) {
+      bootbox.confirm("You are currently working on the plan - "+$('#planNameDisplay').text()+". Are you sure you want to open plan -" + event.currentTarget.firstChild.data, function(result) {
         if(result == true)
         {
           viewPlan(event)
@@ -582,7 +582,7 @@ $("#templateNew").click(function(){
   function viewPlan(event)
   {
      var target = event.target || event.srcElement;
-     console.log ( event.currentTarget.firstChild.data ); 
+     //console.log ( event.currentTarget.firstChild.data ); 
 
      $('.row-task-offcanvas').removeClass("taskappear");
      $('.row-task-offcanvas').addClass("taskdisappear");
@@ -610,13 +610,13 @@ $("#templateNew").click(function(){
 
   $('#planTrashDiv').on('click', '.planTrashClass', function (event) {
    var target = event.target || event.srcElement;
-   console.log(event.target);
-   console.log ( event.currentTarget.firstChild.data ); 
+   //console.log(event.target);
+   //console.log ( event.currentTarget.firstChild.data ); 
    //eve = event;
 
    if (event.target.className.search("trash") > 0)
    {
-    console.log("trashhhhhh")
+    //console.log("trashhhhhh")
        $.ajax({
        type:"POST",
        url:"/DBOperation/",
@@ -653,7 +653,6 @@ $("#templateNew").click(function(){
           }
     });   
    } 
-  
 
   });
 
@@ -801,7 +800,7 @@ function populatePlanTrash(response)
   }
 }
 
-/****************************************************Operation set blob generation from 'response'********************************************************/
+/****************************************************Operation set blob generation from 'response' for operation set********************************************************/
 
 function createBlob(response)
 {
@@ -829,4 +828,15 @@ function createBlob(response)
   }
   documentValue = documentValue.replace(/,/g, " ")
   return documentValue
+}
+
+function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if(charCode == 46)
+        return true;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    }
+    return true;
 }

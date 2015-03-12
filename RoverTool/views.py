@@ -95,7 +95,7 @@ def pushKmlToMongo():
             array = []
             data = {}
             text_content = text_content + line
-            print line
+            #print line
             if re.search(r"^site", line):
                 siteName = line
             else:
@@ -108,7 +108,7 @@ def pushKmlToMongo():
 
             if data != {}:
                 collection.save(data)
-        print text_content
+        #print text_content
 
 def get_kml_filecontent():
     data = {}
@@ -153,7 +153,7 @@ def read_site_coords():
     data['siteName'] = siteName
     data['coords'] = coords
 
-    print data
+    #print data
     return data
 
 #fuction that handle the ajax request for save operation and getMarkerInfo operation(left pane single click on plan name)
@@ -171,7 +171,6 @@ def DBOperation(request):
 
     if request.is_ajax():
         if request.method == "POST":
-            print "POST"
             if request.POST['operation'] == 'save':
                 plan_name = request.POST['planName']
                 plan_desc = request.POST['planDesc']
@@ -190,8 +189,8 @@ def DBOperation(request):
                 data = validatePlanName(plan_name)
             elif request.POST['operation'] == 'validateTemplateName':
                 template_name = request.POST.get('template_name')
-                print "-----------------------"
-                print template_name
+                #print "-----------------------"
+                #print template_name
                 data = validateTemplateName(template_name)
             elif request.POST['operation'] == 'deletePlan':
                 plan_name = request.POST['planName']
@@ -264,7 +263,7 @@ def DBOperation(request):
                 template_name = request.POST['template_name'] 
                 data = get_template_details(template_name)
             elif request.POST['operation'] == "loadSiteCoords":
-                print "edhooo"
+                #print "edhooo"
                 data = read_site_coords()
         else:
             print 'why you do this!!'
@@ -281,18 +280,18 @@ def saveToDB(plan_name, plan_name_update, plan_desc, markers,plan_date):
 
     db = connection[database_name]
     collection = db[collection_name]
-    print plan_name
+    #print plan_name
     if plan_name == "":
         plan_name = plan_name_update
 
-    print "validate ", validatePlanName(plan_name)['count']
+    #print "validate ", validatePlanName(plan_name)['count']
 
     if validatePlanName(plan_name_update)['count'] == 0:
-        print "inside save"
+        #print "inside save"
         plan = {"planName" : plan_name, "planDescription" : plan_desc, "timeStamp" : time, "markers" : markers, "planDate" : plan_date, "deleted" : 0}
         collection.save(plan)
     else:
-        print "update"
+        #print "update"
         update_plan(plan_name_update, plan_desc, markers)
 
 def saveTemplate(template_name,markers):
@@ -309,11 +308,11 @@ def update_plan(plan_name, plan_desc, markers):
 
     #now = datetime.datetime.now()
     #time = now.strftime("%Y-%m-%d %H:%M:%S")
-    print "in update"
+    #print "in update"
     db = connection[database_name]
     collection = db[collection_name]
-    print plan_name
-    print markers
+    #print plan_name
+    #print markers
     markersCursor = collection.update({'planName' : plan_name, 'deleted' : 0}, {'$set' : {'markers' : markers}})
 
 #getting all the markers information from MongoDB
@@ -324,7 +323,7 @@ def getMarker(plan_name):
     collection = db[collection_name]
 
     markersCursor = collection.find_one({'planName' : plan_name, 'deleted' : 0}, {'_id':0, 'markers':1})
-    print markersCursor['markers']
+    #print markersCursor['markers']
 
     return markersCursor['markers']
 
@@ -386,11 +385,11 @@ def validatePlanName(plan_name):
 
     if trash_plan > 0 and active_plan > 0:
         data['count'] = 1        
-        print "hereeee"
+        #print "hereeee"
 
     if trash_plan > 0 and active_plan == 0:
         data['count'] = 0
-        print "ingathaan"
+        #print "ingathaan"
 
     return data
 
@@ -425,22 +424,6 @@ def get_plan_info(plan_name):
 
     return cursor
 
-# Create your views here.
-@csrf_exempt
-def test(request):
-    c = {}
-    c.update(csrf(request))
-    print "test working"
-    
-    data = {}
-    data['a'] = 'd'
-
-    if request.is_ajax():
-        print "asd"
-        #return HttpResponse(json.dumps(data), content_type = "application/json")
-
-    return render_to_response('test.html', c, RequestContext(request))
-
 def createTemplate(template_name):    
     connection = Connection()
 
@@ -450,8 +433,8 @@ def createTemplate(template_name):
     db = connection[database_name]
     collection = db[collection_name_template]
 
-    print "heloooooooooooooooooooooooooo"
-    print template_name
+    #print "heloooooooooooooooooooooooooo"
+    #print template_name
     #plan = {"planName" : plan_name, "planDescription" : plan_desc, "timeStamp" : time, "markers" : markers}
     #collection.save(plan)
 
@@ -528,14 +511,13 @@ def get_plan_detail():
     return data
 
 def get_template_details(template_name):
-    print "*******************************"
     connection = Connection()
 
     db = connection[database_name]
     collection = db[template_collection]
 
     markersCursor = collection.find_one({'template_name' : template_name}, {'_id':0, 'markers':1})
-    print markersCursor['markers']
+    #print markersCursor['markers']
 
     return markersCursor['markers']
 
@@ -584,12 +566,12 @@ def fetch_templates():
     db = connection[database_name]
     collection = db[template_collection]
     templateListCursor = collection.find({},{'_id' : 0, 'template_name' : 1})
-    print templateListCursor
+    #print templateListCursor
     for record in templateListCursor:
         templateName_array.append(record['template_name'])
 
     data['templateName'] = templateName_array
-    print data
+    #print data
 
     return data    
 
@@ -604,7 +586,6 @@ def get_operation_detail():
     collection = db[collection_name_operation]
     operationListCursor = collection.find({},{'_id' : 0})
 
-    print operationListCursor[0].keys()
     for key in operationListCursor[0].keys():
         operation_name_array.append(key)
         operation_value_array.append(operationListCursor[0][key])
@@ -629,7 +610,7 @@ def export_kml(plan_name):
     for marker in cursor['markers']:
         s_kml.newpoint(name=marker['markerName'], description=str(marker).strip('{}'),
                    coords=[(float(marker['lng']),float(marker['lat']),0)])
-        print marker['lng'],marker['lat']
+        #print marker['lng'],marker['lat']
     return s_kml.kml()
 
 def export_os(plan_name):

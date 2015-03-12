@@ -121,7 +121,7 @@ function initialize() {
 }//initialize
 
 function ajaxForLoadingSiteCoords(){
-  console.log("ajax")
+  //console.log("ajax")
   $.ajax({
          type:"POST",
          url:'/DBOperation/',
@@ -541,7 +541,7 @@ function populateTemplateDetails(taskDetails) {
         var drillBufValue = taskDetails[i]['buf'+k];
         var drillMmrsValue = taskDetails[i]['mmrs'+k];
 
-        console.log("the occured is"+occured);
+        //console.log("the occured is"+occured);
         if(occured == 1) { //This should happen only once
 
             constructDrillDiv(currentTaskpoint,"Drill",drillValue,drillSaveValue,drillSaveImageValue); 
@@ -741,9 +741,9 @@ function ajaxForConfigUpdate() {
 //and also update the json correspondingly
 function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
   
-  console.log("Map zoom "+mapZoom+" map.getZoom "+map.getZoom());
+  //console.log("Map zoom "+mapZoom+" map.getZoom "+map.getZoom());
   if(mapZoom == map.getZoom()){
-    console.log("placing marker"+latitude+" "+longitude+" duplicate position "+index);
+    //console.log("placing marker"+latitude+" "+longitude+" duplicate position "+index);
 
        var marker = new google.maps.Marker({
           position: new google.maps.LatLng(latitude,longitude),
@@ -752,16 +752,16 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
           draggable:true
       });
       allMarkers.push(marker);
-      console.log("marker is "+marker);
+      //console.log("marker is "+marker);
       eeeee = marker;
       // map.panTo(marker.getPosition());
-       //console.log("getPos" +marker.getPosition());
+       ////console.log("getPos" +marker.getPosition());
        var taskDetails = {};
 
 
        if(duplicateFlag == true ) {
             //todo - marker name
-            console.log("duplicate flag marker123333");
+            //console.log("duplicate flag marker123333");
             taskpoints = backEndJson;
             
             newLatitude = marker.position.lat();
@@ -802,7 +802,7 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
                     }
 
 
-                    console.log("*************"+index)
+                    //console.log("*************"+index)
                     var tempLat = taskpoints[index].lat;
                     var tempLng = taskpoints[index].lng;
                     taskpoints[index] = $.extend({}, taskpoints[index-1]);
@@ -870,7 +870,7 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
                            } else {
                              markerNameValue = operationMarkerNameDefault+"-"+markerCount;          
                            }   
-                           console.log("*** inside while loop"+markerCount);
+                           //console.log("*** inside while loop"+markerCount);
                            markerCount = parseInt(markerCount)+1;
                            $('#markerCount').val(markerCount);
                            iteratorFlag = true;
@@ -933,11 +933,11 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
                   label: "Duplicate",
                   className: "btn-success",
                   callback: function() {
-                    console.log("blikkkkkkkkkk");
-                    console.log("old lat "+marker.position.lat()+" old lng "+marker.position.lng());
+                    //console.log("blikkkkkkkkkk");
+                    //console.log("old lat "+marker.position.lat()+" old lng "+marker.position.lng());
                     var newLatitude = marker.position.lat() + parseFloat(0.05);
                     var newLongitude = marker.position.lng() + parseFloat(0.05);
-                    console.log("new lat "+newLatitude+ " new long "+newLongitude);
+                    //console.log("new lat "+newLatitude+ " new long "+newLongitude);
                   var selectedMarker={};
                   selectedMarker.lat=marker.position.lat();
                   selectedMarker.lng=marker.position.lng();
@@ -1007,7 +1007,7 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
                             taskpoints[j]=taskpoints[j+1];
                           }
                           taskpoints.pop();
-                          console.log("Taskpoints "+taskpoints);
+                          //console.log("Taskpoints "+taskpoints);
                           drawline();
 
                           $('.row-task-offcanvas').removeClass("taskappear");
@@ -1040,7 +1040,7 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
                   markerchanged = i;
               }
             }//for 
-            console.log("---->"+markerchanged);
+            //console.log("---->"+markerchanged);
             //markerchanged+=1;
      
       marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
@@ -1060,7 +1060,7 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
                   taskDetails1.lat = marker.position.lat();
                   taskDetails1.lng = marker.position.lng();
 
-          console.log("the marker changed in drag is -------"+markerchanged);
+          //console.log("the marker changed in drag is -------"+markerchanged);
 
           var oldLatitude = taskpoints[markerchanged].lat;
           var oldLongitude = taskpoints[markerchanged].lng;
@@ -1096,7 +1096,7 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
          taskDetails1.lng = marker.position.lng();
          //taskpoints[markerchanged]=taskDetails1;
 
-            console.log("the marker changed in drag end is -------"+markerchanged);
+            //console.log("the marker changed in drag end is -------"+markerchanged);
 
           var oldLatitude = taskpoints[markerchanged].lat;
           var oldLongitude = taskpoints[markerchanged].lng;
