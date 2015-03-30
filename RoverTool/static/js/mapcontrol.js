@@ -220,7 +220,11 @@ function fillTaskPane(marker) {
       {
         console.log("the marker lat pos "+marker.position.lat()+" and "+taskpoints[i].lat);
         console.log("the marker lng pos "+marker.position.lng()+" and "+taskpoints[i].lng);
-        if(marker.position.lat()==taskpoints[i].lat&&marker.position.lng()==taskpoints[i].lng)
+        var markerFixedLat = marker.position.lat().toFixed(11);
+        var markerFixedLng = marker.position.lng().toFixed(11);
+        var taskFixedLat = taskpoints[i].lat.toFixed(11);
+        var taskFixedLng = taskpoints[i].lng.toFixed(11);
+        if(markerFixedLat==taskFixedLat&&markerFixedLng==taskFixedLng)
           {
             console.log("Yes it matches");
             fillValue(taskpoints[i]); //To fill text fields if already exists
