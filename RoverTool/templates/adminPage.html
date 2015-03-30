@@ -45,6 +45,13 @@
       <div class="adminRecover">
         <button type="button" class="btn btn-primary" data-toggle="modal" id = "planTrash">Recover Plan</button>
       </div>
+     <div class="adminUploadSiteInfo">
+        
+        <form id="uploadLocation" method="POST" action="/config/" enctype="multipart/form-data">
+          <input type="file" class="btn" name="bpl" />
+          <input type="submit" class="btn btn-primary" value="UploadLocation" name="uploadLocation" />
+        </form>
+      </div>
       <div class="adminUploadSiteInfo">
         
         <form id="uploadFile" method="POST" action="/config/" enctype="multipart/form-data">

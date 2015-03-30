@@ -59,7 +59,7 @@ def administratorControl(request):
     data = []
 
     filedata = request.FILES.get("ipl")
-
+    locationdata = request.FILES.get("bpl")
     if request.is_ajax():
         if request.method == "POST":
             if request.POST['operation'] == 'getFileContent':
@@ -74,6 +74,15 @@ def administratorControl(request):
             with file("siteInformation.kml", 'w') as outfile:
                 outfile.write(filedata.file.read())
             pushKmlToMongo()
+    if locationdata != None:
+            if locationdata.file:
+                filename = str(locationdata).split(".txt")[0]
+                print "()((((*@$@*$"
+                print filename
+                with file("locations.txt","w") as outfileLocation:
+                    outfileLocation.write(locationdata.file.read())
+                pushPlanToMongo(filename)
+
     return render_to_response('adminPage.html', c, RequestContext(request))
  
 @csrf_exempt
@@ -109,6 +118,35 @@ def pushKmlToMongo():
             if data != {}:
                 collection.save(data)
         #print text_content
+
+def  pushPlanToMongo(planName):
+    data = {}
+    connection = Connection()
+    db = connection["rover"]
+    collection = db["plans"]
+    text_content = ""
+    filename = "locations.txt"
+    
+    marker = []
+    with open(filename, "r") as ins:
+        for line in ins:
+            #print line
+            array = []
+            data = {}
+            array = line.split(",")
+            
+            #print "***"
+            #print array
+            data["markerName"] = array[0]
+            data['lat'] = float(array[1])
+            data['lng'] = float(array[2].rstrip())
+            marker.append(data)
+    print "(((((((((((((((((("
+    print marker
+    print filename
+    plan_desc = "Created from import file"
+    saveToDB(planName, "", plan_desc, marker,"")
+    
 
 def get_kml_filecontent():
     data = {}
@@ -283,6 +321,8 @@ def saveToDB(plan_name, plan_name_update, plan_desc, markers,plan_date):
     #print plan_name
     if plan_name == "":
         plan_name = plan_name_update
+    if plan_date == "":
+        plan_date = time
 
     #print "validate ", validatePlanName(plan_name)['count']
 
