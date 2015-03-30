@@ -250,7 +250,7 @@ $('.website-title').click(function () {
     } else {
       $('.plan-group-item').attr('tabindex', '');
     }
-    //$('.row-plan-offcanvas').toggleClass('active');
+    $('.row-plan-offcanvas').toggleClass('active');
     $('.row-task-offcanvas').toggleClass('taskactive');
   });
 
@@ -284,8 +284,8 @@ $('.website-title').click(function () {
          }
       });
      // $("#save-button").hide();
-      //$('#planNameDisplay').text("");
-      //$('.row-plan-offcanvas').toggleClass('active');
+      $('#planNameDisplay').text("");
+      $('.row-plan-offcanvas').toggleClass('active');
       $('.row-task-offcanvas').toggleClass('taskactive');
       toastr.options.positionClass ="toast-bottom-right";
       toastr.success('Plan Saved Successfully!','');
@@ -372,7 +372,7 @@ $('.website-title').click(function () {
                   $("#save-button").show();
                   $('#markerCount').val("1");
                   $('.plan-group-item').attr('tabindex', '-1');
-                  //$('.row-plan-offcanvas').toggleClass('active');
+                  $('.row-plan-offcanvas').toggleClass('active');
                   $('.row-task-offcanvas').toggleClass('taskactive');
                 }             
                 $('#myModal').modal('hide')
