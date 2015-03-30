@@ -12,6 +12,7 @@ import commands
 import cgi, cgitb
 import re
 import simplekml
+from bs4 import BeautifulSoup
 
 database_name = "rover"
 collection_name = "plans"
@@ -76,11 +77,11 @@ def administratorControl(request):
             pushKmlToMongo()
     if locationdata != None:
             if locationdata.file:
-                filename = str(locationdata).split(".txt")[0]
-                print "()((((*@$@*$"
-                print filename
+                filename = str(locationdata).split(".")[0]
+                
                 with file("locations.txt","w") as outfileLocation:
                     outfileLocation.write(locationdata.file.read())
+
                 pushPlanToMongo(filename)
 
     return render_to_response('adminPage.html', c, RequestContext(request))
@@ -119,31 +120,39 @@ def pushKmlToMongo():
                 collection.save(data)
         #print text_content
 
-def  pushPlanToMongo(planName):
-    data = {}
-    connection = Connection()
-    db = connection["rover"]
-    collection = db["plans"]
+def pushPlanToMongo(planName):
     text_content = ""
     filename = "locations.txt"
     
     marker = []
-    with open(filename, "r") as ins:
-        for line in ins:
-            #print line
-            array = []
-            data = {}
-            array = line.split(",")
+    
+    with open(filename, "r") as fobj:
+        text = fobj.read()
+
+    y=BeautifulSoup(text)
+    cnt =1
+    for data in y.findAll("placemark"):
+        value = {}
+                
+        #value["markerName"] = data.find("name").get_text()
+        value["markerName"] = "marker-"+ str(cnt)
+        value['lat'] = float(data.find("latitude").get_text())
+        value['lng'] = float(data.find("longitude").get_text())
+        marker.append(value)
+        cnt = cnt + 1
+    # with open(filename, "r") as ins:
+    #     for line in ins:
+    #         #print line
+    #         array = []
+    #         data = {}
+    #         array = line.split(",")
             
-            #print "***"
-            #print array
-            data["markerName"] = array[0]
-            data['lat'] = float(array[1])
-            data['lng'] = float(array[2].rstrip())
-            marker.append(data)
-    print "(((((((((((((((((("
+    #         data["markerName"] = array[0]
+    #         data['lat'] = float(array[1])
+    #         data['lng'] = float(array[2].rstrip())
+    #         marker.append(data)
+    
     print marker
-    print filename
     plan_desc = "Created from import file"
     saveToDB(planName, "", plan_desc, marker,"")
     
