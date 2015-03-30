@@ -215,10 +215,14 @@ function clearTaskTextFields() {
 function fillTaskPane(marker) {
     //todo - uncomment this.
     //clearTaskTextFields(); //Clears the text fields initially 
+    console.log("Calling fillTaskPane on click of marker");
     for(i=0;i<taskpoints.length;i++)
       {
+        console.log("the marker lat pos "+marker.position.lat()+" and "+taskpoints[i].lat);
+        console.log("the marker lng pos "+marker.position.lng()+" and "+taskpoints[i].lng);
         if(marker.position.lat()==taskpoints[i].lat&&marker.position.lng()==taskpoints[i].lng)
           {
+            console.log("Yes it matches");
             fillValue(taskpoints[i]); //To fill text fields if already exists
           }
       }  
@@ -228,7 +232,9 @@ function fillTaskPane(marker) {
 //******************************************************************************************************
 //fillValue - To fill the taskpane text fields based on values from the json
 function fillValue(taskDetails){
+  aish = taskDetails;
     for(i in taskDetails){
+        console.log("Coming to the loop");
         var key = i;
         var value = taskDetails[i];
         if(key && key!= undefined && key!= null) {
@@ -236,6 +242,7 @@ function fillValue(taskDetails){
           var nodeType = $("#"+key).attr("type");
           if(nodeType == "text" || nodeType == "hidden") {
             if(documentNode && documentNode!= undefined && documentNode!= null) {
+              console.log("in fill value "+key+" and "+value);
               $("#"+key).val(value);
             }  
           }
@@ -742,6 +749,7 @@ function ajaxForConfigUpdate() {
 function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
   
   //console.log("Map zoom "+mapZoom+" map.getZoom "+map.getZoom());
+  console.log("Place marker");
   if(mapZoom == map.getZoom()){
     //console.log("placing marker"+latitude+" "+longitude+" duplicate position "+index);
 
@@ -835,12 +843,31 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
                   }
          }
          else {
+              console.log("Duplicate flag false or null : "+duplicateFlag);
              if(backEndJson!=null) {
+              var maxNumber = 0;
               taskpoints = backEndJson;
+              for(markerIterator in taskpoints) { 
+                console.log(taskpoints[markerIterator].markerName);
+                var tempMarkerName = taskpoints[markerIterator].markerName;
+                var tempMaxNumber = tempMarkerName.split("-")[tempMarkerName.split("-").length-1];
+                console.log(tempMaxNumber);
+                maxNumber = parseInt(maxNumber);
+                tempMaxNumber = parseInt(tempMaxNumber);
+                console.log("max n "+maxNumber+"temp max n"+tempMaxNumber);
+                if(tempMaxNumber>maxNumber) {
+                  maxNumber = tempMaxNumber;
+                }
+              }
+              console.log(" max no "+maxNumber);
+              
+              var markerCount = parseInt(maxNumber)+1;
+              $('#markerCount').val(markerCount);
              }
              else {
-             taskDetails.lat = latitude;
-             taskDetails.lng = longitude;
+              //Check - added as of 30 March
+             taskDetails.lat = marker.position.lat();
+             taskDetails.lng = marker.position.lng();
              var markerCount = $('#markerCount').val();
              var markerNameValue;
              if(operationMarkerNameDefault == undefined || operationMarkerNameDefault.trim() == "") {           
