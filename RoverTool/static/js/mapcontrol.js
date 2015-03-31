@@ -4,7 +4,7 @@ var templateTasks = {}
 var count=0;
 var lattitude;
 var longitude;
-var mapZoomConstant = 9;
+var mapZoomConstant = 10;
 var mapZoom = mapZoomConstant;
 var markerchanged;
 var eee;
@@ -756,8 +756,7 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
   console.log("Place marker");
   if(mapZoom == map.getZoom()){
     //console.log("placing marker"+latitude+" "+longitude+" duplicate position "+index);
-
-       var marker = new google.maps.Marker({
+          var marker = new google.maps.Marker({
           position: new google.maps.LatLng(latitude,longitude),
           map: map,
           title: "Lat : "+latitude+" Long : "+longitude,
@@ -930,6 +929,26 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
   $("[name='my-checkbox']").on('switchChange.bootstrapSwitch', function(event, state) {
     marker.setDraggable(!state);
   });
+
+
+  //////////////////////////////////////////////////////////////////////////////////
+
+  google.maps.event.addListener(marker,'mouseover',function(event){
+          var marker_lat = marker.position.lat();
+          var marker_lng = marker.position.lng();
+          var latitude_name = "Latitude: ";
+          var longitude_name = "Longitude: ";
+          var comma = " , ";
+          var toast_msg = latitude_name + marker_lat + comma +longitude_name + marker_lng;
+          toastr.options.positionClass ="toast-bottom-right";
+          toastr.options.showDuration = 300;
+          toastr.options.timeOut = 2000;
+          toastr.options.extendedTimeOut = 500;
+          toastr.info(toast_msg);
+
+  }); //event handler for marker hover
+  
+  /////////////////////////////////////////////////////////////////////////////////////
 
    google.maps.event.addListener(marker,'click',function(event){
           drawline(); //to re-draw the lines

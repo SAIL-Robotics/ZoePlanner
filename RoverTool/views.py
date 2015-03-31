@@ -12,7 +12,7 @@ import commands
 import cgi, cgitb
 import re
 import simplekml
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 
 database_name = "rover"
 collection_name = "plans"
