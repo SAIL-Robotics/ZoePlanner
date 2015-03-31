@@ -1,3 +1,14 @@
+.footer {
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;    
+    height: 30px;
+    background-color: black;
+    z-index: 1;
+    color: #ffffff;
+}
+
 #map-canvas {
     position: fixed!important;
     width: 97%;

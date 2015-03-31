@@ -947,7 +947,22 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
           toastr.info(toast_msg);
 
   }); //event handler for marker hover
-  
+
+  google.maps.event.addListener(map, 'mousemove', function (event) {
+              displayCoordinates(event.latLng);               
+  }); // event handler for updating latitude and longitude values at the footer
+
+  function displayCoordinates(point) {
+
+          var lat = point.lat();
+          lat = lat.toFixed(8);
+          var lng = point.lng();
+          lng = lng.toFixed(8);
+          document.getElementById("latitude-value").innerHTML = lat;
+          document.getElementById("longitude-value").innerHTML = lng;
+          console.log("Latitude: " + lat + "  Longitude: " + lng);
+      }
+
   /////////////////////////////////////////////////////////////////////////////////////
 
    google.maps.event.addListener(marker,'click',function(event){
