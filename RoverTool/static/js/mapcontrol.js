@@ -215,18 +215,18 @@ function clearTaskTextFields() {
 function fillTaskPane(marker) {
     //todo - uncomment this.
     //clearTaskTextFields(); //Clears the text fields initially 
-    console.log("Calling fillTaskPane on click of marker");
+    //console.log("Calling fillTaskPane on click of marker");
     for(i=0;i<taskpoints.length;i++)
       {
-        console.log("the marker lat pos "+marker.position.lat()+" and "+taskpoints[i].lat);
-        console.log("the marker lng pos "+marker.position.lng()+" and "+taskpoints[i].lng);
+        //console.log("the marker lat pos "+marker.position.lat()+" and "+taskpoints[i].lat);
+        //console.log("the marker lng pos "+marker.position.lng()+" and "+taskpoints[i].lng);
         var markerFixedLat = marker.position.lat().toFixed(11);
         var markerFixedLng = marker.position.lng().toFixed(11);
         var taskFixedLat = taskpoints[i].lat.toFixed(11);
         var taskFixedLng = taskpoints[i].lng.toFixed(11);
         if(markerFixedLat==taskFixedLat&&markerFixedLng==taskFixedLng)
           {
-            console.log("Yes it matches");
+            //console.log("Yes it matches");
             fillValue(taskpoints[i]); //To fill text fields if already exists
           }
       }  
@@ -238,7 +238,7 @@ function fillTaskPane(marker) {
 function fillValue(taskDetails){
   aish = taskDetails;
     for(i in taskDetails){
-        console.log("Coming to the loop");
+        //console.log("Coming to the loop");
         var key = i;
         var value = taskDetails[i];
         if(key && key!= undefined && key!= null) {
@@ -246,7 +246,7 @@ function fillValue(taskDetails){
           var nodeType = $("#"+key).attr("type");
           if(nodeType == "text" || nodeType == "hidden") {
             if(documentNode && documentNode!= undefined && documentNode!= null) {
-              console.log("in fill value "+key+" and "+value);
+              //console.log("in fill value "+key+" and "+value);
               $("#"+key).val(value);
             }  
           }
@@ -753,7 +753,7 @@ function ajaxForConfigUpdate() {
 function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
   
   //console.log("Map zoom "+mapZoom+" map.getZoom "+map.getZoom());
-  console.log("Place marker");
+  //console.log("Place marker");
   if(mapZoom == map.getZoom()){
     //console.log("placing marker"+latitude+" "+longitude+" duplicate position "+index);
           var marker = new google.maps.Marker({
@@ -846,23 +846,23 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
                   }
          }
          else {
-              console.log("Duplicate flag false or null : "+duplicateFlag);
+              //console.log("Duplicate flag false or null : "+duplicateFlag);
              if(backEndJson!=null) {
               var maxNumber = 0;
               taskpoints = backEndJson;
               for(markerIterator in taskpoints) { 
-                console.log(taskpoints[markerIterator].markerName);
+                //console.log(taskpoints[markerIterator].markerName);
                 var tempMarkerName = taskpoints[markerIterator].markerName;
                 var tempMaxNumber = tempMarkerName.split("-")[tempMarkerName.split("-").length-1];
-                console.log(tempMaxNumber);
+                //console.log(tempMaxNumber);
                 maxNumber = parseInt(maxNumber);
                 tempMaxNumber = parseInt(tempMaxNumber);
-                console.log("max n "+maxNumber+"temp max n"+tempMaxNumber);
+                //console.log("max n "+maxNumber+"temp max n"+tempMaxNumber);
                 if(tempMaxNumber>maxNumber) {
                   maxNumber = tempMaxNumber;
                 }
               }
-              console.log(" max no "+maxNumber);
+              //console.log(" max no "+maxNumber);
               
               var markerCount = parseInt(maxNumber)+1;
               $('#markerCount').val(markerCount);
@@ -933,20 +933,20 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
 
   //////////////////////////////////////////////////////////////////////////////////
 
-  google.maps.event.addListener(marker,'mouseover',function(event){
-          var marker_lat = marker.position.lat();
-          var marker_lng = marker.position.lng();
-          var latitude_name = "Latitude: ";
-          var longitude_name = "Longitude: ";
-          var comma = " , ";
-          var toast_msg = latitude_name + marker_lat + comma +longitude_name + marker_lng;
-          toastr.options.positionClass ="toast-bottom-right";
-          toastr.options.showDuration = 300;
-          toastr.options.timeOut = 2000;
-          toastr.options.extendedTimeOut = 500;
-          toastr.info(toast_msg);
+  // google.maps.event.addListener(marker,'mouseover',function(event){
+  //         var marker_lat = marker.position.lat();
+  //         var marker_lng = marker.position.lng();
+  //         var latitude_name = "Latitude: ";
+  //         var longitude_name = "Longitude: ";
+  //         var comma = " , ";
+  //         var toast_msg = latitude_name + marker_lat + comma +longitude_name + marker_lng;
+  //         toastr.options.positionClass ="toast-bottom-right";
+  //         toastr.options.showDuration = 300;
+  //         toastr.options.timeOut = 2000;
+  //         toastr.options.extendedTimeOut = 500;
+  //         toastr.info(toast_msg);
 
-  }); //event handler for marker hover
+  // }); //event handler for marker hover
 
   google.maps.event.addListener(map, 'mousemove', function (event) {
               displayCoordinates(event.latLng);               
@@ -960,7 +960,7 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
           lng = lng.toFixed(8);
           document.getElementById("latitude-value").innerHTML = lat;
           document.getElementById("longitude-value").innerHTML = lng;
-          console.log("Latitude: " + lat + "  Longitude: " + lng);
+          //console.log("Latitude: " + lat + "  Longitude: " + lng);
       }
 
   /////////////////////////////////////////////////////////////////////////////////////

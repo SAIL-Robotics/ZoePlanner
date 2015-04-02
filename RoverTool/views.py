@@ -12,7 +12,7 @@ import commands
 import cgi, cgitb
 import re
 import simplekml
-# from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 
 database_name = "rover"
 collection_name = "plans"
@@ -131,28 +131,18 @@ def pushPlanToMongo(planName):
 
     y=BeautifulSoup(text)
     cnt =1
-    for data in y.findAll("placemark"):
+    for data in y.findAll("coordinates"):
         value = {}
                 
         #value["markerName"] = data.find("name").get_text()
-        value["markerName"] = "marker-"+ str(cnt)
-        value['lat'] = float(data.find("latitude").get_text())
-        value['lng'] = float(data.find("longitude").get_text())
+        value["markerName"] = "AT15-"+ str(cnt)
+        latitudelongitude = data.get_text().split(",0")[0]
+        lati = latitudelongitude.split(",")[1]
+        longi = latitudelongitude.split(",")[0]
+        value['lat'] = float(lati)
+        value['lng'] = float(longi)
         marker.append(value)
         cnt = cnt + 1
-    # with open(filename, "r") as ins:
-    #     for line in ins:
-    #         #print line
-    #         array = []
-    #         data = {}
-    #         array = line.split(",")
-            
-    #         data["markerName"] = array[0]
-    #         data['lat'] = float(array[1])
-    #         data['lng'] = float(array[2].rstrip())
-    #         marker.append(data)
-    
-    print marker
     plan_desc = "Created from import file"
     saveToDB(planName, "", plan_desc, marker,"")
     
