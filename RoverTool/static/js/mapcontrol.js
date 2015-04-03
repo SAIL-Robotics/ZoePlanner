@@ -127,6 +127,7 @@ function initialize() {
           lng = lng.toFixed(8);
           document.getElementById("latitude-value").innerHTML = lat;
           document.getElementById("longitude-value").innerHTML = lng;
+          
           //console.log("Latitude: " + lat + "  Longitude: " + lng);
    }
   ajaxForLoadingSiteCoords();
@@ -960,20 +961,20 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
 
   //////////////////////////////////////////////////////////////////////////////////
 
-  // google.maps.event.addListener(marker,'mouseover',function(event){
-  //         var marker_lat = marker.position.lat();
-  //         var marker_lng = marker.position.lng();
-  //         var latitude_name = "Latitude: ";
-  //         var longitude_name = "Longitude: ";
-  //         var comma = " , ";
-  //         var toast_msg = latitude_name + marker_lat + comma +longitude_name + marker_lng;
-  //         toastr.options.positionClass ="toast-bottom-right";
-  //         toastr.options.showDuration = 300;
-  //         toastr.options.timeOut = 2000;
-  //         toastr.options.extendedTimeOut = 500;
-  //         toastr.info(toast_msg);
+  google.maps.event.addListener(marker,'mouseover',function(event){
+          var marker_lat = marker.position.lat();
+          var marker_lng = marker.position.lng();
+          var latitude_name = "Latitude: ";
+          var longitude_name = "Longitude: ";
+          var comma = " , ";
+          var toast_msg = latitude_name + marker_lat + comma +longitude_name + marker_lng;
+          toastr.options.positionClass ="toast-bottom-right";
+          toastr.options.showDuration = 300;
+          toastr.options.timeOut = 2000;
+          toastr.options.extendedTimeOut = 500;
+          toastr.info(toast_msg);
 
-  // }); //event handler for marker hover
+  }); //event handler for marker hover
 
   google.maps.event.addListener(map, 'mousemove', function (event) {
               displayCoordinates(event.latLng);               
@@ -985,10 +986,28 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
           lat = lat.toFixed(8);
           var lng = point.lng();
           lng = lng.toFixed(8);
+          var previous_lat = taskpoints[taskpoints.length-1].lat;
+          var previous_lng = taskpoints[taskpoints.length-1].lng;
+          var distance = get_distance(previous_lat,previous_lng,lat,lng);
           document.getElementById("latitude-value").innerHTML = lat;
           document.getElementById("longitude-value").innerHTML = lng;
+          document.getElementById("distance-value").innerHTML = distance;
           //console.log("Latitude: " + lat + "  Longitude: " + lng);
-      }
+  }
+
+  function get_distance(lat1,lon1,lat2,lon2) {
+          var R = 6371; // km (change this constant to get miles)
+          var dLat = (lat2-lat1) * Math.PI / 180;
+          var dLon = (lon2-lon1) * Math.PI / 180;
+          var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180 ) * Math.cos(lat2 * Math.PI / 180 ) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+          var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+          var d = R * c;
+          if (d>1) return Math.round(d)+"km";
+          else if (d<=1) return Math.round(d*1000)+"m";
+          return d;
+}
 
   /////////////////////////////////////////////////////////////////////////////////////
 
@@ -1166,6 +1185,14 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
             $("#lng").val(marker.position.lng());
           }
           //taskpoints[markerchanged]=taskDetails1;
+          
+          var lat1 = taskpoints[markerchanged-1].lat;
+          var lng1 = taskpoints[markerchanged-1].lng;
+          var lat2 = taskpoints[markerchanged].lat;
+          var lng2 = taskpoints[markerchanged].lng;
+          distance_dragged = get_distance(lat1,lng1,lat2,lng2);
+          document.getElementById("distance-value").innerHTML = distance_dragged;
+
           taskpoints[markerchanged].lat = marker.position.lat();
           taskpoints[markerchanged].lng = marker.position.lng();
           marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');       
