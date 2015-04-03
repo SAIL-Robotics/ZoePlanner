@@ -18,6 +18,7 @@ var operationSpectraEndElevationDefault;
 var operationSpectraAngularDefault; 
 var operationPreciseMoveDefault; 
 var operationSmartTargetDefault; 
+var operationSpectroMapperDefault;
 var operationMarkerNameDefault;
 var operationDrillImagePanoramaValueDefault;
 var operationDrillBufValueDefault;
@@ -49,6 +50,8 @@ function updateDefaultValues(defaultValues) {
       operationSpectraStartAzimuthDefault = defaultValues.operationValue[i]; 
     if(defaultValues.operationName[i] == "smartTargetConfig")
       operationSmartTargetDefault = defaultValues.operationValue[i]; 
+    if(defaultValues.operationName[i] == "spectroMapperConfig")
+      operationSpectroMapperDefault = defaultValues.operationValue[i];
     if(defaultValues.operationName[i] == "BUFConfig")
       operationBufDefault = defaultValues.operationValue[i]; 
     if(defaultValues.operationName[i] == "spectraPanoramaConfig5")
@@ -509,6 +512,9 @@ function constructDiv() {
     else if(selectedOption == "Smart Target") {
       constructSmartTargetDiv(currentTaskpoint,selectedOption,operationSmartTargetDefault);
     }// if selection is smart Target
+    else if(selectedOption == "Spectro Mapper") {
+      constructSpectroMapperDiv(currentTaskpoint,selectedOption,operationSpectroMapperDefault);
+    }
     else if(selectedOption == "Nav Cam") {
       constructNavcamDiv(currentTaskpoint,selectedOption,operationNavcamValueDefault);
     }
@@ -1491,7 +1497,7 @@ function constructPreciseMoveDiv(currentTaskpoint,selectedOption,operationPrecis
 }//End of constructPreciseMoveDiv
 
 //******************************************************************************************************
-//constructSmartTargetDiv - To construct div for BUF
+//constructSmartTargetDiv - To construct div for Smart Target
 function constructSmartTargetDiv(currentTaskpoint,selectedOption,operationSmartTargetValue) {
   //console.log("sel "+selectedOption);
 
@@ -1514,13 +1520,13 @@ function constructSmartTargetDiv(currentTaskpoint,selectedOption,operationSmartT
     if(taskDetails["spectraSmartTargetValue"] && taskDetails["spectraSmartTargetValue"] != undefined) {
       delete taskDetails["spectraSmartTargetValue"];
     }   
-    $('<option>').val('Smart Target').text('Smart Target').appendTo('#selectOperation');
+    $('<option>').val('Smart Target').text('Smart Targetting').appendTo('#selectOperation');
   });
 
   var groupSpan = jQuery('<span>', {
     class:'input-group-addon'
   }).hide().append(jQuery('<b>',{
-    text:"Autonomous Science Navigation"
+    text:"Smart Targetting"
   }))
   groupSpan.appendTo(groupAnchor);
   groupSpan.show();
@@ -1551,20 +1557,20 @@ function constructSmartTargetDiv(currentTaskpoint,selectedOption,operationSmartT
   // });
   
   var smartTargetLabel = jQuery('<label/>',{
-    text:'Autonomous Science Navigation'
+    text:'Smart Targetting'
   });
 
   var smartTargetInputLabel = jQuery('<span>', {
     class:'textSpan'
   }).hide().append(jQuery('<label/>',{
-    html:'Budget(%) &nbsp;'
+    html:'Angular Step &nbsp;'
   }));
 
   var smartTargetInput = jQuery('<input/>', {
   type:'text',
     id: 'spectraSmartTargetValue',
     class:'form-control taskText',
-    placeholder:'Budget Value',
+    placeholder:'In deg',
     onkeypress:'return isNumber(event)',
     value:operationSmartTargetValue 
   });
@@ -1592,3 +1598,81 @@ function constructSmartTargetDiv(currentTaskpoint,selectedOption,operationSmartT
 
   $("#selectOperation option[value='"+selectedOption+"']").remove();
 }//End of constructSmartTargetDiv
+
+
+//******************************************************************************************************
+//constructSpectroMapperDiv - To construct div for Spectro Mapper
+function constructSpectroMapperDiv(currentTaskpoint,selectedOption,operationSpectroMapperDiv) {
+  //console.log("sel "+selectedOption);
+
+  var groupAnchor = jQuery('<a>', {
+  class:'list-group-item task-group-item',
+  }).appendTo('#operationDiv');
+
+  var selectedOptionNew = selectedOption.replace(" ","");
+  groupAnchor.append("<span class='operationClose' id='operationClose"+selectedOptionNew+"'>X</span>");
+
+  $("#operationClose"+selectedOptionNew).click(function( event ){
+    //To remove the entire parent element
+    var removeDiv = event.target;
+    var removeParentDiv = removeDiv.parentElement;
+    var removedId = removeParentDiv.id;
+    removeParentDiv.remove();
+
+    //to remove this from the taskDetails json also     
+    var taskDetails = taskpoints[currentTaskpoint];
+    if(taskDetails["spectroMapperValue"] && taskDetails["spectroMapperValue"] != undefined) {
+      delete taskDetails["spectroMapperValue"];
+    }   
+    $('<option>').val('Spectro Mapper').text('Spectro Mapper').appendTo('#selectOperation');
+  });
+
+  var groupSpan = jQuery('<span>', {
+    class:'input-group-addon'
+  }).hide().append(jQuery('<b>',{
+    text:"Autonomous Science Navigation"
+  }))
+  groupSpan.appendTo(groupAnchor);
+  groupSpan.show();
+  
+  var spectroMapperLabel = jQuery('<label/>',{
+    text:'Autonomous Science Navigation'
+  });
+
+  var spectroMapperInputLabel = jQuery('<span>', {
+    class:'textSpan'
+  }).hide().append(jQuery('<label/>',{
+    html:'Budget(%) &nbsp;'
+  }));
+
+  var spectroMapperInput = jQuery('<input/>', {
+  type:'text',
+    id: 'spectroMapperValue',
+    class:'form-control taskText',
+    placeholder:'Budget Value',
+    onkeypress:'return isNumber(event)',
+    value:operationSpectroMapperDiv 
+  });
+
+  spectroMapperInput.focusout(function(){
+    var currentspectraoMapperValue= $('#spectroMapperValue').val();
+    if(taskpoints[currentTaskpoint].spectroMapperValue != currentspectraoMapperValue) {
+      taskpoints[currentTaskpoint].spectroMapperValue = currentspectraoMapperValue;
+    }
+  }); 
+
+  var inputDiv = jQuery('<div></div>').hide().append(spectroMapperInputLabel,spectroMapperInput);
+
+  inputDiv.appendTo(groupSpan);
+  inputDiv.show();
+  spectroMapperInputLabel.show();
+
+  var taskDetails = taskpoints[currentTaskpoint];
+  var spectroMapperValue = $('#spectroMapperValue').val();
+  if(spectroMapperValue && spectroMapperValue!=undefined) {
+    taskDetails["spectroMapperValue"] = $('#spectroMapperValue').val();   
+  }
+  
+
+  $("#selectOperation option[value='"+selectedOption+"']").remove();
+}//End of constructSpectroMapperDiv

@@ -21,9 +21,9 @@ function setTextState(state) {
   "imageEndAzimuthValue","imageStartElevationValue","imageEndElevationValue","spectraStartAzimuthValue",
   "spectraEndAzimuthValue","spectraStartElevationValue","spectraEndElevationValue", "spectraAngularValue", "preciseMoveValue",
   "spectraAngularCamera","spectraNavcamRecord","spectraSmartTargetValue","selectTemplate","selectOperation",
-  "addOperation","createTemplateButton","navcamValue","markerName"];
+  "addOperation","createTemplateButton","navcamValue","markerName","spectroMapperValue"];
   var taskCloseButtons = ["operationCloseBUF", "operationCloseMMRS","operationCloseScienceImage","operationCloseImagePanorama","operationCloseSpectraPanorama","operationClosePreciseMove",
-  "operationCloseSmartTarget","operationCloseNavCam","operationCloseDrill"];
+  "operationCloseSmartTarget","operationCloseNavCam","operationCloseDrill","operationCloseSpectroMapper"];
 
   var drillIterator = $("#drillIterator").val(); //drillIterator value
   drillIterator = parseInt(drillIterator);
@@ -115,6 +115,20 @@ function initialize() {
           lockToggleButtonBlink();
         }    
   });//function for map click
+  google.maps.event.addListener(map, 'mousemove', function (event) {
+              displayCoordinates(event.latLng);               
+  }); // event handler for updating latitude and longitude values at the footer
+
+  function displayCoordinates(point) {
+
+          var lat = point.lat();
+          lat = lat.toFixed(8);
+          var lng = point.lng();
+          lng = lng.toFixed(8);
+          document.getElementById("latitude-value").innerHTML = lat;
+          document.getElementById("longitude-value").innerHTML = lng;
+          //console.log("Latitude: " + lat + "  Longitude: " + lng);
+   }
   ajaxForLoadingSiteCoords();
 
 
@@ -441,7 +455,8 @@ function initializeOperationDiv(taskpoints) {
   {val : 'Image Panorama', text: 'Image Panorama'},
   {val : 'Spectra Panorama', text: 'Spectral Panorama'},
   {val : 'Precise Move', text: 'Precise Move'},
-  {val : 'Smart Target', text: 'Smart Target'},
+  {val: 'Spectro Mapper', text:'Spectro Mapper'},
+  {val : 'Smart Target', text: 'Smart Targetting'},
   {val : 'Nav Cam', text: 'Nav Cam'},
   ];
 
@@ -615,6 +630,12 @@ function populateTemplateDetails(taskDetails) {
       //remove this from select option
       $("#selectOperation option[value='Smart Target']").remove();
     }  
+    if(taskDetails[i]['spectroMapperValue'] && taskDetails[i]['spectroMapperValue']!=undefined) {
+      var spectroMapperValue = taskDetails[i]['spectroMapperValue'];
+      constructSpectroMapperDiv(currentTaskpoint,"Spectro Mapper",spectroMapperValue);
+      //remove this from select option
+      $("#selectOperation option[value='Spectro Mapper']").remove();
+    }
     if(taskDetails[i]['preciseMoveValue'] && taskDetails[i]['preciseMoveValue']!=undefined) {
       var preciseMoveValue = taskDetails[i]['preciseMoveValue'];
       constructPreciseMoveDiv(currentTaskpoint,"Precise Move",preciseMoveValue);
@@ -702,6 +723,12 @@ function populateOperationDiv(taskpoints) {
       constructSmartTargetDiv(currentTaskpoint,"Smart Target",spectraSmartTargetValue);
       //remove this from select option
       $("#selectOperation option[value='Smart Target']").remove();
+    }  
+     if(taskDetails['spectroMapperValue'] && taskDetails['spectroMapperValue']!=undefined) {
+      var spectroMapperValue = taskDetails['spectroMapperValue'];
+      constructSpectroMapperDiv(currentTaskpoint,"Spectro Mapper",spectroMapperValue);
+      //remove this from select option
+      $("#selectOperation option[value='Spectro Mapper']").remove();
     }  
     if(taskDetails['preciseMoveValue'] && taskDetails['preciseMoveValue']!=undefined) {
       var preciseMoveValue = taskDetails['preciseMoveValue'];

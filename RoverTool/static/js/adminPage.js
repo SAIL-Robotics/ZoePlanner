@@ -145,7 +145,8 @@ $.ajax({
               'Smart Target': $('#smartTargetConfig').val(),
               'Marker Name': $('#markerNameConfig').val(),
               'Nav Cam' : $('#navcamConfig').val(),
-              'Drill' : $('#drillValueConfig').val()
+              'Drill' : $('#drillValueConfig').val(),
+              'Spectro Mapper':$('#spectroMapperConfig').val()
 
               },
        success: function(response){
