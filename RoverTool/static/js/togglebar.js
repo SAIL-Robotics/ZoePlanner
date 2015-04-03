@@ -284,7 +284,6 @@ $('.website-title').click(function () {
          }
       });
      // $("#save-button").hide();
-      $('#planNameDisplay').text("");
       $('.row-plan-offcanvas').toggleClass('active');
       $('.row-task-offcanvas').toggleClass('taskactive');
       toastr.options.positionClass ="toast-bottom-right";

@@ -1027,8 +1027,8 @@ function placeMarker(latitude,longitude,backEndJson,duplicateFlag,index) {
                   callback: function() {
                     //console.log("blikkkkkkkkkk");
                     //console.log("old lat "+marker.position.lat()+" old lng "+marker.position.lng());
-                    var newLatitude = marker.position.lat() + parseFloat(0.05);
-                    var newLongitude = marker.position.lng() + parseFloat(0.05);
+                    var newLatitude = marker.position.lat() + parseFloat(0.0005);
+                    var newLongitude = marker.position.lng() + parseFloat(0.0005);
                     //console.log("new lat "+newLatitude+ " new long "+newLongitude);
                   var selectedMarker={};
                   selectedMarker.lat=marker.position.lat();
