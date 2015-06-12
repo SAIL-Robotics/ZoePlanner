@@ -25,6 +25,7 @@ var operationDrillBufValueDefault;
 var operationDrillMmrsValueDefault;
 var operationNavcamValueDefault;
 
+/** Check */
 
 //******************************************************************************************************
 //updateDefaultValues - to update the default value for the operations in the operation pane
